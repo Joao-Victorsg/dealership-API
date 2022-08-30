@@ -65,6 +65,24 @@ public class DealershipController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Operation(summary="Return one car")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "The car was returned with success"),
+            @ApiResponse(responseCode = "404",description = "There wasn't a car with the VIN that was informed.")
+    })
+    @GetMapping(path="/car/{vin}",produces = "application/json")
+    public ResponseEntity<Object> getCarByVin(@PathVariable(value="vin") String vin){
+
+        var cars = carRepositoryAdapter.findByvehicleIdentificationNumber(vin);
+
+        if(cars.isPresent()){
+            var response = carMapper.toCarDtoResponse(cars.get());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There isn't a Car with this VIN");
+    }
+
     @Operation(summary = "Update a car color or/and a Car Value")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "The car was update with success."),
