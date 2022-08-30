@@ -1,0 +1,6 @@
+2022-08-29 23:17:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_CARMODEL" not found (this database is empty); SQL statement:
+select carmodel0_.id as id1_0_, carmodel0_.brand as brand2_0_, carmodel0_.car_value as car_valu3_0_, carmodel0_.color as color4_0_, carmodel0_.model as model5_0_, carmodel0_.registration_date as registra6_0_, carmodel0_.vehicle_identification_number as vehicle_7_0_ from tb_carmodel carmodel0_ where carmodel0_.vehicle_identification_number=? [42104-214]
+2022-08-29 23:20:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_CARMODEL" not found (this database is empty); SQL statement:
+select carmodel0_.id as id1_0_, carmodel0_.brand as brand2_0_, carmodel0_.car_value as car_valu3_0_, carmodel0_.color as color4_0_, carmodel0_.model as model5_0_, carmodel0_.registration_date as registra6_0_, carmodel0_.vehicle_identification_number as vehicle_7_0_ from tb_carmodel carmodel0_ where carmodel0_.vehicle_identification_number=? [42104-214]
