@@ -1,4 +1,4 @@
-package com.example.api.dealership.core.adapter;
+package com.example.api.dealership.core.adapter.car;
 
 import com.example.api.dealership.core.domain.CarModel;
 import org.springframework.data.domain.Page;

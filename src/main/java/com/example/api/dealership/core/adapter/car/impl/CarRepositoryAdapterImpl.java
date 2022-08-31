@@ -1,6 +1,6 @@
-package com.example.api.dealership.core.adapter.impl;
+package com.example.api.dealership.core.adapter.car.impl;
 
-import com.example.api.dealership.core.adapter.CarRepositoryAdapter;
+import com.example.api.dealership.core.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.repository.CarRepository;
 import lombok.RequiredArgsConstructor;

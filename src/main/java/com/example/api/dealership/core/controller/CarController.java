@@ -1,8 +1,8 @@
 package com.example.api.dealership.core.controller;
 
-import com.example.api.dealership.core.adapter.CarRepositoryAdapter;
-import com.example.api.dealership.core.dtos.CarDtoResponse;
-import com.example.api.dealership.core.dtos.CarDtoRequest;
+import com.example.api.dealership.core.adapter.car.CarRepositoryAdapter;
+import com.example.api.dealership.core.dtos.car.CarDtoResponse;
+import com.example.api.dealership.core.dtos.car.CarDtoRequest;
 import com.example.api.dealership.core.mapper.CarMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/dealership")
-public class DealershipController {
+public class CarController {
 
     private final CarRepositoryAdapter carRepositoryAdapter;
 

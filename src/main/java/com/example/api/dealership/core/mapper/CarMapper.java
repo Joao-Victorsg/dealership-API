@@ -1,8 +1,8 @@
 package com.example.api.dealership.core.mapper;
 
 import com.example.api.dealership.core.domain.CarModel;
-import com.example.api.dealership.core.dtos.CarDtoRequest;
-import com.example.api.dealership.core.dtos.CarDtoResponse;
+import com.example.api.dealership.core.dtos.car.CarDtoRequest;
+import com.example.api.dealership.core.dtos.car.CarDtoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

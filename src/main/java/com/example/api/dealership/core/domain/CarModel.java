@@ -1,7 +1,6 @@
 package com.example.api.dealership.core.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,11 +11,11 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="TB_CARMODEL")
-public class CarModel implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class CarModel{
 
     @Id
     @GeneratedValue(generator = "uuid")
