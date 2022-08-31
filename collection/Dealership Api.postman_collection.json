@@ -6,137 +6,280 @@
 	},
 	"item": [
 		{
-			"name": "Get one Car",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Car Requests",
+			"item": [
+				{
+					"name": "Get one Car",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/car/123456789",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"car",
+								"123456789"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:8080/v1/dealership/car/123456789",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"dealership",
-						"car",
-						"123456789"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get all cars",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/v1/dealership/car",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"dealership",
-						"car"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Insert Car",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\t\"model\":\"Cruze\",\r\n\t\"brand\":\"Chevrolet\",\r\n    \"color\":\"Black\",\r\n\t\"vehicleIdentificationNumber\":\"987654321\",\r\n\t\"value\":\"90000.00\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get all cars",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/dealership/car",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"car"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:8080/v1/dealership/car",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"dealership",
-						"car"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Car",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/v1/dealership/car/987654321",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"dealership",
-						"car",
-						"987654321"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Car",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"color\":\"Black\",\r\n\t\"value\":\"80000.00\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Insert Car",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"model\":\"Cruze\",\r\n\t\"brand\":\"Chevrolet\",\r\n    \"color\":\"Black\",\r\n\t\"vehicleIdentificationNumber\":\"987654321\",\r\n\t\"value\":\"90000.00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/car",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"car"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:8080/v1/dealership/car/123456789",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"dealership",
-						"car",
-						"123456789"
-					]
+				{
+					"name": "Delete Car",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/dealership/car/987654321",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"car",
+								"987654321"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Car",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"color\":\"Black\",\r\n\t\"value\":\"80000.00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/car/123456789",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"car",
+								"123456789"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "Client Requests",
+			"item": [
+				{
+					"name": "Get one Client",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/client/12345678911",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"client",
+								"12345678911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/dealership/client",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Client",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\":\"Joao\",\r\n\t\"cpf\":\"1234567891\",\r\n    \"city\":\"Muriae\",\r\n\t\"postCode\":\"36880000\",\r\n\t\"state\":\"Minas Gerais\",\r\n    \"streetName\":\"Rua do teste\",\r\n    \"streetNumber\":\"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/client",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Client",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/dealership/client/12345678910",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"client",
+								"12345678910"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Joaozinho\",\r\n\t\"city\":\"Vermelho\",\r\n\t\"postCode\":\"3688000\",\r\n\t\"state\":\"Minas Gerais\",\r\n    \"streetName\":\"Rua do teste 2\",\r\n    \"streetNumber\":\"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/client/12345678910",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"client",
+								"12345678910"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
