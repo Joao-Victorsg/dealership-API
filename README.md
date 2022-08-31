@@ -8,11 +8,20 @@ It's built with Java and Spring Framework. It has the only porpose to study the 
 
 # Features
 This API provides HTTP endpoint's for the following:
+### Cars
 * Create a car: POST/car
 * Update a car: PUT/car/{VIN}
 * Delete a car (by VIN): DELETE/car/{VIN}
 * Get all cars: GET/car
 * Get a specific car (by VIN): Get/car/{VIN}
+
+### Clients
+
+* Create a client: POST/client
+* Update a client: PUT/client/{CPF}
+* Delete a client (by CPF): DELETE/client/{CPF}
+* Get all clients: GET/client
+* Get a specific client (by CPF): Get/client/{CPF}
 
 # This project was developed with: 
 
@@ -39,3 +48,6 @@ By default, the API will be avalaible at http://localhost:8080/v1/dealership/
 
 You can find the documentation made by Spring-doc-openapi at http://localhost:8080/swagger-ui/index.html#/dealership-controller
 
+# Collection
+
+There is a postman collection to do the requests at the collection folder.
