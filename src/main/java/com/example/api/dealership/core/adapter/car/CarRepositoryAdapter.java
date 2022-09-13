@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 public interface CarRepositoryAdapter {
-    Optional<CarModel> findByvehicleIdentificationNumber(String vehicleIdentificationNumber);
+    Optional<CarModel> findByVin(String vehicleIdentificationNumber);
 
     CarModel save(CarModel car);
 

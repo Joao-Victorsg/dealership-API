@@ -1,7 +1,9 @@
 package com.example.api.dealership.core.dtos.car;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
@@ -9,17 +11,20 @@ import java.math.BigDecimal;
 public class CarDtoRequest {
 
     @NotBlank
-    private String model;
+    private String carModel;
 
     @NotBlank
-    private String brand;
+    private String carModelYear;
 
     @NotBlank
-    private String color;
+    private String carMake;
 
     @NotBlank
-    private String vehicleIdentificationNumber;
+    private String carColor;
 
-    private BigDecimal value;
+    @NotBlank
+    private String carVin;
+
+    private Double carValue;
 
 }

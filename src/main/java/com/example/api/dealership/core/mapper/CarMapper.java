@@ -13,7 +13,7 @@ import java.time.ZoneId;
 public interface CarMapper {
 
     @Mapping(expression = "java(getRegistrationDate())",target = "registrationDate")
-    @Mapping(source = "carDtoRequest.value",target = "carValue")
+    //@Mapping(source = "carDtoRequest.value",target = "carValue")
     CarModel toCarModel(CarDtoRequest carDtoRequest);
 
 

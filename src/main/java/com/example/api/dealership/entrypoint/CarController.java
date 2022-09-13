@@ -1,4 +1,4 @@
-package com.example.api.dealership.core.controller;
+package com.example.api.dealership.entrypoint;
 
 import com.example.api.dealership.core.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.core.dtos.car.CarDtoResponse;
@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,14 +37,15 @@ public class CarController {
         @ApiResponse(responseCode = "200", description = "The car was created with success"),
         @ApiResponse(responseCode = "409", description = "There was a conflict when creating the car")
     })
-    @PostMapping(path = "/car", produces = "application/json")
+    @PostMapping(path = "/cars", produces = "application/json")
     public ResponseEntity<Object> saveCar(@RequestBody @Valid CarDtoRequest carDto){
-        var exists = carRepositoryAdapter.findByvehicleIdentificationNumber(carDto.getVehicleIdentificationNumber());
+        var exists = carRepositoryAdapter.findByVin(carDto.getCarVin());
 
         if(exists.isEmpty()){
             var carModel = carRepositoryAdapter.save(carMapper.toCarModel(carDto));
             log.info("Creating car in the database: " + carModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(carMapper.toCarDtoResponse(carModel));
+            return ResponseEntity.created(URI.create("/v1/dealership/client/" + carModel.getCarVin()))
+                    .body(carMapper.toCarDtoResponse(carModel));
         }
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Vehicle Identification Number already in use.");
@@ -51,7 +53,7 @@ public class CarController {
 
     @Operation(summary="Return a page of cars")
     @ApiResponse(responseCode = "200",description = "Return a list of cars")
-    @GetMapping(path="/car",produces = "application/json")
+    @GetMapping(path="/cars",produces = "application/json")
     public ResponseEntity<Page<CarDtoResponse>> getAllCars(@PageableDefault(page = 0,size = 10, sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable){
 
@@ -70,10 +72,10 @@ public class CarController {
             @ApiResponse(responseCode = "200",description = "The car was returned with success"),
             @ApiResponse(responseCode = "404",description = "There wasn't a car with the VIN that was informed.")
     })
-    @GetMapping(path="/car/{vin}",produces = "application/json")
+    @GetMapping(path="/cars/{vin}",produces = "application/json")
     public ResponseEntity<Object> getCarByVin(@PathVariable(value="vin") String vin){
 
-        var cars = carRepositoryAdapter.findByvehicleIdentificationNumber(vin);
+        var cars = carRepositoryAdapter.findByVin(vin);
 
         if(cars.isPresent()){
             var response = carMapper.toCarDtoResponse(cars.get());
@@ -88,15 +90,15 @@ public class CarController {
             @ApiResponse(responseCode = "200",description = "The car was update with success."),
             @ApiResponse(responseCode = "404",description = "There wasn't a car with the VIN that was informed.")
     })
-    @PutMapping(path="/car/{vin}",produces = "application/json")
+    @PutMapping(path="/cars/{vin}",produces = "application/json")
     public ResponseEntity<Object> updateCar(@PathVariable(value = "vin") String vin, @RequestBody CarDtoRequest carDto){
 
-        var carModelOptional = carRepositoryAdapter.findByvehicleIdentificationNumber(vin);
+        var carModelOptional = carRepositoryAdapter.findByVin(vin);
 
         if(carModelOptional.isPresent()){
             var carModel = carModelOptional.get();
             var carModelUpdate = carMapper.toCarModel(carDto);
-            carModel.setColor(carModelUpdate.getColor());
+            carModel.setCarColor(carModelUpdate.getCarColor());
             carModel.setCarValue(carModelUpdate.getCarValue());
 
             var request = carRepositoryAdapter.save(carModel);
@@ -115,10 +117,10 @@ public class CarController {
             @ApiResponse(responseCode = "200",description = "The car was deleted with success"),
             @ApiResponse(responseCode = "404",description = "There wasn't a car with the VIN that was informed in the database.")
     })
-    @DeleteMapping(path = "/car/{vin}", produces = "application/json")
+    @DeleteMapping(path = "/cars/{vin}", produces = "application/json")
     public ResponseEntity<Object> deleteCar(@PathVariable(value = "vin") String vin){
 
-        var  carModelOptional = carRepositoryAdapter.findByvehicleIdentificationNumber(vin);
+        var  carModelOptional = carRepositoryAdapter.findByVin(vin);
 
         if(carModelOptional.isPresent()){
             carRepositoryAdapter.deleteCar(vin);
@@ -127,6 +129,5 @@ public class CarController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found.");
     }
-
 
 }

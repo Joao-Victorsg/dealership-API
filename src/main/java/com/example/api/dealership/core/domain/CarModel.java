@@ -23,19 +23,22 @@ public class CarModel{
     private String id;
 
     @Column(nullable = false)
-    private String model;
+    private String carModel;
 
     @Column(nullable = false)
-    private String brand;
+    private String carModelYear;
 
     @Column(nullable = false)
-    private String color;
+    private String carMake;
+
+    @Column(nullable = false)
+    private String carColor;
 
     @Column(nullable = false,unique = true)
-    private String vehicleIdentificationNumber;
+    private String carVin;
 
     @Column(nullable = false)
-    private BigDecimal carValue;
+    private Double carValue;
 
     @Column(nullable = false)
     private LocalDateTime registrationDate;

@@ -18,8 +18,8 @@ public class CarRepositoryAdapterImpl implements CarRepositoryAdapter {
     private final CarRepository carRepository;
 
     @Override
-    public Optional<CarModel> findByvehicleIdentificationNumber(String vehicleIdentificationNumber) {
-        return carRepository.findByvehicleIdentificationNumber(vehicleIdentificationNumber);
+    public Optional<CarModel> findByVin(String vehicleIdentificationNumber) {
+        return carRepository.findBycarVin(vehicleIdentificationNumber);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CarRepositoryAdapterImpl implements CarRepositoryAdapter {
     @Override
     @Transactional
     public void deleteCar(String vehicleIdentificationNumber) {
-        carRepository.deleteByvehicleIdentificationNumber(vehicleIdentificationNumber);
+        carRepository.deleteBycarVin(vehicleIdentificationNumber);
     }
 
 }
