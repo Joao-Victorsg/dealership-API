@@ -1,13 +1,12 @@
 package com.example.api.dealership.core.domain;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,4 +32,6 @@ public class ClientModel {
     @Column(nullable = false)
     private LocalDateTime registrationDate;
 
+    @OneToMany(mappedBy = "client")
+    private List<SalesModel> salesModel;
 }
