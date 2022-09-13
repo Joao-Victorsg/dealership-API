@@ -79,6 +79,20 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 
+		<!-- Generating Data -->
+		<dependency>
+			<groupId>net.datafaker</groupId>
+			<artifactId>datafaker</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+
+		<!-- Json reader -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
