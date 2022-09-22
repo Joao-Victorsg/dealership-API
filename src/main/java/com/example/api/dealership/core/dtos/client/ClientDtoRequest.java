@@ -1,13 +1,20 @@
 package com.example.api.dealership.core.dtos.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientDtoRequest {
 
     @NotBlank
@@ -16,13 +23,10 @@ public class ClientDtoRequest {
     @NotBlank
     private String cpf;
 
-    @NotBlank
     private String city;
 
-    @NotBlank
-    private String state;
+    private String stateAbbreviation;
 
-    @NotBlank
     private String streetName;
 
     @NotBlank
@@ -30,5 +34,6 @@ public class ClientDtoRequest {
 
     @NotBlank
     private String postCode;
+
 
 }

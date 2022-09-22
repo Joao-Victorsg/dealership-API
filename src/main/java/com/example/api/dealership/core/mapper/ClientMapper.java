@@ -15,7 +15,7 @@ public interface ClientMapper {
 
     @Mapping(source = "streetNumber",target = "address.streetNumber")
     @Mapping(source = "streetName",target = "address.streetName")
-    @Mapping(source = "state",target = "address.state")
+    @Mapping(source = "stateAbbreviation",target = "address.stateAbbreviation")
     @Mapping(source = "postCode", target = "address.postCode")
     @Mapping(source = "city", target = "address.city")
     @Mapping(expression = "java(getRegistrationDate())",target = "registrationDate")

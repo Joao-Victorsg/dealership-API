@@ -28,7 +28,7 @@ public class ClientDtoResponse {
     private String postCode;
 
     @NotBlank
-    private String state;
+    private String stateAbbreviation;
 
     @NotBlank
     private String streetName;

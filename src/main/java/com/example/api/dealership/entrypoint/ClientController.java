@@ -5,11 +5,13 @@ import com.example.api.dealership.core.adapter.client.ClientRepositoryAdapter;
 import com.example.api.dealership.core.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.core.dtos.client.ClientDtoResponse;
 import com.example.api.dealership.core.mapper.ClientMapper;
+import com.example.api.dealership.core.port.SearchAddressPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,9 @@ public class ClientController {
     private final ClientRepositoryAdapter clientRepositoryAdapter;
 
     private final ClientMapper clientMapper;
+
+    private final SearchAddressPort restTemplatePort;
+
 
     @Operation(summary="Return a page of clients")
     @ApiResponse(responseCode = "200",description = "Return a list of clients")
@@ -81,6 +86,11 @@ public class ClientController {
         var cliente = clientRepositoryAdapter.findByCpf(request.getCpf());
 
         if(cliente.isEmpty()){
+
+            var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
+
+            BeanUtils.copyProperties(clientAddress,request);
+
             var clientModel = clientRepositoryAdapter.saveClient(clientMapper.toClientModel(request));
             log.info("Creating client in the database: " + clientModel);
             //201 é pra sincrono
@@ -91,6 +101,8 @@ public class ClientController {
         // O comum seria ter um DTO pra devolver nos casos de erro. Esse DTO poderia ter o código, etc.
         return ResponseEntity.status(HttpStatus.CONFLICT).body("A client with this CPF already exists");
     }
+
+
 
     @Operation(summary = "Update a client name or/and address")
     @ApiResponses(value = {
@@ -103,10 +115,16 @@ public class ClientController {
 
         if(cliente.isPresent()){
             var clientModel = cliente.get();
+
+            var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
+            BeanUtils.copyProperties(clientAddress,request);
+
             var clientModelUpdate = clientMapper.toClientModel(request);
 
             clientModelUpdate.setId(clientModel.getId());
-
+            clientModelUpdate.setCpf(clientModel.getCpf());
+            clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
+            
             var response = clientRepositoryAdapter.saveClient(clientModelUpdate);
             log.info("Updating client: " + response);
             return ResponseEntity.status(HttpStatus.OK).body(clientMapper.toClientDtoResponse(response));
