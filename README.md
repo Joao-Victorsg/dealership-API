@@ -32,6 +32,8 @@ This API provides HTTP endpoint's for the following:
 * springdoc-openapi-ui
 * Mapstruct 1.5.2
 * Lombok
+* Datafaker
+* Gson
  
 # Compile and build
 
@@ -50,4 +52,4 @@ You can find the documentation made by Spring-doc-openapi at http://localhost:80
 
 # Collection
 
-There is a postman collection to do the requests at the collection folder.
+There is a postman collection to do the requests at the collection folder. When the application initialize, it mock 100 rows of data in the h2-database. You can see it by doing a GET.
