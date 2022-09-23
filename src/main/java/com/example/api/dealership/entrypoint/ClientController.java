@@ -111,10 +111,10 @@ public class ClientController {
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
     private ResponseEntity<Object> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request){
-        var cliente = clientRepositoryAdapter.findByCpf(cpf);
+        var client = clientRepositoryAdapter.findByCpf(cpf);
 
-        if(cliente.isPresent()){
-            var clientModel = cliente.get();
+        if(client.isPresent()){
+            var clientModel = client.get();
 
             var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
             BeanUtils.copyProperties(clientAddress,request);

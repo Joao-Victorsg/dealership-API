@@ -47,7 +47,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/car",
+							"raw": "localhost:8080/v1/dealership/cars",
 							"host": [
 								"localhost"
 							],
@@ -55,7 +55,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"car"
+								"cars"
 							]
 						}
 					},
@@ -68,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"model\":\"Cruze\",\r\n\t\"brand\":\"Chevrolet\",\r\n    \"color\":\"Black\",\r\n\t\"vehicleIdentificationNumber\":\"987654321\",\r\n\t\"value\":\"90000.00\"\r\n}",
+							"raw": "{\r\n\t\"model\":\"Cruze\",\r\n\t\"brand\":\"Chevrolet\",\r\n    \"color\":\"White\",\r\n\t\"vehicleIdentificationNumber\":\"987654321\",\r\n\t\"value\":\"90000.00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -76,7 +76,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/car",
+							"raw": "localhost:8080/v1/dealership/cars",
 							"host": [
 								"localhost"
 							],
@@ -84,7 +84,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"car"
+								"cars"
 							]
 						}
 					},
@@ -164,7 +164,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/client/12345678911",
+							"raw": "localhost:8080/v1/dealership/clients/12345678911",
 							"host": [
 								"localhost"
 							],
@@ -172,7 +172,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"client",
+								"clients",
 								"12345678911"
 							]
 						}
@@ -185,7 +185,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/client",
+							"raw": "localhost:8080/v1/dealership/clients",
 							"host": [
 								"localhost"
 							],
@@ -193,7 +193,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"client"
+								"clients"
 							]
 						}
 					},
@@ -206,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"name\":\"Joao\",\r\n\t\"cpf\":\"1234567891\",\r\n    \"city\":\"Muriae\",\r\n\t\"postCode\":\"36880000\",\r\n\t\"state\":\"Minas Gerais\",\r\n    \"streetName\":\"Rua do teste\",\r\n    \"streetNumber\":\"123\"\r\n}",
+							"raw": "{\r\n\t\"name\":\"Roberto\",\r\n\t\"cpf\":\"1234567888\",\r\n\t\"postCode\":\"36881041\",\r\n    \"streetNumber\":\"321\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -214,7 +214,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/client",
+							"raw": "localhost:8080/v1/dealership/clients",
 							"host": [
 								"localhost"
 							],
@@ -222,7 +222,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"client"
+								"clients"
 							]
 						}
 					},
@@ -256,13 +256,121 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"Joaozinho\",\r\n\t\"city\":\"Vermelho\",\r\n\t\"postCode\":\"3688000\",\r\n\t\"state\":\"Minas Gerais\",\r\n    \"streetName\":\"Rua do teste 2\",\r\n    \"streetNumber\":\"123\"\r\n}",
+							"raw": "{\r\n    \"name\":\"Joaozinho\",\r\n    \"postCode\":\"36881000\",\r\n    \"streetNumber\":\"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/clients/1234567888",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"clients",
+								"1234567888"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales Requests",
+			"item": [
+				{
+					"name": "Get all sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/dealership/sales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Sale",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"cpf\":\"1234567999\",\r\n    \"vin\":\"987654321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/sales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one Sale",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/clients/12345678911",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"clients",
+								"12345678911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sale",
+					"request": {
+						"method": "DELETE",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/client/12345678910",
 							"host": [
