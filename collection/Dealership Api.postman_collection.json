@@ -26,7 +26,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/car/123456789",
+							"raw": "localhost:8080/v1/dealership/cars/1G6AE1R37F0552955",
 							"host": [
 								"localhost"
 							],
@@ -34,8 +34,8 @@
 							"path": [
 								"v1",
 								"dealership",
-								"car",
-								"123456789"
+								"cars",
+								"1G6AE1R37F0552955"
 							]
 						}
 					},
@@ -68,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"model\":\"Cruze\",\r\n\t\"brand\":\"Chevrolet\",\r\n    \"color\":\"White\",\r\n\t\"vehicleIdentificationNumber\":\"987654321\",\r\n\t\"value\":\"90000.00\"\r\n}",
+							"raw": "{\r\n\t\"carModel\":\"Cruze\",\r\n    \"carModelYear\":\"2017\",\r\n\t\"carMake\":\"Chevrolet\",\r\n    \"carColor\":\"White\",\r\n\t\"carVin\":\"987654321\",\r\n\t\"carValue\":\"90000.00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -96,7 +96,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/car/987654321",
+							"raw": "localhost:8080/v1/dealership/cars/3C6TD5DT9CG617309",
 							"host": [
 								"localhost"
 							],
@@ -104,8 +104,8 @@
 							"path": [
 								"v1",
 								"dealership",
-								"car",
-								"987654321"
+								"cars",
+								"3C6TD5DT9CG617309"
 							]
 						}
 					},
@@ -118,7 +118,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"color\":\"Black\",\r\n\t\"value\":\"80000.00\"\r\n}",
+							"raw": "{\r\n    \"carColor\":\"Black\",\r\n\t\"carValue\":\"80000.00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -126,7 +126,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/car/123456789",
+							"raw": "localhost:8080/v1/dealership/cars/3C6TD5DT9CG617309",
 							"host": [
 								"localhost"
 							],
@@ -134,8 +134,8 @@
 							"path": [
 								"v1",
 								"dealership",
-								"car",
-								"123456789"
+								"cars",
+								"3C6TD5DT9CG617309"
 							]
 						}
 					},
@@ -164,7 +164,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/clients/12345678911",
+							"raw": "localhost:8080/v1/dealership/clients/66660814124",
 							"host": [
 								"localhost"
 							],
@@ -173,7 +173,7 @@
 								"v1",
 								"dealership",
 								"clients",
-								"12345678911"
+								"66660814124"
 							]
 						}
 					},
@@ -183,7 +183,14 @@
 					"name": "Get all clients",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "page",
+								"value": "2",
+								"type": "default",
+								"disabled": true
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/clients",
 							"host": [
@@ -234,7 +241,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/client/12345678910",
+							"raw": "localhost:8080/v1/dealership/clients/12345678910",
 							"host": [
 								"localhost"
 							],
@@ -242,7 +249,7 @@
 							"path": [
 								"v1",
 								"dealership",
-								"client",
+								"clients",
 								"12345678910"
 							]
 						}
@@ -311,7 +318,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"cpf\":\"1234567999\",\r\n    \"vin\":\"987654321\"\r\n}",
+							"raw": "{\r\n\t\"cpf\":\"1234567888\",\r\n    \"vin\":\"987654321\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -351,7 +358,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/v1/dealership/clients/12345678911",
+							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
 							"host": [
 								"localhost"
 							],
@@ -359,8 +366,8 @@
 							"path": [
 								"v1",
 								"dealership",
-								"clients",
-								"12345678911"
+								"sales",
+								"009b5d51-8b9f-461e-89e8-0792deea333f"
 							]
 						}
 					},
@@ -372,7 +379,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/client/12345678910",
+							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
 							"host": [
 								"localhost"
 							],
@@ -380,8 +387,8 @@
 							"path": [
 								"v1",
 								"dealership",
-								"client",
-								"12345678910"
+								"sales",
+								"009b5d51-8b9f-461e-89e8-0792deea333f"
 							]
 						}
 					},
