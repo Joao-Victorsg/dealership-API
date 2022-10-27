@@ -1,15 +1,15 @@
 package com.example.api.dealership.config;
 
-import com.example.api.dealership.core.adapter.car.impl.CarRepositoryAdapterImpl;
-import com.example.api.dealership.core.adapter.client.impl.ClientRepositoryAdapterImpl;
-import com.example.api.dealership.core.adapter.sales.SalesRepositoryAdapter;
+import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
+import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
+import com.example.api.dealership.adapter.mapper.CarMapper;
+import com.example.api.dealership.adapter.mapper.ClientMapper;
+import com.example.api.dealership.adapter.mapper.SalesMapper;
+import com.example.api.dealership.adapter.output.car.impl.CarRepositoryAdapterImpl;
+import com.example.api.dealership.adapter.output.client.impl.ClientRepositoryAdapterImpl;
+import com.example.api.dealership.adapter.output.sales.SalesRepositoryAdapter;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.domain.ClientModel;
-import com.example.api.dealership.core.dtos.car.CarDtoRequest;
-import com.example.api.dealership.core.dtos.client.ClientDtoRequest;
-import com.example.api.dealership.core.mapper.CarMapper;
-import com.example.api.dealership.core.mapper.ClientMapper;
-import com.example.api.dealership.core.mapper.SalesMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;

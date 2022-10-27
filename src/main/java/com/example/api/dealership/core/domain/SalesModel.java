@@ -1,6 +1,5 @@
 package com.example.api.dealership.core.domain;
 
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
