@@ -21,23 +21,9 @@ public interface SalesMapper {
         return sales;
     }
 
-    @Mapping(source = "client.id",target = "clientId")
-    @Mapping(source = "client.name",target = "clientName")
-    @Mapping(source = "client.cpf",target = "clientCpf")
-    @Mapping(source = "client.address.city",target = "clientCity")
-    @Mapping(source = "client.address.postCode",target = "clientPostCode")
-    @Mapping(source = "client.address.stateAbbreviation",target = "clientState")
-    @Mapping(source = "client.address.streetName",target = "clientStreetName")
-    @Mapping(source = "client.address.streetNumber",target = "clientStreetNumber")
-    @Mapping(source = "client.registrationDate",target = "clientRegistrationDate")
-    @Mapping(source = "car",target = ".")
-    @Mapping(source = "car.carModelYear", target = "carModelYear")
-    @Mapping(source = "car.carMake", target = "carMake")
-    @Mapping(source = "car.carVin", target = "carVin")
-    @Mapping(source = "car.carRegistrationDate", target = "carRegistrationDate")
-    @Mapping(source = "car.id",target = "carId")
-    @Mapping(source = "id",target = "salesId")
-    @Mapping(source = "registrationDate",target = "salesRegistrationDate")
+    @Mapping(source = "car", target = "car.")
+    @Mapping(source = "client", target = "client.")
+    @Mapping(source = "client.address",target = "client.address.")
     SalesDtoResponse toSalesDtoResponse(SalesModel sales);
 
 }

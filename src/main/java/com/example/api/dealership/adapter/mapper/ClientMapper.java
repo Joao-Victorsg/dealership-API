@@ -25,7 +25,7 @@ public interface ClientMapper {
         return LocalDateTime.now(ZoneId.of("UTC"));
     }
 
-    @Mapping(source = "address",target = ".")
+    @Mapping(source = "address",target = "address.")
     ClientDtoResponse toClientDtoResponse(ClientModel clientModel);
 
 }

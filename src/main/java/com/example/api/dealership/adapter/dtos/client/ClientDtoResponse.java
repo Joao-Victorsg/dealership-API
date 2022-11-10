@@ -1,5 +1,6 @@
 package com.example.api.dealership.adapter.dtos.client;
 
+import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -21,20 +22,8 @@ public class ClientDtoResponse {
     @Size(min = 11,max = 11)
     private String cpf;
 
-    @NotBlank
-    private String city;
-
-    @NotBlank
-    private String postCode;
-
-    @NotBlank
-    private String stateAbbreviation;
-
-    @NotBlank
-    private String streetName;
-
-    @NotBlank
-    private String streetNumber;
+    @NotNull
+    private AddressDtoResponse address;
 
     @NotNull
     private LocalDateTime registrationDate;
