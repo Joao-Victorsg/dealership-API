@@ -1,11 +1,14 @@
 package com.example.api.dealership.adapter.entrypoint;
 
 
+import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.output.client.ClientRepositoryAdapter;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
+import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,15 +51,21 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/clients", produces = "application/json")
-    private ResponseEntity<Page<ClientDtoResponse>> getAllClients(@PageableDefault(page = 0,size = 10, sort ="id",
+    private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(page = 0,size = 10, sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable){
+
+        var response = new Response<Page<ClientDtoResponse>>();
 
         var clients = clientRepositoryAdapter.getClients(pageable);
 
-        var response = new PageImpl<>(clients.stream().map(client -> clientMapper.toClientDtoResponse(client)).collect(Collectors.toList()));
+        response.setData(new PageImpl<>(
+                clients.
+                        stream().
+                        map(client -> clientMapper.toClientDtoResponse(client)).
+                        collect(Collectors.toList()))
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-
     }
 
     @Operation(summary="Return one client")
@@ -70,15 +79,18 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Object> getClient(@PathVariable(value = "cpf") String cpf){
+    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+
+        var response = new Response<ClientDtoResponse>();
+
         var cliente = clientRepositoryAdapter.findByCpf(cpf);
 
         if(cliente.isPresent()){
-            return ResponseEntity.status(HttpStatus.OK).body(clientMapper.toClientDtoResponse(cliente.get()));
+            response.setData(clientMapper.toClientDtoResponse(cliente.get()));
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        //Deveria ser uma mensagem de exceção e não de corpo
-        return ResponseEntity.notFound().build();
+        throw new ClientNotFoundException("There isn't a client with this CPF");
     }
 
 
@@ -94,7 +106,9 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    private ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDtoRequest request){
+    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
+        var response = new Response<ClientDtoResponse>();
+
         var cliente = clientRepositoryAdapter.findByCpf(request.getCpf());
 
         if(cliente.isEmpty()){
@@ -106,14 +120,13 @@ public class ClientController {
             var clientModel = clientRepositoryAdapter.saveClient(clientMapper.toClientModel(request));
             log.info("Creating client in the database: " + clientModel);
 
+            response.setData(clientMapper.toClientDtoResponse(clientModel));
+
             return ResponseEntity.created(URI.create("/v1/dealership/client/" + clientModel.getCpf()))
-                    .body(clientMapper.toClientDtoResponse(clientModel));
+                    .body(response);
         }
-        // O comum seria ter um DTO pra devolver nos casos de erro. Esse DTO poderia ter o código, etc.
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("A client with this CPF already exists");
+        throw new DuplicatedInfoException("A client with this CPF already exists");
     }
-
-
 
     @Operation(summary = "Update a client name or/and address")
     @ApiResponses(value = {
@@ -125,7 +138,9 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Object> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request){
+    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
+        var response = new Response<ClientDtoResponse>();
+
         var client = clientRepositoryAdapter.findByCpf(cpf);
 
         if(client.isPresent()){
@@ -140,12 +155,16 @@ public class ClientController {
             clientModelUpdate.setCpf(clientModel.getCpf());
             clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
             
-            var response = clientRepositoryAdapter.saveClient(clientModelUpdate);
-            log.info("Updating client: " + response);
-            return ResponseEntity.status(HttpStatus.OK).body(clientMapper.toClientDtoResponse(response));
+            clientModel = clientRepositoryAdapter.saveClient(clientModelUpdate);
+
+            response.setData(clientMapper.toClientDtoResponse(clientModel));
+
+            log.info("Updating client: " + response.getData());
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A client with this CPF was not found");
+        throw new ClientNotFoundException("A client with this CPF was not found");
     }
 
     @Operation(summary = "Delete a client passing the CPF")
@@ -159,15 +178,21 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Object> deleteClient(@PathVariable(value = "cpf") String cpf){
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+
+        var response = new Response<String>();
 
         var  clientModelOptional = clientRepositoryAdapter.findByCpf(cpf);
 
         if(clientModelOptional.isPresent()){
             clientRepositoryAdapter.deleteClient(cpf);
-            log.info("Deleted client with CPF: " + cpf);
-            return ResponseEntity.status(HttpStatus.OK).body("Client deleted successfully.");
+
+            log.info("Client with CPF: " + cpf + "was successfully deleted");
+
+            response.setData("Client with CPF: " + cpf + " was successfully deleted");
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found.");
+        throw new ClientNotFoundException("There isn't a client with this CPF");
     }
 }

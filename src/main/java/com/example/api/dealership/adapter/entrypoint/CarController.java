@@ -1,9 +1,12 @@
 package com.example.api.dealership.adapter.entrypoint;
 
+import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoResponse;
 import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.output.car.CarRepositoryAdapter;
+import com.example.api.dealership.core.exceptions.CarNotFoundException;
+import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,17 +48,22 @@ public class CarController {
         @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/cars", produces = "application/json")
-    public ResponseEntity<Object> saveCar(@RequestBody @Valid CarDtoRequest carDto){
+    public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid CarDtoRequest carDto) throws DuplicatedInfoException {
+        var response = new Response<CarDtoResponse>();
+
         var exists = carRepositoryAdapter.findByVin(carDto.getCarVin());
 
         if(exists.isEmpty()){
             var carModel = carRepositoryAdapter.save(carMapper.toCarModel(carDto));
             log.info("Creating car in the database: " + carModel);
+
+            response.setData(carMapper.toCarDtoResponse(carModel));
+
             return ResponseEntity.created(URI.create("/v1/dealership/client/" + carModel.getCarVin()))
-                    .body(carMapper.toCarDtoResponse(carModel));
+                    .body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Vehicle Identification Number already in use.");
+        throw new DuplicatedInfoException("Already exists a car with this VIN");
     }
 
     @Operation(summary="Return a page of cars")
@@ -67,16 +76,19 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path="/cars",produces = "application/json")
-    public ResponseEntity<Page<CarDtoResponse>> getAllCars(@PageableDefault(page = 0,size = 10, sort ="id",
+    public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(page = 1,size = 10, sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable){
+
+        var response = new Response<Page<CarDtoResponse>>();
 
         var cars = carRepositoryAdapter.getCars(pageable);
 
-        var response = new PageImpl<>(
+        response.setData(new PageImpl<>(
                 cars.stream()
                         .map(carModel -> carMapper.toCarDtoResponse(carModel))
                         .collect(Collectors.toList())
-        );
+        ));
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -91,16 +103,18 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path="/cars/{vin}",produces = "application/json")
-    public ResponseEntity<Object> getCarByVin(@PathVariable(value="vin") String vin){
+    public ResponseEntity<Response<CarDtoResponse>> getCarByVin(@PathVariable(value="vin") String vin) throws CarNotFoundException {
+
+        var response = new Response<CarDtoResponse>();
 
         var cars = carRepositoryAdapter.findByVin(vin);
 
         if(cars.isPresent()){
-            var response = carMapper.toCarDtoResponse(cars.get());
+            response.setData(carMapper.toCarDtoResponse(cars.get()));
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There isn't a Car with this VIN");
+        throw new CarNotFoundException("There isn't a Car with this VIN");
     }
 
     @Operation(summary = "Update a car color or/and a Car Value")
@@ -113,7 +127,9 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path="/cars/{vin}",produces = "application/json")
-    public ResponseEntity<Object> updateCar(@PathVariable(value = "vin") String vin, @RequestBody CarDtoRequest carDto){
+    public ResponseEntity<Response<CarDtoResponse>> updateCar(@PathVariable(value = "vin") String vin, @RequestBody CarDtoRequest carDto) throws CarNotFoundException {
+
+        var response = new Response<CarDtoResponse>();
 
         var carModelOptional = carRepositoryAdapter.findByVin(vin);
 
@@ -125,13 +141,13 @@ public class CarController {
 
             var request = carRepositoryAdapter.save(carModel);
 
-            var response = carMapper.toCarDtoResponse(request);
+            response.setData(carMapper.toCarDtoResponse(request));
 
             log.info("Updating car: " + carModel);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found.");
+        throw new CarNotFoundException("There isn't a car with this VIN");
     }
 
     @Operation(summary = "Delete a car passing the VIN")
@@ -145,16 +161,19 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/cars/{vin}", produces = "application/json")
-    public ResponseEntity<Object> deleteCar(@PathVariable(value = "vin") String vin){
+    public ResponseEntity<Response<String>> deleteCar(@PathVariable(value = "vin") String vin) throws CarNotFoundException {
+
+        var response = new Response<String>();
 
         var  carModelOptional = carRepositoryAdapter.findByVin(vin);
 
         if(carModelOptional.isPresent()){
             carRepositoryAdapter.deleteCar(vin);
             log.info("Deleted car with VIN: " + vin);
-            return ResponseEntity.status(HttpStatus.OK).body("Car deleted successfully.");
+            response.setData("Car with VIN: " + vin + " was deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found.");
+        throw new CarNotFoundException("There isn't a car with this Vin");
     }
 
 }
