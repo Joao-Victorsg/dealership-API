@@ -1,8 +1,8 @@
-package com.example.api.dealership.adapter.output.car.impl;
+package com.example.api.dealership.adapter.output.repository.adapter.car.impl;
 
-import com.example.api.dealership.adapter.output.car.CarRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.core.domain.CarModel;
-import com.example.api.dealership.adapter.output.repository.CarRepositoryPort;
+import com.example.api.dealership.adapter.output.repository.port.CarRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

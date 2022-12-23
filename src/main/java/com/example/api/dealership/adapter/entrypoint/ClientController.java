@@ -5,7 +5,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
-import com.example.api.dealership.adapter.output.client.ClientRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;

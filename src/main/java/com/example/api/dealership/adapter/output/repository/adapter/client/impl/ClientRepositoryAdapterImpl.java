@@ -1,7 +1,7 @@
-package com.example.api.dealership.adapter.output.client.impl;
+package com.example.api.dealership.adapter.output.repository.adapter.client.impl;
 
-import com.example.api.dealership.adapter.output.client.ClientRepositoryAdapter;
-import com.example.api.dealership.adapter.output.repository.ClientRepositoryPort;
+import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
 import com.example.api.dealership.core.domain.ClientModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class ClientRepositoryAdapterImpl implements ClientRepositoryAdapter {
 
-    public final ClientRepositoryPort clientRepositoryPort;
+    private final ClientRepositoryPort clientRepositoryPort;
 
     @Override
     public Optional<ClientModel> findByCpf(String cpf) {

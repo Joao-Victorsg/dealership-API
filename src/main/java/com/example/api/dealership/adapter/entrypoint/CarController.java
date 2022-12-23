@@ -4,7 +4,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoResponse;
 import com.example.api.dealership.adapter.mapper.CarMapper;
-import com.example.api.dealership.adapter.output.car.CarRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

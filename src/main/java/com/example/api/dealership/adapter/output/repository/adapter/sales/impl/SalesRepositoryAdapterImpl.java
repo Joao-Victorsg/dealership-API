@@ -1,7 +1,7 @@
-package com.example.api.dealership.adapter.output.sales.impl;
+package com.example.api.dealership.adapter.output.repository.adapter.sales.impl;
 
-import com.example.api.dealership.adapter.output.repository.SalesRepositoryPort;
-import com.example.api.dealership.adapter.output.sales.SalesRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.adapter.sales.SalesRepositoryAdapter;
+import com.example.api.dealership.adapter.output.repository.port.SalesRepositoryPort;
 import com.example.api.dealership.core.domain.SalesModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

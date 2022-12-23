@@ -1,4 +1,4 @@
-package com.example.api.dealership.adapter.output.sales;
+package com.example.api.dealership.adapter.output.repository.adapter.sales;
 
 import com.example.api.dealership.core.domain.SalesModel;
 import org.springframework.data.domain.Page;
