@@ -4,9 +4,10 @@ package com.example.api.dealership.adapter.entrypoint;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
+import com.example.api.dealership.config.rest.token.validator.TokenValidator;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
-import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
+import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
@@ -51,8 +53,9 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/clients", produces = "application/json")
+    @TokenValidator
     private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(page = 0,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable){
+            direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token, HttpServletRequest servletRequest){
 
         var response = new Response<Page<ClientDtoResponse>>();
 
@@ -79,7 +82,8 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+    @TokenValidator
+    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
 
         var response = new Response<ClientDtoResponse>();
 
@@ -106,7 +110,8 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
+    @TokenValidator
+    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request,@RequestHeader String token,HttpServletRequest servletRequest) throws DuplicatedInfoException {
         var response = new Response<ClientDtoResponse>();
 
         var cliente = clientRepositoryAdapter.findByCpf(request.getCpf());
@@ -138,7 +143,8 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
+    @TokenValidator
+    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
         var response = new Response<ClientDtoResponse>();
 
         var client = clientRepositoryAdapter.findByCpf(cpf);
@@ -178,7 +184,8 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+    @TokenValidator
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
 
         var response = new Response<String>();
 

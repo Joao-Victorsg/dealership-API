@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "75137169-97ac-4790-af6d-f5a28749333b",
+		"_postman_id": "b2b0245d-5b6e-4f29-9538-fa3a4e0ff120",
 		"name": "Dealership Api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -45,7 +51,13 @@
 					"name": "Get all cars",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/cars",
 							"host": [
@@ -65,7 +77,13 @@
 					"name": "Insert Car",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"carModel\":\"Cruze\",\r\n    \"carModelYear\":\"2017\",\r\n\t\"carMake\":\"Chevrolet\",\r\n    \"carColor\":\"White\",\r\n\t\"carVin\":\"987654321\",\r\n\t\"carValue\":\"90000.00\"\r\n}",
@@ -94,7 +112,13 @@
 					"name": "Delete Car",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/cars/3C6TD5DT9CG617309",
 							"host": [
@@ -115,7 +139,13 @@
 					"name": "Update Car",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"carColor\":\"Black\",\r\n\t\"carValue\":\"80000.00\"\r\n}",
@@ -153,7 +183,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -189,6 +225,11 @@
 								"value": "2",
 								"type": "default",
 								"disabled": true
+							},
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
 							}
 						],
 						"url": {
@@ -210,7 +251,13 @@
 					"name": "Insert Client",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"name\":\"Roberto\",\r\n\t\"cpf\":\"1234567888\",\r\n\t\"postCode\":\"36881041\",\r\n    \"streetNumber\":\"321\"\r\n}",
@@ -239,7 +286,13 @@
 					"name": "Delete Client",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/clients/12345678910",
 							"host": [
@@ -260,7 +313,13 @@
 					"name": "Update Client",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"name\":\"Joaozinho\",\r\n    \"postCode\":\"36881000\",\r\n    \"streetNumber\":\"1234\"\r\n}",
@@ -295,7 +354,13 @@
 					"name": "Get all sales",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/sales",
 							"host": [
@@ -315,7 +380,13 @@
 					"name": "Insert Sale",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"cpf\":\"1234567888\",\r\n    \"vin\":\"987654321\"\r\n}",
@@ -347,7 +418,13 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -377,7 +454,13 @@
 					"name": "Delete Sale",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
 							"host": [
@@ -391,6 +474,60 @@
 								"009b5d51-8b9f-461e-89e8-0792deea333f"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Requests",
+			"item": [
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "teste",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jvsg\",\r\n    \"password\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth Request",
+			"item": [
+				{
+					"name": "GetToken",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
