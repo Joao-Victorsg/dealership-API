@@ -1,4 +1,4 @@
-package com.example.api.dealership.config.rest.exceptions;
+package com.example.api.dealership.config.rest.handlers.exceptions;
 
 import com.example.api.dealership.adapter.dtos.Response;
 import org.springframework.http.HttpHeaders;

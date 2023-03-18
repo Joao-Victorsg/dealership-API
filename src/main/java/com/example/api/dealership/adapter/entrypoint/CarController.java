@@ -3,7 +3,6 @@ package com.example.api.dealership.adapter.entrypoint;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoResponse;
-import com.example.api.dealership.config.rest.token.validator.TokenValidator;
 import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
@@ -49,8 +47,8 @@ public class CarController {
         @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/cars", produces = "application/json")
-    @TokenValidator
-    public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid CarDtoRequest carDto, @RequestHeader String token, HttpServletRequest servletRequest) throws DuplicatedInfoException {
+    //@TokenValidator
+    public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid CarDtoRequest carDto, @RequestHeader String token) throws DuplicatedInfoException {
         var response = new Response<CarDtoResponse>();
 
         var exists = carRepositoryAdapter.findByVin(carDto.getCarVin());
@@ -78,9 +76,8 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path="/cars",produces = "application/json")
-    @TokenValidator
     public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(page = 1,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token,HttpServletRequest servletRequest){
+            direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token){
 
         var response = new Response<Page<CarDtoResponse>>();
 
@@ -106,8 +103,7 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path="/cars/{vin}",produces = "application/json")
-    @TokenValidator
-    public ResponseEntity<Response<CarDtoResponse>> getCarByVin(@PathVariable(value="vin") String vin,@RequestHeader String token,HttpServletRequest servletRequest) throws CarNotFoundException {
+    public ResponseEntity<Response<CarDtoResponse>> getCarByVin(@PathVariable(value="vin") String vin,@RequestHeader String token) throws CarNotFoundException {
 
         var response = new Response<CarDtoResponse>();
 
@@ -131,8 +127,7 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path="/cars/{vin}",produces = "application/json")
-    @TokenValidator
-    public ResponseEntity<Response<CarDtoResponse>> updateCar(@PathVariable(value = "vin") String vin, @RequestBody CarDtoRequest carDto,@RequestHeader String token,HttpServletRequest servletRequest) throws CarNotFoundException {
+    public ResponseEntity<Response<CarDtoResponse>> updateCar(@PathVariable(value = "vin") String vin, @RequestBody CarDtoRequest carDto,@RequestHeader String token) throws CarNotFoundException {
 
         var response = new Response<CarDtoResponse>();
 
@@ -166,8 +161,7 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/cars/{vin}", produces = "application/json")
-    @TokenValidator
-    public ResponseEntity<Response<String>> deleteCar(@PathVariable(value = "vin") String vin,@RequestHeader String token,HttpServletRequest servletRequest) throws CarNotFoundException {
+    public ResponseEntity<Response<String>> deleteCar(@PathVariable(value = "vin") String vin,@RequestHeader String token) throws CarNotFoundException {
 
         var response = new Response<String>();
 

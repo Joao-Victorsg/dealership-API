@@ -3,7 +3,6 @@ package com.example.api.dealership.adapter.entrypoint;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
-import com.example.api.dealership.config.rest.token.validator.TokenValidator;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
 import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
 import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
@@ -57,8 +56,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
-    @TokenValidator
-    private ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request, @RequestHeader String token, HttpServletRequest servletRequest) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
+    private ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request, @RequestHeader String token) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
 
         var response = new Response<SalesDtoResponse>();
 
@@ -96,7 +94,6 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/sales",produces = "application/json")
-    @TokenValidator
     private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(page = 0,size = 10, sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token,HttpServletRequest servletRequest){
 
@@ -120,7 +117,6 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/sales/{id}", produces = "application/json")
-    @TokenValidator
     private ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id,@RequestHeader String token,HttpServletRequest servletRequest) throws SaleNotFoundException {
         var response = new Response<SalesDtoResponse>();
 
@@ -145,7 +141,6 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/sales/{id}", produces = "application/json")
-    @TokenValidator
     public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "id") String id,@RequestHeader String token,HttpServletRequest servletRequest) throws SaleNotFoundException {
 
         var response = new Response<String>();

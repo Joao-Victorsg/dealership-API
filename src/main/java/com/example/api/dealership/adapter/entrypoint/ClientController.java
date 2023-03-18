@@ -4,7 +4,6 @@ package com.example.api.dealership.adapter.entrypoint;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
-import com.example.api.dealership.config.rest.token.validator.TokenValidator;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
 import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
@@ -25,15 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/dealership")
-@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientRepositoryAdapter clientRepositoryAdapter;
@@ -43,19 +41,18 @@ public class ClientController {
     private final SearchAddressGateway restTemplatePort;
 
 
-    @Operation(summary="Return a page of clients")
+    @Operation(summary = "Return a page of clients")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "Return a list of clients"),
+            @ApiResponse(responseCode = "200", description = "Return a list of clients"),
             @ApiResponse(responseCode = "400", description = "The server cannot process the request due to a client error"),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
             @ApiResponse(responseCode = "500", description = "There was internal server erros"),
             @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
-    @GetMapping(path= "/clients", produces = "application/json")
-    @TokenValidator
-    private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(page = 0,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token, HttpServletRequest servletRequest){
+    @GetMapping(path = "/clients", produces = "application/json")
+    private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable, @RequestHeader String token) {
 
         var response = new Response<Page<ClientDtoResponse>>();
 
@@ -71,25 +68,24 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary="Return one client")
+    @Operation(summary = "Return one client")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "The client was returned with success"),
+            @ApiResponse(responseCode = "200", description = "The client was returned with success"),
             @ApiResponse(responseCode = "400", description = "The server cannot process the request due to a client error"),
-            @ApiResponse(responseCode = "404",description = "There wasn't a client with the CPF that was informed."),
+            @ApiResponse(responseCode = "404", description = "There wasn't a client with the CPF that was informed."),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
             @ApiResponse(responseCode = "500", description = "There was internal server erros"),
             @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    @TokenValidator
-    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
+    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf, @RequestHeader String token) throws ClientNotFoundException {
 
         var response = new Response<ClientDtoResponse>();
 
         var cliente = clientRepositoryAdapter.findByCpf(cpf);
 
-        if(cliente.isPresent()){
+        if (cliente.isPresent()) {
             response.setData(clientMapper.toClientDtoResponse(cliente.get()));
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
@@ -110,17 +106,16 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    @TokenValidator
-    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request,@RequestHeader String token,HttpServletRequest servletRequest) throws DuplicatedInfoException {
+    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request, @RequestHeader String token) throws DuplicatedInfoException {
         var response = new Response<ClientDtoResponse>();
 
         var cliente = clientRepositoryAdapter.findByCpf(request.getCpf());
 
-        if(cliente.isEmpty()){
+        if (cliente.isEmpty()) {
 
             var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
 
-            BeanUtils.copyProperties(clientAddress,request);
+            BeanUtils.copyProperties(clientAddress, request);
 
             var clientModel = clientRepositoryAdapter.saveClient(clientMapper.toClientModel(request));
             log.info("Creating client in the database: " + clientModel);
@@ -135,32 +130,31 @@ public class ClientController {
 
     @Operation(summary = "Update a client name or/and address")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "The client was update with success."),
-            @ApiResponse(responseCode = "404",description = "There wasn't a client with the VIN that was informed."),
+            @ApiResponse(responseCode = "200", description = "The client was update with success."),
+            @ApiResponse(responseCode = "404", description = "There wasn't a client with the VIN that was informed."),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
             @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
             @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    @TokenValidator
-    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
+    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request, @RequestHeader String token) throws ClientNotFoundException {
         var response = new Response<ClientDtoResponse>();
 
         var client = clientRepositoryAdapter.findByCpf(cpf);
 
-        if(client.isPresent()){
+        if (client.isPresent()) {
             var clientModel = client.get();
 
             var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
-            BeanUtils.copyProperties(clientAddress,request);
+            BeanUtils.copyProperties(clientAddress, request);
 
             var clientModelUpdate = clientMapper.toClientModel(request);
 
             clientModelUpdate.setId(clientModel.getId());
             clientModelUpdate.setCpf(clientModel.getCpf());
             clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
-            
+
             clientModel = clientRepositoryAdapter.saveClient(clientModelUpdate);
 
             response.setData(clientMapper.toClientDtoResponse(clientModel));
@@ -175,8 +169,8 @@ public class ClientController {
 
     @Operation(summary = "Delete a client passing the CPF")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "The client was deleted with success"),
-            @ApiResponse(responseCode = "404",description = "There wasn't a client with the CPF that was informed in the database."),
+            @ApiResponse(responseCode = "200", description = "The client was deleted with success"),
+            @ApiResponse(responseCode = "404", description = "There wasn't a client with the CPF that was informed in the database."),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
             @ApiResponse(responseCode = "500", description = "There was internal server erros"),
             @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
@@ -184,14 +178,13 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/clients/{cpf}", produces = "application/json")
-    @TokenValidator
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf,@RequestHeader String token,HttpServletRequest servletRequest) throws ClientNotFoundException {
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf, @RequestHeader String token) throws ClientNotFoundException {
 
         var response = new Response<String>();
 
-        var  clientModelOptional = clientRepositoryAdapter.findByCpf(cpf);
+        var clientModelOptional = clientRepositoryAdapter.findByCpf(cpf);
 
-        if(clientModelOptional.isPresent()){
+        if (clientModelOptional.isPresent()) {
             clientRepositoryAdapter.deleteClient(cpf);
 
             log.info("Client with CPF: " + cpf + "was successfully deleted");
