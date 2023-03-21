@@ -4,7 +4,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoResponse;
 import com.example.api.dealership.adapter.mapper.CarMapper;
-import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
+import com.example.api.dealership.adapter.service.car.CarService;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/v1/dealership")
 public class CarController {
 
-    private final CarRepositoryAdapter carRepositoryAdapter;
+    private final CarService carService;
 
     private final CarMapper carMapper;
 
@@ -51,10 +51,10 @@ public class CarController {
     public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid CarDtoRequest carDto, @RequestHeader String token) throws DuplicatedInfoException {
         var response = new Response<CarDtoResponse>();
 
-        var exists = carRepositoryAdapter.findByVin(carDto.getCarVin());
+        var exists = carService.findByVin(carDto.getCarVin());
 
         if(exists.isEmpty()){
-            var carModel = carRepositoryAdapter.save(carMapper.toCarModel(carDto));
+            var carModel = carService.save(carMapper.toCarModel(carDto));
             log.info("Creating car in the database: " + carModel);
 
             response.setData(carMapper.toCarDtoResponse(carModel));
@@ -81,7 +81,7 @@ public class CarController {
 
         var response = new Response<Page<CarDtoResponse>>();
 
-        var cars = carRepositoryAdapter.getCars(pageable);
+        var cars = carService.getCars(pageable);
 
         response.setData(new PageImpl<>(
                 cars.stream()
@@ -107,7 +107,7 @@ public class CarController {
 
         var response = new Response<CarDtoResponse>();
 
-        var cars = carRepositoryAdapter.findByVin(vin);
+        var cars = carService.findByVin(vin);
 
         if(cars.isPresent()){
             response.setData(carMapper.toCarDtoResponse(cars.get()));
@@ -131,7 +131,7 @@ public class CarController {
 
         var response = new Response<CarDtoResponse>();
 
-        var carModelOptional = carRepositoryAdapter.findByVin(vin);
+        var carModelOptional = carService.findByVin(vin);
 
         if(carModelOptional.isPresent()){
             var carModel = carModelOptional.get();
@@ -139,7 +139,7 @@ public class CarController {
             carModel.setCarColor(carModelUpdate.getCarColor());
             carModel.setCarValue(carModelUpdate.getCarValue());
 
-            var request = carRepositoryAdapter.save(carModel);
+            var request = carService.save(carModel);
 
             response.setData(carMapper.toCarDtoResponse(request));
 
@@ -165,10 +165,10 @@ public class CarController {
 
         var response = new Response<String>();
 
-        var  carModelOptional = carRepositoryAdapter.findByVin(vin);
+        var  carModelOptional = carService.findByVin(vin);
 
         if(carModelOptional.isPresent()){
-            carRepositoryAdapter.deleteCar(vin);
+            carService.deleteCar(vin);
             log.info("Deleted car with VIN: " + vin);
             response.setData("Car with VIN: " + vin + " was deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);

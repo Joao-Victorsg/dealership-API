@@ -1,9 +1,8 @@
 package com.example.api.dealership.core.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -17,8 +16,17 @@ public class UserModel {
     @GenericGenerator(name="uuid",strategy="uuid2")
     private String id;
 
+    @Column(nullable = false)
+    @NotBlank
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private boolean isAdmin;
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 }

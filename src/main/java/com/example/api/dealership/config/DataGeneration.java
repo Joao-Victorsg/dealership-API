@@ -5,9 +5,9 @@ import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
-import com.example.api.dealership.adapter.output.repository.adapter.car.impl.CarRepositoryAdapterImpl;
-import com.example.api.dealership.adapter.output.repository.adapter.client.impl.ClientRepositoryAdapterImpl;
-import com.example.api.dealership.adapter.output.repository.adapter.sales.SalesRepositoryAdapter;
+import com.example.api.dealership.adapter.service.car.impl.CarServiceImpl;
+import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
+import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import com.google.gson.Gson;
@@ -31,11 +31,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DataGeneration {
 
-    private final ClientRepositoryAdapterImpl clientRepositoryAdapter;
+    private final ClientServiceImpl clientRepositoryAdapter;
     private final ClientMapper clientMapper;
-    private final CarRepositoryAdapterImpl carRepositoryAdapter;
+    private final CarServiceImpl carRepositoryAdapter;
     private final CarMapper carMapper;
-    private final SalesRepositoryAdapter salesRepositoryAdapter;
+    private final SalesService salesService;
     private final SalesMapper salesMapper;
 
     @Bean
@@ -58,7 +58,7 @@ public class DataGeneration {
             cars.remove(randomIntCar);
 
             try {
-                salesRepositoryAdapter.saveSale(salesMapper.toSalesModel(car, client));
+                salesService.saveSale(salesMapper.toSalesModel(car, client));
             }catch (Exception ex) {
                 log.error("Deu ruim no save do sale",ex);
             }

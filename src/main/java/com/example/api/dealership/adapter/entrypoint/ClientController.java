@@ -6,7 +6,7 @@ import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
-import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
+import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/dealership")
 public class ClientController {
 
-    private final ClientRepositoryAdapter clientRepositoryAdapter;
+    private final ClientService clientService;
 
     private final ClientMapper clientMapper;
 
@@ -56,7 +56,7 @@ public class ClientController {
 
         var response = new Response<Page<ClientDtoResponse>>();
 
-        var clients = clientRepositoryAdapter.getClients(pageable);
+        var clients = clientService.getClients(pageable);
 
         response.setData(new PageImpl<>(
                 clients.
@@ -83,7 +83,7 @@ public class ClientController {
 
         var response = new Response<ClientDtoResponse>();
 
-        var cliente = clientRepositoryAdapter.findByCpf(cpf);
+        var cliente = clientService.findByCpf(cpf);
 
         if (cliente.isPresent()) {
             response.setData(clientMapper.toClientDtoResponse(cliente.get()));
@@ -109,7 +109,7 @@ public class ClientController {
     private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request, @RequestHeader String token) throws DuplicatedInfoException {
         var response = new Response<ClientDtoResponse>();
 
-        var cliente = clientRepositoryAdapter.findByCpf(request.getCpf());
+        var cliente = clientService.findByCpf(request.getCpf());
 
         if (cliente.isEmpty()) {
 
@@ -117,7 +117,7 @@ public class ClientController {
 
             BeanUtils.copyProperties(clientAddress, request);
 
-            var clientModel = clientRepositoryAdapter.saveClient(clientMapper.toClientModel(request));
+            var clientModel = clientService.saveClient(clientMapper.toClientModel(request));
             log.info("Creating client in the database: " + clientModel);
 
             response.setData(clientMapper.toClientDtoResponse(clientModel));
@@ -141,7 +141,7 @@ public class ClientController {
     private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request, @RequestHeader String token) throws ClientNotFoundException {
         var response = new Response<ClientDtoResponse>();
 
-        var client = clientRepositoryAdapter.findByCpf(cpf);
+        var client = clientService.findByCpf(cpf);
 
         if (client.isPresent()) {
             var clientModel = client.get();
@@ -155,7 +155,7 @@ public class ClientController {
             clientModelUpdate.setCpf(clientModel.getCpf());
             clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
 
-            clientModel = clientRepositoryAdapter.saveClient(clientModelUpdate);
+            clientModel = clientService.saveClient(clientModelUpdate);
 
             response.setData(clientMapper.toClientDtoResponse(clientModel));
 
@@ -182,10 +182,10 @@ public class ClientController {
 
         var response = new Response<String>();
 
-        var clientModelOptional = clientRepositoryAdapter.findByCpf(cpf);
+        var clientModelOptional = clientService.findByCpf(cpf);
 
         if (clientModelOptional.isPresent()) {
-            clientRepositoryAdapter.deleteClient(cpf);
+            clientService.deleteClient(cpf);
 
             log.info("Client with CPF: " + cpf + "was successfully deleted");
 

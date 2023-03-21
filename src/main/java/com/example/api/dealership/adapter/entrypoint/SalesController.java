@@ -4,9 +4,9 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
-import com.example.api.dealership.adapter.output.repository.adapter.car.CarRepositoryAdapter;
-import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
-import com.example.api.dealership.adapter.output.repository.adapter.sales.SalesRepositoryAdapter;
+import com.example.api.dealership.adapter.service.car.CarService;
+import com.example.api.dealership.adapter.service.client.ClientService;
+import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SalesController {
 
-    private final SalesRepositoryAdapter salesRepositoryAdapter;
+    private final SalesService salesService;
 
     private final SalesMapper salesMapper;
 
-    private final ClientRepositoryAdapter clientRepositoryAdapter;
+    private final ClientService clientService;
 
-    private final CarRepositoryAdapter carRepositoryAdapter;
+    private final CarService carService;
 
     @Operation(summary="Save a sale")
     @ApiResponses(value = {
@@ -60,18 +60,18 @@ public class SalesController {
 
         var response = new Response<SalesDtoResponse>();
 
-        var client = clientRepositoryAdapter.findByCpf(request.getCpf());
+        var client = clientService.findByCpf(request.getCpf());
 
         if(client.isEmpty()) throw new ClientNotFoundException("There isn't a client with this CPF");
 
-        var car = carRepositoryAdapter.findByVin(request.getVin());
+        var car = carService.findByVin(request.getVin());
 
         if(car.isEmpty()) throw new CarNotFoundException("There isn't a car with this VIN");
 
         var sale = salesMapper.toSalesModel(car.get(),client.get());
 
         try {
-            var salesModel = salesRepositoryAdapter.saveSale(sale);
+            var salesModel = salesService.saveSale(sale);
 
             response.setData(salesMapper.toSalesDtoResponse(salesModel));
 
@@ -99,7 +99,7 @@ public class SalesController {
 
         var response = new Response<Page<SalesDtoResponse>>();
 
-        var sales = salesRepositoryAdapter.getSales(pageable);
+        var sales = salesService.getSales(pageable);
 
         response.setData(new PageImpl<>(sales.stream().map(sale -> salesMapper.toSalesDtoResponse(sale)).collect(Collectors.toList())));
 
@@ -120,7 +120,7 @@ public class SalesController {
     private ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id,@RequestHeader String token,HttpServletRequest servletRequest) throws SaleNotFoundException {
         var response = new Response<SalesDtoResponse>();
 
-        var sale = salesRepositoryAdapter.findById(id);
+        var sale = salesService.findById(id);
 
         if(sale.isPresent()){
             response.setData(salesMapper.toSalesDtoResponse(sale.get()));
@@ -145,10 +145,10 @@ public class SalesController {
 
         var response = new Response<String>();
 
-        var sale = salesRepositoryAdapter.findById(id);
+        var sale = salesService.findById(id);
 
         if(sale.isPresent()){
-            salesRepositoryAdapter.deleteSale(id);
+            salesService.deleteSale(id);
             log.info("The sale with ID: " + id + "was deleted successfully");
 
             response.setData("The sale with ID: " + id + " was deleted successfully");

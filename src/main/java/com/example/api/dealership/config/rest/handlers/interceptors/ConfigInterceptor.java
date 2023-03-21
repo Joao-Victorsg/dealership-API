@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.config.rest.handlers.interceptors;
 
 import lombok.RequiredArgsConstructor;
@@ -16,3 +17,4 @@ public class ConfigInterceptor implements WebMvcConfigurer {
         registry.addInterceptor(interceptor);
     }
 }
+*/

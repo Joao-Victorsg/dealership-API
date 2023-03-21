@@ -1,4 +1,4 @@
-package com.example.api.dealership.adapter.output.repository.adapter.sales;
+package com.example.api.dealership.adapter.service.sales;
 
 import com.example.api.dealership.core.domain.SalesModel;
 import org.springframework.data.domain.Page;
@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-public interface SalesRepositoryAdapter {
+public interface SalesService {
 
     SalesModel saveSale(SalesModel sale);
 

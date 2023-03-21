@@ -1,6 +1,6 @@
-package com.example.api.dealership.adapter.output.repository.adapter.client.impl;
+package com.example.api.dealership.adapter.service.client.impl;
 
-import com.example.api.dealership.adapter.output.repository.adapter.client.ClientRepositoryAdapter;
+import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
 import com.example.api.dealership.core.domain.ClientModel;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ClientRepositoryAdapterImpl implements ClientRepositoryAdapter {
+public class ClientServiceImpl implements ClientService {
 
     private final ClientRepositoryPort clientRepositoryPort;
 

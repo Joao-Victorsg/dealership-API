@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.config.rest.token.validator;
 
 import org.json.JSONException;
@@ -108,5 +109,5 @@ public class Token {
         }
     }
 
-
 }
+*/
