@@ -9,8 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepositoryPort extends JpaRepository<UserModel, UUID> {
-
-    Optional<UserModel> findByUsernameAndPassword(String username, String password);
-
     Optional<UserModel> findByUsername(String username);
 }

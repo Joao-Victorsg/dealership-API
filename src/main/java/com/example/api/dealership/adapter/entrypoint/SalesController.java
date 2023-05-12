@@ -23,9 +23,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
@@ -56,7 +61,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
-    private ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request, @RequestHeader String token) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
+    private ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
 
         var response = new Response<SalesDtoResponse>();
 
@@ -95,13 +100,13 @@ public class SalesController {
     })
     @GetMapping(path= "/sales",produces = "application/json")
     private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(page = 0,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable,@RequestHeader String token,HttpServletRequest servletRequest){
+            direction = Sort.Direction.ASC) Pageable pageable){
 
         var response = new Response<Page<SalesDtoResponse>>();
 
         var sales = salesService.getSales(pageable);
 
-        response.setData(new PageImpl<>(sales.stream().map(sale -> salesMapper.toSalesDtoResponse(sale)).collect(Collectors.toList())));
+        response.setData(new PageImpl<>(sales.stream().map(salesMapper::toSalesDtoResponse).collect(Collectors.toList())));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -117,7 +122,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/sales/{id}", produces = "application/json")
-    private ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id,@RequestHeader String token,HttpServletRequest servletRequest) throws SaleNotFoundException {
+    private ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id) throws SaleNotFoundException {
         var response = new Response<SalesDtoResponse>();
 
         var sale = salesService.findById(id);
@@ -141,7 +146,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/sales/{id}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "id") String id,@RequestHeader String token,HttpServletRequest servletRequest) throws SaleNotFoundException {
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "id") String id) throws SaleNotFoundException {
 
         var response = new Response<String>();
 
