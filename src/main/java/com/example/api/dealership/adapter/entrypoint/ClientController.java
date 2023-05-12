@@ -52,7 +52,7 @@ public class ClientController {
     })
     @GetMapping(path = "/clients", produces = "application/json")
     private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(page = 0, size = 10, sort = "id",
-            direction = Sort.Direction.ASC) Pageable pageable, @RequestHeader String token) {
+            direction = Sort.Direction.ASC) Pageable pageable) {
 
         var response = new Response<Page<ClientDtoResponse>>();
 
@@ -79,7 +79,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf, @RequestHeader String token) throws ClientNotFoundException {
+    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
 
         var response = new Response<ClientDtoResponse>();
 
@@ -106,7 +106,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request, @RequestHeader String token) throws DuplicatedInfoException {
+    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
         var response = new Response<ClientDtoResponse>();
 
         var cliente = clientService.findByCpf(request.getCpf());
@@ -138,7 +138,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request, @RequestHeader String token) throws ClientNotFoundException {
+    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
         var response = new Response<ClientDtoResponse>();
 
         var client = clientService.findByCpf(cpf);
@@ -178,7 +178,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf, @RequestHeader String token) throws ClientNotFoundException {
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
 
         var response = new Response<String>();
 
