@@ -1,13 +1,17 @@
 package com.example.api.dealership.adapter.service.security.impl;
 
 import com.example.api.dealership.adapter.output.repository.port.UserRepositoryPort;
-import com.example.api.dealership.core.domain.UserModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @RequiredArgsConstructor
 @Service
@@ -27,12 +31,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .accountLocked(false)
                 .credentialsExpired(false)
                 .disabled(false)
-                .roles(getRoles(userModel))
+                .authorities(getAuthorities(userModel.isAdmin()))
                 .build();
     }
 
-    private String getRoles(UserModel userModel){
-        return userModel.isAdmin() ? "ADMIN" : "USER";
+    public Collection<? extends GrantedAuthority> getAuthorities(boolean isAdmin) {
+        final var authorities = new ArrayList<GrantedAuthority>();
+
+        final var role = isAdmin ? "ADMIN" : "USER";
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+
+        return authorities;
     }
 
 }
