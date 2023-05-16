@@ -14,14 +14,18 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -50,14 +54,18 @@
 				{
 					"name": "Get all cars",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQwNTMxLCJleHAiOjE2ODM5NDE5NzF9.-EkfRm_Bf_A7wbDCusMCoX2r0b8w1fqZWxqDSbSA-ts",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/cars",
 							"host": [
@@ -76,14 +84,18 @@
 				{
 					"name": "Insert Car",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"carModel\":\"Cruze\",\r\n    \"carModelYear\":\"2017\",\r\n\t\"carMake\":\"Chevrolet\",\r\n    \"carColor\":\"White\",\r\n\t\"carVin\":\"987654321\",\r\n\t\"carValue\":\"90000.00\"\r\n}",
@@ -111,16 +123,20 @@
 				{
 					"name": "Delete Car",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "localhost:8080/v1/dealership/cars/3C6TD5DT9CG617309",
+							"raw": "localhost:8080/v1/dealership/cars/0250ff86-52f0-4e03-8f85-51f19d54bde8",
 							"host": [
 								"localhost"
 							],
@@ -129,7 +145,7 @@
 								"v1",
 								"dealership",
 								"cars",
-								"3C6TD5DT9CG617309"
+								"0250ff86-52f0-4e03-8f85-51f19d54bde8"
 							]
 						}
 					},
@@ -138,14 +154,18 @@
 				{
 					"name": "Update Car",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"carColor\":\"Black\",\r\n\t\"carValue\":\"80000.00\"\r\n}",
@@ -182,14 +202,18 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -218,6 +242,16 @@
 				{
 					"name": "Get all clients",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -225,11 +259,6 @@
 								"value": "2",
 								"type": "default",
 								"disabled": true
-							},
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
 							}
 						],
 						"url": {
@@ -250,14 +279,18 @@
 				{
 					"name": "Insert Client",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"name\":\"Roberto\",\r\n\t\"cpf\":\"1234567888\",\r\n\t\"postCode\":\"36881041\",\r\n    \"streetNumber\":\"321\"\r\n}",
@@ -285,14 +318,18 @@
 				{
 					"name": "Delete Client",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/clients/12345678910",
 							"host": [
@@ -312,14 +349,18 @@
 				{
 					"name": "Update Client",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"name\":\"Joaozinho\",\r\n    \"postCode\":\"36881000\",\r\n    \"streetNumber\":\"1234\"\r\n}",
@@ -351,42 +392,20 @@
 			"name": "Sales Requests",
 			"item": [
 				{
-					"name": "Get all sales",
+					"name": "Save Sale",
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
-						"url": {
-							"raw": "localhost:8080/v1/dealership/sales",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"v1",
-								"dealership",
-								"sales"
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Insert Sale",
-					"request": {
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\t\"cpf\":\"1234567888\",\r\n    \"vin\":\"987654321\"\r\n}",
@@ -412,19 +431,66 @@
 					"response": []
 				},
 				{
+					"name": "Insert Sale",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"sales",
+								"009b5d51-8b9f-461e-89e8-0792deea333f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get one Sale",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -453,14 +519,18 @@
 				{
 					"name": "Delete Sale",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "token",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
-								"type": "default"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
 							"host": [
@@ -476,6 +546,54 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get all Sales",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaXNzIjoidmFzY28iLCJleHAiOjE2NzYyMjMwNzYsImlhdCI6MTY3NjEzNjY3Nn0.XPK7ND2w5h-8jmjIS_bas4DutQWapcP4K9BrGe1vONk",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/sales",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"sales"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -485,15 +603,11 @@
 				{
 					"name": "Create user",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "token",
-								"value": "teste",
-								"type": "default",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"username\": \"jvsg\",\r\n    \"password\": \"123456789\"\r\n}",
@@ -526,8 +640,29 @@
 				{
 					"name": "GetToken",
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jvsg\",\r\n    \"password\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/dealership/auths",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"dealership",
+								"auths"
+							]
+						}
 					},
 					"response": []
 				}

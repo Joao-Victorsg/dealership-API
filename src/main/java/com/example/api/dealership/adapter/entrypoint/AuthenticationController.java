@@ -2,19 +2,17 @@ package com.example.api.dealership.adapter.entrypoint;
 
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
-import com.example.api.dealership.config.rest.token.validator.Token;
+
 import com.example.api.dealership.adapter.mapper.UserMapper;
-import com.example.api.dealership.adapter.output.repository.adapter.user.UserRepositoryAdapter;
-import de.mkammerer.argon2.Argon2Factory;
+import com.example.api.dealership.adapter.service.security.AuthenticationService;
+import com.example.api.dealership.adapter.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Slf4j
 @RestController
@@ -22,28 +20,28 @@ import java.time.ZoneOffset;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final UserRepositoryAdapter userRepositoryAdapter;
+    private final UserService userService;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationService authenticationService;
 
     private final UserMapper userMapper;
 
     @Operation(summary = "Authenticate a valid user")
-    @GetMapping(path = "/auths",produces = "application/json")
-    public ResponseEntity<Response<String>> getToken(@RequestHeader("user") String user, @RequestHeader("password") String password){
+    @PostMapping(path = "/auths",produces = "application/json")
+    public ResponseEntity<Response<String>> authenticate(@RequestBody UserDtoRequest userDtoRequest){
 
         var response = new Response<String>();
+        try {
+            final var token = authenticationService.authenticate(userDtoRequest);
+            response.setData(token);
 
-        var hasher = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32,64);
-
-        var optionalUser = userRepositoryAdapter.findByUsername(user);
-
-        if(optionalUser.isPresent()){
-            if(hasher.verify(optionalUser.get().getPassword(),password.toCharArray())) {
-                response.setData(generateJWToken(user));
-                return ResponseEntity.ok().body(response);
-            }
+            return ResponseEntity.ok().body(response);
+        }catch (Exception ex){
+            response.setErrors(ex);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-        response.setData("Deu ruim");
-        return ResponseEntity.badRequest().body(response);
     }
 
     @Operation(summary = "Create a user")
@@ -52,31 +50,23 @@ public class AuthenticationController {
 
         var response = new Response<String>();
 
-        var optinalUser = userRepositoryAdapter.findByUsername(userDtoRequest.getUsername());
+        var optinalUser = userService.findByUsername(userDtoRequest.getUsername());
 
-        if (optinalUser.isEmpty()) {
-            var userModel = userMapper.toUserModel(userDtoRequest);
+        if (optinalUser.isPresent()) {
+            response.setData("This username already exists.");
 
-            var user = userRepositoryAdapter.saveUser(userModel);
-
-            response.setData("User: " + user.getUsername() + " created with success");
-
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.badRequest().body(response);
         }
-        response.setData("This username already exists.");
+
+        var userModel = userMapper.toUserModel(userDtoRequest);
+
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+
+        var user = userService.saveUser(userModel);
+
+        response.setData("User: " + user.getUsername() + " created with success");
 
         return ResponseEntity.ok().body(response);
-    }
-
-    private String generateJWToken(String username){
-
-        final var payload = new JSONObject();
-        payload.put("sub",username);
-
-        final var tokenExpirationDate = LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC);
-        payload.put("exp",tokenExpirationDate);
-
-        return new Token(payload).toString();
     }
 
 }
