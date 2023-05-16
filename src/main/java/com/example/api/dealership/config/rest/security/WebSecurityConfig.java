@@ -48,9 +48,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST,"/v1/dealership/users").permitAll()
-                .antMatchers(HttpMethod.POST, "/v1/dealership/auths").permitAll()
-                .antMatchers(HttpMethod.DELETE,"/v1/dealership/*").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/v1/dealership/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/dealership/auths").permitAll()
+                .requestMatchers(HttpMethod.DELETE,"/v1/dealership/*").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -62,7 +62,7 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                .antMatchers("/h2-console/**");
+                .requestMatchers("/h2-console/**");
     }
 
 

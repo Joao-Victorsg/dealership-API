@@ -4,8 +4,8 @@ package com.example.api.dealership.config.rest.token.validator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import jakarta.crypto.Mac;
+import jakarta.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
