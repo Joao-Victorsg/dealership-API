@@ -3,9 +3,9 @@ package com.example.api.dealership.adapter.dtos.client;
 import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

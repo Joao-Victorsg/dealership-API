@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity

@@ -1,28 +1,19 @@
 package com.example.api.dealership.config.rest.handlers.exceptions;
 
 import com.example.api.dealership.adapter.dtos.Response;
-import com.example.api.dealership.core.exceptions.*;
-import org.springframework.http.HttpHeaders;
+import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
+import com.example.api.dealership.core.exceptions.CarNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler<T> extends ResponseEntityExceptionHandler {
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-
-        final var response = buildResponseException(ex);
-
-        return ResponseEntity.badRequest().body(response);
-    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Response<T>> handleIllegalArgumentException(
