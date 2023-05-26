@@ -4,12 +4,20 @@ import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.adapter.output.repository.port.SalesRepositoryPort;
 import com.example.api.dealership.core.domain.SalesModel;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
+
+import static com.example.api.dealership.adapter.output.repository.specifications.SalesSpecificationsFactory.betweenDates;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +32,11 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
-    public Page<SalesModel> getSales(Pageable pageable) {
+    public Page<SalesModel> getSales(LocalDate initialDate, LocalDate finalDate,Pageable pageable) {
+
+        if(ObjectUtils.allNotNull(initialDate,finalDate))
+            return salesRepositoryPort.findAll(betweenDates(initialDate,finalDate),pageable);
+
         return salesRepositoryPort.findAll(pageable);
     }
 
