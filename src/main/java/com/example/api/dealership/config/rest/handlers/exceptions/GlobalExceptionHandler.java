@@ -6,8 +6,10 @@ import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -58,6 +60,21 @@ public class GlobalExceptionHandler<T> extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(value = {ExpiredJwtException.class})
+    protected ResponseEntity<Response<T>> handleExpiredJwtException(ExpiredJwtException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(value = {UsernameNotFoundException.class})
+    protected ResponseEntity<Response<T>> handleUsernameNotFoundException(UsernameNotFoundException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
 
     private Response<T> buildResponseException(Exception ex){
         Response<T> response = new Response<>();

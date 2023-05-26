@@ -10,6 +10,7 @@ import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,6 @@ public class CarController {
         @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/cars", produces = "application/json")
-    //@TokenValidator
     public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid CarDtoRequest carDto) throws DuplicatedInfoException {
         var response = new Response<CarDtoResponse>();
 
@@ -82,13 +82,17 @@ public class CarController {
             @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
-    @GetMapping(path="/cars",produces = "application/json")
-    public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(page = 1,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable){
+    @GetMapping(path = "/cars", produces = "application/json")
+    public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable,
+                                                                     @RequestParam(required = false, defaultValue = "0") Double initialValue,
+                                                                     @RequestParam(required = false) Double finalValue,
+                                                                     @RequestParam(required = false) String year,
+                                                                     @RequestParam(required = false) String color) {
 
         var response = new Response<Page<CarDtoResponse>>();
 
-        var cars = carService.getCars(pageable);
+        var cars = carService.getCars(pageable,initialValue,finalValue,year,color);
 
         response.setData(new PageImpl<>(
                 cars.stream()

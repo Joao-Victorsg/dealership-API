@@ -29,10 +29,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -99,12 +101,13 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/sales",produces = "application/json")
-    private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(page = 0,size = 10, sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable){
+    private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
+            direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) LocalDate initialDate,
+                                                                         @RequestParam(required = false) LocalDate finalDate){
 
         var response = new Response<Page<SalesDtoResponse>>();
 
-        var sales = salesService.getSales(pageable);
+        var sales = salesService.getSales(initialDate, finalDate, pageable);
 
         response.setData(new PageImpl<>(sales.stream().map(salesMapper::toSalesDtoResponse).collect(Collectors.toList())));
 

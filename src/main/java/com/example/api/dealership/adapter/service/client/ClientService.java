@@ -10,7 +10,7 @@ public interface ClientService {
 
     Optional<ClientModel> findByCpf(String cpf);
 
-    Page<ClientModel> getClients(Pageable pageable);
+    Page<ClientModel> getClients(String city,String state, Pageable pageable);
 
     ClientModel saveClient(ClientModel clientModel);
 

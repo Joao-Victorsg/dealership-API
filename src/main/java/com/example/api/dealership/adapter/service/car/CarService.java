@@ -11,7 +11,7 @@ public interface CarService {
 
     CarModel save(CarModel car);
 
-    Page<CarModel> getCars(Pageable pageable);
+    Page<CarModel> getCars(Pageable pageable, Double initialValue, Double finalValue, String Year, String color);
 
     void deleteCar(String vehicleIdentificationNumber);
 
