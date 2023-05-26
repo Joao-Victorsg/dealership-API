@@ -83,7 +83,7 @@ public class CarController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/cars", produces = "application/json")
-    public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(page = 0, size = 10, sort = "id",
+    public ResponseEntity<Response<Page<CarDtoResponse>>> getAllCars(@PageableDefault(sort = "id",
             direction = Sort.Direction.ASC) Pageable pageable,
                                                                      @RequestParam(required = false, defaultValue = "0") Double initialValue,
                                                                      @RequestParam(required = false) Double finalValue,

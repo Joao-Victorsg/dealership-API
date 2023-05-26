@@ -101,7 +101,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/sales",produces = "application/json")
-    private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(page = 0,size = 10, sort ="id",
+    private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) LocalDate initialDate,
                                                                          @RequestParam(required = false) LocalDate finalDate){
 

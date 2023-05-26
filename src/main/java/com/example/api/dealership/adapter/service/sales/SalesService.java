@@ -1,7 +1,6 @@
 package com.example.api.dealership.adapter.service.sales;
 
 import com.example.api.dealership.core.domain.SalesModel;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
