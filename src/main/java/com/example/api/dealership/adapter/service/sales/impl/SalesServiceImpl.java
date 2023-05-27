@@ -41,11 +41,6 @@ public class SalesServiceImpl implements SalesService {
         return salesRepositoryPort.findById(id);
     }
 
-    @Transactional
-    @Override
-    public SalesModel updateSale(SalesModel sale) {
-        return null;
-    }
 
     @Override
     public void deleteSale(String id) {
