@@ -1,6 +1,5 @@
 package com.example.api.dealership.adapter.entrypoint;
 
-import ch.qos.logback.classic.encoder.JsonEncoder;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.mapper.UserMapper;

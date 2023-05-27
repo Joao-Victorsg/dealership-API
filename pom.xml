@@ -18,8 +18,13 @@
 		<h2.version>2.1.214</h2.version>
 		<projectlombok.version>RELEASE</projectlombok.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
-		<springdoc.version>1.6.11</springdoc.version>
+		<springdoc.version>2.1.0</springdoc.version>
 		<lombok-mapstruct-binding>0.2.0</lombok-mapstruct-binding>
+		<jjwt.version>0.11.5</jjwt.version>
+		<springdoc-openapi.version>2.1.0</springdoc-openapi.version>
+		<junit-jupiter-api.version>5.10.0-M1</junit-jupiter-api.version>
+		<mockito-core.version>5.3.1</mockito-core.version>
+		<jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
 	</properties>
 	<dependencies>
 
@@ -38,20 +43,20 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
-			<version>0.11.5</version>
+			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -105,10 +110,15 @@
 		</dependency>
 
 		<!-- Swagger -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc-openapi.version}</version>
 		</dependency>
 
 		<!-- Generating Data -->
@@ -129,6 +139,21 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20220924</version>
+		</dependency>
+
+		<!-- Testes -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit-jupiter-api.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -172,6 +197,60 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>1.00</minimum>
+										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>1.00</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+							<excludes>
+								<exclude>**/adapter/dtos/**</exclude>
+								<exclude>**/adapter/mapper/**</exclude>
+								<exclude>**/adapter/output/repository/**</exclude>
+								<exclude>**/config/**</exclude>
+								<exclude>**/core/**</exclude>
+								<exclude>**/DealershipApplication.class</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

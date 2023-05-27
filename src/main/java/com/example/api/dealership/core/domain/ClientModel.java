@@ -1,5 +1,7 @@
 package com.example.api.dealership.core.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="TB_CLIENTMODEL")
 public class ClientModel {
