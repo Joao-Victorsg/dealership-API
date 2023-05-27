@@ -1,4 +1,4 @@
-package com.example.api.dealership.config;
+package com.example.api.dealership.config.data_generation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

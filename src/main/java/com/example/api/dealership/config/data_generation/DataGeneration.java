@@ -1,4 +1,4 @@
-package com.example.api.dealership.config;
+package com.example.api.dealership.config.data_generation;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
