@@ -1,7 +1,7 @@
-package com.example.api.dealership.adapter.service.sales.impl;
+package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.output.repository.port.SalesRepositoryPort;
-import com.example.api.dealership.core.domain.ClientModel;
+import com.example.api.dealership.adapter.service.sales.impl.SalesServiceImpl;
 import com.example.api.dealership.core.domain.SalesModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -55,7 +55,7 @@ class SalesServiceImplTest {
     @DisplayName("Given a request without filters, return all the sales")
     void givenRequestWithoutFiltersReturnAllTheSales() {
         final var expectedsales = SalesModel.builder().build();
-        final var expectedsalesPage = new PageImpl<SalesModel>(List.of(expectedsales));
+        final var expectedsalesPage = new PageImpl<>(List.of(expectedsales));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
         when(salesRepositoryPort.findAll(pageable)).thenReturn(expectedsalesPage);
@@ -73,7 +73,7 @@ class SalesServiceImplTest {
     void givenRequestDataFiltersReturnTheSalesThatAreBetweenThisSales() {
         final var expectedsales = SalesModel.builder().registrationDate(LocalDateTime.now())
                 .build();
-        final var expectedsalesPage = new PageImpl<SalesModel>(List.of(expectedsales));
+        final var expectedsalesPage = new PageImpl<>(List.of(expectedsales));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
         when(salesRepositoryPort.findAll(any(Specification.class),eq(pageable))).thenReturn(expectedsalesPage);

@@ -1,38 +1,27 @@
-package com.example.api.dealership.adapter.service.car.impl;
+package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.output.repository.port.CarRepositoryPort;
-import com.example.api.dealership.adapter.service.car.CarService;
+import com.example.api.dealership.adapter.service.car.impl.CarServiceImpl;
 import com.example.api.dealership.core.domain.CarModel;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.AbstractPageRequest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.api.dealership.adapter.output.repository.specifications.CarSpecificationsFactory.betweenValues;
-import static com.example.api.dealership.adapter.output.repository.specifications.CarSpecificationsFactory.equalColor;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;

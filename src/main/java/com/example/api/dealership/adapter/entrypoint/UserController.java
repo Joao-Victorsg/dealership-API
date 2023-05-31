@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/v1/dealership")
@@ -46,7 +48,7 @@ public class UserController {
 
         response.setData("User: " + user.getUsername() + " created with success");
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.created(URI.create("/v1/dealership/users/")).body(response);
     }
 
 }

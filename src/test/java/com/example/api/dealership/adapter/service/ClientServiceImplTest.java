@@ -1,6 +1,7 @@
-package com.example.api.dealership.adapter.service.client.impl;
+package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
+import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
 import com.example.api.dealership.core.domain.AddressModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.api.dealership.adapter.output.repository.specifications.ClientSpecificationsFactory.equalCity;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -54,7 +54,7 @@ class ClientServiceImplTest {
     @DisplayName("Given a request without filters return all the clients")
     void givenARequestWithoutFiltersReturnAllTheClients() {
         final var clientsList = getClientsList();
-        final var expectedClientPage = new PageImpl<ClientModel>(clientsList);
+        final var expectedClientPage = new PageImpl<>(clientsList);
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
         when(clientRepositoryPort.findAll(any(Specification.class),eq(pageable))).thenReturn(expectedClientPage);
@@ -71,7 +71,7 @@ class ClientServiceImplTest {
     @DisplayName("Given a city return the clients that are from this city")
     void givenACityReturnTheClientsThatAreFromThisCity() {
         final var clientsList = getClientsList();
-        final var expectedClientPage = new PageImpl<ClientModel>(clientsList.subList(0,2));
+        final var expectedClientPage = new PageImpl<>(clientsList.subList(0,2));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
         when(clientRepositoryPort.findAll(any(Specification.class),eq(pageable))).thenReturn(expectedClientPage);
@@ -88,7 +88,7 @@ class ClientServiceImplTest {
     @DisplayName("Given a state abbreviation return the clients that are from this state")
     void givenAStateAbbreviationReturnTheClientsThatAreFromThisState() {
         final var clientsList = getClientsList();
-        final var expectedClientPage = new PageImpl<ClientModel>(clientsList.subList(0,2));
+        final var expectedClientPage = new PageImpl<>(clientsList.subList(0,2));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
         when(clientRepositoryPort.findAll(any(Specification.class),eq(pageable))).thenReturn(expectedClientPage);

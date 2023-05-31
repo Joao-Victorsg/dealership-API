@@ -32,7 +32,7 @@ public class AuthenticationController {
 
             return ResponseEntity.ok().body(response);
         }catch (Exception ex){
-            response.setErrors(ex);
+            response.setErrors("This user is unauthorized");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }

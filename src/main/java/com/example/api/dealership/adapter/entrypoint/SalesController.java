@@ -63,7 +63,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
-    private ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
+    public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
 
         var response = new Response<SalesDtoResponse>();
 
@@ -101,7 +101,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/sales",produces = "application/json")
-    private ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
+    public ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
             direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) LocalDate initialDate,
                                                                          @RequestParam(required = false) LocalDate finalDate){
 
@@ -125,7 +125,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/sales/{id}", produces = "application/json")
-    private ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id) throws SaleNotFoundException {
+    public ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id) throws SaleNotFoundException {
         var response = new Response<SalesDtoResponse>();
 
         var sale = salesService.findById(id);
@@ -149,7 +149,7 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/sales/{id}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "id") String id) throws SaleNotFoundException {
+    public ResponseEntity<Response<String>> deleteSales(@PathVariable(value = "id") String id) throws SaleNotFoundException {
 
         var response = new Response<String>();
 
