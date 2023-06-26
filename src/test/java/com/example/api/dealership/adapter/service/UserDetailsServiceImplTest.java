@@ -10,13 +10,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +56,7 @@ class UserDetailsServiceImplTest {
         final var userModel = getUserModel(true);
         final var username = "username";
         final var expectedUserDetails = getUserDetails(userModel);
+        final var expectedRole = new SimpleGrantedAuthority("ROLE_ADMIN");
 
         when(userRepositoryPort.findByUsername(username)).thenReturn(Optional.of(userModel));
 
@@ -61,7 +65,9 @@ class UserDetailsServiceImplTest {
         verify(userRepositoryPort).findByUsername(username);
 
 
-        Assertions.assertEquals(userDetails,expectedUserDetails);
+        assertEquals(expectedUserDetails,userDetails);
+        assertTrue(userDetails.getAuthorities().contains(expectedRole));
+        assertEquals(expectedUserDetails.getAuthorities().toString(),userDetails.getAuthorities().toString());
     }
 
     @Test
@@ -69,9 +75,7 @@ class UserDetailsServiceImplTest {
     void givenInvalidUsernameThrowUsernameNotFoundException(){
         final var username = "username";
 
-        when(userRepositoryPort.findByUsername(username)).thenThrow(
-                new UsernameNotFoundException("Username not found")
-        );
+        when(userRepositoryPort.findByUsername(username)).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class,() -> userDetailsService.loadUserByUsername(username));
 

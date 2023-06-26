@@ -252,6 +252,33 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.14.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.0</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<mutationThreshold>90</mutationThreshold>
+					<avoidCallsTo>
+						<avoidCallsTo>java.util.logging</avoidCallsTo>
+						<avoidCallsTo>org.apache.log4j</avoidCallsTo>
+						<avoidCallsTo>org.slf4j</avoidCallsTo>
+						<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+					</avoidCallsTo>
+					<targetClasses>
+						<targetClass>**.adapter.entrypoint.**</targetClass>
+						<targetClass>**.adapter.output.gateway.**</targetClass>
+						<targetClass>**.service.**</targetClass>
+					</targetClasses>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

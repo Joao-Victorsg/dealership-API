@@ -1,8 +1,11 @@
 package com.example.api.dealership.adapter.output.repository.specifications;
 
 import com.example.api.dealership.core.domain.ClientModel;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.jpa.domain.Specification;
-
+@EqualsAndHashCode
+@ToString
 public class ClientSpecificationsFactory {
 
     public static Specification<ClientModel> equalCity(String city){

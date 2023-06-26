@@ -114,7 +114,7 @@ class CarServiceImplTest {
 
         when(carRepositoryPort.findAll(any(Specification.class), eq(pageable))).thenReturn(expectedPage);
 
-        final var carsPage = carService.getCars(pageable,null,null,"1998",null);
+        final var carsPage = carService.getCars(pageable,null,null,year,null);
 
         verify(carRepositoryPort).findAll(any(Specification.class),eq(pageable));
         verifyNoMoreInteractions(carRepositoryPort);

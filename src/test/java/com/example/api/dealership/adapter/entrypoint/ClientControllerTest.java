@@ -147,8 +147,8 @@ class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("Given a valid CPF, update the client info")
-    void givenValidVinUpdateTheClientInfo() throws ClientNotFoundException {
+    @DisplayName("Given a valid CPF, update the client address info")
+    void givenValidVinUpdateTheClientAddressInfo() throws ClientNotFoundException {
         final var cpf = "123";
         final var clientModel = ClientModel.builder().address(AddressModel.builder().postCode("0000").build()).build();
         final var updatedClientModel = ClientModel.builder().address(AddressModel.builder().postCode("1111").build()).build();
@@ -175,6 +175,7 @@ class ClientControllerTest {
 
         assertEquals(HttpStatus.OK,updatedClient.getStatusCode());
         assertEquals(clientDtoResponse,updatedClient.getBody().getData());
+        assertEquals(clientDtoResponse.getAddress(),updatedClient.getBody().getData().getAddress());
     }
 
     @Test

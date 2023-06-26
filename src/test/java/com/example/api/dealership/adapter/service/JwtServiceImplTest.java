@@ -19,7 +19,6 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,9 +36,11 @@ class JwtServiceImplTest {
     @DisplayName("Given a valid userdetails return a token")
     void givenUserDetailsReturnAToken(){
         final var userDetails = getUserDetails(getUserModel());
+        final var expectedToken = generateToken();
+
         final var token = jwtService.generateToken(userDetails);
 
-        assertNotNull(token);
+        assertEquals(expectedToken,token);
     }
 
     @Test
@@ -75,13 +76,23 @@ class JwtServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given a expirated token verify if it's valid")
-    void givenExpiratedTokenVerifyIfValid(){
+    @DisplayName("Given a expired token verify if it's valid")
+    void givenExpiredTokenVerifyIfValid(){
         final var token = generateInvalidToken(getUserModel().getUsername(),new Date(System.currentTimeMillis() - 1000));
         final var userDetails = getUserDetails(getUserModel());
         assertThrows(ExpiredJwtException.class,() -> jwtService.isTokenValid(token,userDetails));
     }
 
+    @Test
+    @DisplayName("Given a not expired token verify if it's valid")
+    void givenNotExpiredTokenVerifyIfValid(){
+        final var token = generateInvalidToken(getUserModel().getUsername(),new Date(System.currentTimeMillis() + 10000));
+        final var userDetails = getUserDetails(getUserModel());
+
+        final var isValid = jwtService.isTokenValid(token,userDetails);
+
+        assertTrue(isValid);
+    }
 
     private String generateInvalidToken(String username, Date expiration) {
         return Jwts.builder()

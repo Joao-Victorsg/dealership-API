@@ -45,6 +45,7 @@ class AuthenticationControllerTest {
     @DisplayName("Given a invalid user and password, return UNAUTHORIZED")
     void givenInvalidUserAndPasswordThrowException(){
         final var userDtoRequest = UserDtoRequest.builder().build();
+        final var expectedResponse = "This user is unauthorized";
 
         when(authenticationService.authenticate(userDtoRequest))
                 .thenThrow(new RuntimeException("This user is unauthorized"));
@@ -55,6 +56,7 @@ class AuthenticationControllerTest {
         verifyNoMoreInteractions(authenticationService);
 
         assertEquals(HttpStatus.UNAUTHORIZED,response.getStatusCode());
+        assertEquals(expectedResponse,response.getBody().getErrors());
     }
 
 

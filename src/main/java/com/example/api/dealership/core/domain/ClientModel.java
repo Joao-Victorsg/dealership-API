@@ -1,5 +1,6 @@
 package com.example.api.dealership.core.domain;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
