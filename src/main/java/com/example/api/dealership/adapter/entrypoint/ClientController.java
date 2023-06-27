@@ -51,7 +51,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients", produces = "application/json")
-    private ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "id",
+    public ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "id",
             direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) String city,
                                                                             @RequestParam(required = false) String state) {
 
@@ -80,7 +80,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+    public ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
 
         var response = new Response<ClientDtoResponse>();
 
@@ -107,7 +107,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    private ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
+    public ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
         var response = new Response<ClientDtoResponse>();
 
         var cliente = clientService.findByCpf(request.getCpf());
@@ -139,7 +139,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    private ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
+    public ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
         var response = new Response<ClientDtoResponse>();
 
         var client = clientService.findByCpf(cpf);

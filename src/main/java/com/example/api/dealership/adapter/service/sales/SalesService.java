@@ -15,7 +15,5 @@ public interface SalesService {
 
     Optional<SalesModel> findById(String id);
 
-    SalesModel updateSale(SalesModel sale);
-
     void deleteSale(String id);
 }

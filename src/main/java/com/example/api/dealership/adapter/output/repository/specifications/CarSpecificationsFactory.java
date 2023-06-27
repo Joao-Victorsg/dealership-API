@@ -1,7 +1,9 @@
 package com.example.api.dealership.adapter.output.repository.specifications;
 
 import com.example.api.dealership.core.domain.CarModel;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.jpa.domain.Specification;
+
 
 public class CarSpecificationsFactory {
 

@@ -1,4 +1,4 @@
-package com.example.api.dealership.config;
+package com.example.api.dealership.config.data_generation;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

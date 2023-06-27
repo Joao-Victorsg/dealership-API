@@ -66,7 +66,7 @@ public class CarController {
 
             response.setData(carMapper.toCarDtoResponse(carModel));
 
-            return ResponseEntity.created(URI.create("/v1/dealership/client/" + carModel.getCarVin()))
+            return ResponseEntity.created(URI.create("/v1/dealership/cars/" + carModel.getCarVin()))
                     .body(response);
         }
 
