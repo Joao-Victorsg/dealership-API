@@ -7,6 +7,7 @@ import com.example.api.dealership.adapter.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(path = "/v1/dealership")
 @RequiredArgsConstructor
+@Profile("!prod")
 public class UserController {
 
     private final UserService userService;

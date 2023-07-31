@@ -156,6 +156,40 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.18.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.18.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.18.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>2.27.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -203,6 +237,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco-maven-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/adapter/dtos/**</exclude>
+						<exclude>**/adapter/mapper/**</exclude>
+						<exclude>**/adapter/output/repository/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/core/**</exclude>
+						<exclude>**/DealershipApplication.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -240,14 +284,6 @@
 									</limits>
 								</rule>
 							</rules>
-							<excludes>
-								<exclude>**/adapter/dtos/**</exclude>
-								<exclude>**/adapter/mapper/**</exclude>
-								<exclude>**/adapter/output/repository/**</exclude>
-								<exclude>**/config/**</exclude>
-								<exclude>**/core/**</exclude>
-								<exclude>**/DealershipApplication.class</exclude>
-							</excludes>
 						</configuration>
 					</execution>
 				</executions>
@@ -264,8 +300,17 @@
 						<version>1.2.0</version>
 					</dependency>
 				</dependencies>
+				<executions>
+					<execution>
+						<id>pit-report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>mutationCoverage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<mutationThreshold>90</mutationThreshold>
+					<mutationThreshold>100</mutationThreshold>
 					<avoidCallsTo>
 						<avoidCallsTo>java.util.logging</avoidCallsTo>
 						<avoidCallsTo>org.apache.log4j</avoidCallsTo>

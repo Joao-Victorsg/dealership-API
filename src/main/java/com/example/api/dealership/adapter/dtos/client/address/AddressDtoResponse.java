@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressDtoResponse {
-
+    //TODO: Change the JsonProperties to english. Have to verify the API call to Via Cep because it uses the names in Portuguese.
     @NotBlank
     @JsonProperty("cep")
     private String postCode;
