@@ -5,7 +5,6 @@ import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
-import com.example.api.dealership.adapter.mapper.UserMapper;
 import com.example.api.dealership.adapter.service.car.impl.CarServiceImpl;
 import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
 import com.example.api.dealership.adapter.service.sales.SalesService;
@@ -75,7 +74,7 @@ public class DataGeneration {
     }
 
     private List<CarModel> saveCarModel(List<CarDtoRequest> cars){
-        var carsModel = cars.stream().map(carDtoRequest -> carMapper.toCarModel(carDtoRequest)).collect(Collectors.toList());
+        var carsModel = cars.stream().map(carMapper::toCarModel).collect(Collectors.toList());
 
         var savedCarsModel = new ArrayList<CarModel>();
 
@@ -89,7 +88,7 @@ public class DataGeneration {
     }
 
     private List<ClientModel> saveClientModel(List<ClientDtoRequest> clients){
-        var clientsModel = clients.stream().map(clientDtoRequest -> clientMapper.toClientModel(clientDtoRequest)).collect(Collectors.toList());
+        var clientsModel = clients.stream().map(clientMapper::toClientModel).collect(Collectors.toList());
 
         var clientsModelCpf = new ArrayList<ClientModel>();
 

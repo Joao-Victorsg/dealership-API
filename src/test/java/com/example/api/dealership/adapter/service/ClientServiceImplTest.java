@@ -1,7 +1,6 @@
 package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
-import com.example.api.dealership.adapter.output.repository.specifications.ClientSpecificationsFactory;
 import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
 import com.example.api.dealership.core.domain.AddressModel;
 import com.example.api.dealership.core.domain.ClientModel;
@@ -13,7 +12,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,14 +20,10 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.api.dealership.adapter.output.repository.specifications.ClientSpecificationsFactory.equalCity;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;

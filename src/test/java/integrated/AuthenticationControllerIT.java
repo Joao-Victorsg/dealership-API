@@ -4,7 +4,6 @@ package integrated;
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.service.user.impl.UserServiceImpl;
 import com.example.api.dealership.core.domain.UserModel;
-import com.github.tomakehurst.wiremock.security.NotAuthorisedException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
