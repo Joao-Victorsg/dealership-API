@@ -103,7 +103,7 @@ public class ClientController {
             @ApiResponse(responseCode = "409", description = "There was a conflict when creating the client"),
             @ApiResponse(responseCode = "500", description = "There was internal server erros"),
             @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
-            @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
+            @ApiResponse(responseCode = "503", description = "The service is unavailable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
@@ -135,7 +135,7 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "There wasn't a client with the VIN that was informed."),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
             @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
-            @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
+            @ApiResponse(responseCode = "503", description = "The service is unavailable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")

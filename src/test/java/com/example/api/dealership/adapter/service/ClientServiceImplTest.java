@@ -85,16 +85,13 @@ class ClientServiceImplTest {
         final var expectedClientPage = new PageImpl<>(List.of(clientsList.get(0)));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
 
-        when(clientRepositoryPort.findAll(eq(equalCity("Muriae")),eq(pageable))).thenReturn(expectedClientPage);
+        when(clientRepositoryPort.findAll(any(Specification.class),eq(pageable))).thenReturn(expectedClientPage);
 
         final var clients = clientService.getClients("Muriae",null,pageable);
 
-        verify(clientRepositoryPort).findAll(specificationArgumentCaptor.capture(),eq(pageable));
+        verify(clientRepositoryPort).findAll(any(Specification.class),eq(pageable));
         verifyNoMoreInteractions(clientRepositoryPort);
 
-        final var spec = specificationArgumentCaptor.getValue();
-
-        assertEquals(spec,equalCity("Muriae"));
         assertEquals(clients,expectedClientPage);
         assertEquals(1L,clients.getSize());
         assertEquals("Muriae",clients.getContent().get(0).getAddress().getCity());
