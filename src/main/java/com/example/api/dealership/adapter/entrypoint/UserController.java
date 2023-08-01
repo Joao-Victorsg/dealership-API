@@ -5,6 +5,8 @@ import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.mapper.UserMapper;
 import com.example.api.dealership.adapter.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -29,6 +31,16 @@ public class UserController {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Operation(summary = "Create a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "The user was created with success"),
+            @ApiResponse(responseCode = "400", description = "The server cannot process the request due to a client error"),
+            @ApiResponse(responseCode = "408", description = "The request timed out"),
+            @ApiResponse(responseCode = "409", description = "There was a conflict when creating the user"),
+            @ApiResponse(responseCode = "500", description = "There was internal server error"),
+            @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
+            @ApiResponse(responseCode = "503", description = "The service is unavailable"),
+            @ApiResponse(responseCode = "504", description = "The Gateway timed out")
+    })
     @PostMapping(path = "/users",produces = "application/json")
     public ResponseEntity<Response<String>> saveUser(@RequestBody UserDtoRequest userDtoRequest){
 

@@ -1,39 +1,68 @@
-# dealership-api
+# Dealership API
 Doing some study on Rest APIs with Java and Spring Boot
 
 # About the API
-An API for managing a dealership company. You will be able to CRUD a Car, a Client and a sale that is composed by a Client and a Car.
+An API for managing a dealership company. You will be able to CRUD a Car, a Client and a Sale. The sale is composed by a Client and a Car.
 
-It's built with Java and Spring Framework. It has the only porpose to study the tecnologies that are used to build an API with Java.
+To be able to CRUD, you have to be a valid user and get a Token in the auth endpoint. After that you have to use the bearer token 
+in the requests.
+
+The user can be created at the users endpoint in any environment different from production. 
+
+It's built with Java and Spring Framework. It has the only purpose to study the technologies that are used to build an API with Java.
 
 # Features
+
 This API provides HTTP endpoint's for the following:
+
 ### Cars
-* Create a car: POST/car
-* Update a car: PUT/car/{VIN}
-* Delete a car (by VIN): DELETE/car/{VIN}
-* Get all cars: GET/car
-* Get a specific car (by VIN): Get/car/{VIN}
+* Create a car: POST/cars
+* Update a car: PUT/cars/{VIN}
+* Delete a car (by VIN): DELETE/cars/{VIN}
+* Get all cars: GET/cars
+* Get a specific car (by VIN): Get/cars/{VIN}
 
 ### Clients
 
-* Create a client: POST/client
-* Update a client: PUT/client/{CPF}
-* Delete a client (by CPF): DELETE/client/{CPF}
-* Get all clients: GET/client
-* Get a specific client (by CPF): Get/client/{CPF}
+* Create a client: POST/clients
+* Update a client: PUT/clients/{CPF}
+* Delete a client (by CPF): DELETE/clients/{CPF}
+* Get all clients: GET/clients
+* Get a specific client (by CPF): Get/clients/{CPF}
+
+### Sales
+
+* Create a sale: POST/sales
+* Delete a sale (by ID): DELETE/sales/{id}
+* Get all sales: GET/sales
+* Get a specific sale (by ID): Get/sales/{id}
+
+### Users
+
+* Create a user: POST/users
+
+### Auths
+
+* Authenticate a user: POST/auths
 
 # This project was developed with: 
 
 * Java 11
 * Spring Framework
 * Maven
-* H2 - File 
+* Postgres
 * springdoc-openapi-ui
-* Mapstruct 1.5.2
+* Mapstruct
 * Lombok
 * Datafaker
+* Rest Template
 * Gson
+* Test Containers
+* Wiremock
+* JUnit 5
+* Mockito
+* Rest Assured
+* Pitest
  
 # Compile and build
 

@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b2b0245d-5b6e-4f29-9538-fa3a4e0ff120",
+		"_postman_id": "753d9ee4-0e13-4089-98c4-a7e9fc645fe1",
 		"name": "Dealership Api",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16330759"
 	},
 	"item": [
 		{
@@ -399,7 +400,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODY5MjUwMywiZXhwIjoxNzIwMjI4NTAzfQ.i0PPlujf0KGcpxzejFI6b6BeSM8i3yr27qYo-TdXAOw",
 									"type": "string"
 								}
 							]
