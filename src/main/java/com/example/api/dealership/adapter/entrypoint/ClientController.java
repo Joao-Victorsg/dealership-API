@@ -38,7 +38,7 @@ public class ClientController {
 
     private final ClientMapper clientMapper;
 
-    private final SearchAddressGateway restTemplatePort;
+    private final SearchAddressGateway addressGateway;
 
 
     @Operation(summary = "Return a page of clients")
@@ -114,7 +114,7 @@ public class ClientController {
 
         if (cliente.isEmpty()) {
 
-            var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
+            var clientAddress = addressGateway.searchAddressByPostCode(request.getPostCode());
 
             BeanUtils.copyProperties(clientAddress, request);
 
@@ -147,7 +147,7 @@ public class ClientController {
         if (client.isPresent()) {
             var clientModel = client.get();
 
-            var clientAddress = restTemplatePort.searchAddressByPostCode(request.getPostCode());
+            var clientAddress = addressGateway.searchAddressByPostCode(request.getPostCode());
             BeanUtils.copyProperties(clientAddress, request);
 
             var clientModelUpdate = clientMapper.toClientModel(request);
