@@ -44,7 +44,7 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
 
         final var properties = Map.of(
                 "spring.datasource.url",getPostgresUrl(),
-                "via-cep.url",getWiremockUrl()+"/ws/{cep}/json"
+                "via-cep.url",getWiremockUrl()+"/ws/"
         );
 
         TestPropertyValues.of(properties).applyTo(applicationContext);
