@@ -10,10 +10,12 @@ import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
@@ -63,13 +64,16 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
-    public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException {
+    public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
 
         var response = new Response<SalesDtoResponse>();
 
         var client = clientService.findByCpf(request.getCpf());
 
         if(client.isEmpty()) throw new ClientNotFoundException("There isn't a client with this CPF");
+
+        if(client.get().getAddress().getIsAddressSearched().equals(false))
+            throw new ClientNotHaveRegisteredAddressException("The client doesn't have a registered address");
 
         var car = carService.findByVin(request.getVin());
 

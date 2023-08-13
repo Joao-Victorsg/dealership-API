@@ -27,6 +27,7 @@
 		<jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>
 		<spring-cloud-starter-openfeign.version>4.0.4</spring-cloud-starter-openfeign.version>
+		<resilience4j-spring-boot2.version>2.1.0</resilience4j-spring-boot2.version>
 	</properties>
 	<dependencies>
 
@@ -97,6 +98,13 @@
 			<version>${spring-cloud-starter-openfeign.version}</version>
 		</dependency>
 
+		<!--Circuit Breaker -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -126,11 +134,6 @@
 		</dependency>
 
 		<!-- Swagger -->
-		<!--<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>${springdoc.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -258,6 +261,7 @@
 						<exclude>**/adapter/dtos/**</exclude>
 						<exclude>**/adapter/mapper/**</exclude>
 						<exclude>**/adapter/output/repository/**</exclude>
+						<exclude>**/adapter/output/gateway/**</exclude>
 						<exclude>**/config/**</exclude>
 						<exclude>**/core/**</exclude>
 						<exclude>**/DealershipApplication.class</exclude>

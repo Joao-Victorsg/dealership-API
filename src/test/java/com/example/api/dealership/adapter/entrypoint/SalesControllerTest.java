@@ -7,12 +7,14 @@ import com.example.api.dealership.adapter.mapper.SalesMapper;
 import com.example.api.dealership.adapter.service.car.CarService;
 import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.service.sales.SalesService;
+import com.example.api.dealership.core.domain.AddressModel;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.domain.SalesModel;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,11 +55,11 @@ class SalesControllerTest {
 
     @Test
     @DisplayName("Given a sales valid request, save the sale")
-    void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, CarNotFoundException {
+    void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
         final var salesDtoRequest = new SalesDtoRequest();
         salesDtoRequest.setCpf("123");
         salesDtoRequest.setVin("123");
-        final var client = ClientModel.builder().build();
+        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
         final var car = CarModel.builder().build();
         final var sales = SalesModel.builder().build();
         final var salesDtoResponse= new SalesDtoResponse();
@@ -83,11 +85,26 @@ class SalesControllerTest {
     }
 
     @Test
-    @DisplayName("Given a invalid CPF when saving a sale, throw ClientNotFoundException")
-    void givenInvalidCpfWhenSavingSaleThrowClientNotFoundException(){
+    @DisplayName("Given a sales valid request, but the client don't have a address, don't save the sale")
+    void givenSalesValidRequestButClientDontHaveAddressThenDontSaveIt(){
         final var salesDtoRequest = new SalesDtoRequest();
         salesDtoRequest.setCpf("123");
         salesDtoRequest.setVin("123");
+        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(false).build()).build();
+
+        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
+
+        assertThrows(ClientNotHaveRegisteredAddressException.class,() -> salesController.saveSale(salesDtoRequest));
+        verify(clientService).findByCpf("123");
+        verifyNoMoreInteractions(clientService);
+    }
+
+    @Test
+    @DisplayName("Given a invalid CPF when saving a sale, throw ClientNotFoundException")
+    void givenInvalidCpfWhenSavingSaleThrowClientNotFoundException(){
+        final var salesDtoRequest = new SalesDtoRequest();
+        salesDtoRequest.setCpf("321");
+        salesDtoRequest.setVin("321");
 
         when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.empty());
 
@@ -98,9 +115,9 @@ class SalesControllerTest {
     @DisplayName("Given a invalid VIN when saving a sale, throw CarNotFoundException")
     void givenInvalidVinWhenSavingSaleThrowCarNotFoundException(){
         final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("123");
-        salesDtoRequest.setVin("123");
-        final var client = ClientModel.builder().build();
+        salesDtoRequest.setCpf("432");
+        salesDtoRequest.setVin("432");
+        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
 
         when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
         when(carService.findByVin(salesDtoRequest.getVin())).thenReturn(Optional.empty());
@@ -112,9 +129,9 @@ class SalesControllerTest {
     @DisplayName("Given a car that was solded, throw CarAlreadySoldException")
     void givenCarThatWasAlreadySoldThrowCarAlreadySoldException(){
         final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("123");
-        salesDtoRequest.setVin("123");
-        final var client = ClientModel.builder().build();
+        salesDtoRequest.setCpf("561");
+        salesDtoRequest.setVin("561");
+        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
         final var car = CarModel.builder().build();
         final var sales = SalesModel.builder().build();
 
@@ -125,8 +142,8 @@ class SalesControllerTest {
 
         assertThrows(CarAlreadySoldException.class,() -> salesController.saveSale(salesDtoRequest));
 
-        verify(clientService).findByCpf("123");
-        verify(carService).findByVin("123");
+        verify(clientService).findByCpf("561");
+        verify(carService).findByVin("561");
         verify(salesMapper).toSalesModel(car,client);
         verify(salesService).saveSale(sales);
 

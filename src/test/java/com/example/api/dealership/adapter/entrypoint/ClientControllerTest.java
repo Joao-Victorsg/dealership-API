@@ -63,7 +63,7 @@ class ClientControllerTest {
                 .body(response);
 
         when(clientService.findByCpf(clientDto.getCpf())).thenReturn(Optional.empty());
-        when(addressGateway.searchAddressByPostCode(clientDto.getPostCode())).thenReturn(clientAddress);
+        when(addressGateway.byPostCode(clientDto.getPostCode())).thenReturn(clientAddress);
         when(clientMapper.toClientModel(clientDto)).thenReturn(clientModel);
         when(clientService.saveClient(clientModel)).thenReturn(clientModel);
         when(clientMapper.toClientDtoResponse(clientModel)).thenReturn(clientDtoResponse);
@@ -159,7 +159,7 @@ class ClientControllerTest {
         clientDtoResponse.setAddress(addressDtoResponse);
 
         when(clientService.findByCpf(cpf)).thenReturn(Optional.of(clientModel));
-        when(addressGateway.searchAddressByPostCode(clientDtoResponse.getAddress().getPostCode())).thenReturn(addressDtoResponse);
+        when(addressGateway.byPostCode(clientDtoResponse.getAddress().getPostCode())).thenReturn(addressDtoResponse);
         when(clientMapper.toClientModel(clientDtoRequest)).thenReturn(updatedClientModel);
         when(clientService.saveClient(updatedClientModel)).thenReturn(updatedClientModel);
         when(clientMapper.toClientDtoResponse(updatedClientModel)).thenReturn(clientDtoResponse);

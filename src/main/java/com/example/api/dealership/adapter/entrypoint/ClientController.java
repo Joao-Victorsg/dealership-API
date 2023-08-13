@@ -12,6 +12,7 @@ import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -22,9 +23,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.stream.Collectors;
 
@@ -112,21 +120,22 @@ public class ClientController {
 
         var cliente = clientService.findByCpf(request.getCpf());
 
-        if (cliente.isEmpty()) {
-
-            var clientAddress = addressGateway.searchAddressByPostCode(request.getPostCode());
-
-            BeanUtils.copyProperties(clientAddress, request);
-
-            var clientModel = clientService.saveClient(clientMapper.toClientModel(request));
-            log.info("Creating client in the database: " + clientModel);
-
-            response.setData(clientMapper.toClientDtoResponse(clientModel));
-
-            return ResponseEntity.created(URI.create("/v1/dealership/client/" + clientModel.getCpf()))
-                    .body(response);
+        if (cliente.isPresent()) {
+            throw new DuplicatedInfoException("A client with this CPF already exists");
         }
-        throw new DuplicatedInfoException("A client with this CPF already exists");
+
+        var clientAddress = addressGateway.byPostCode(request.getPostCode());
+
+        BeanUtils.copyProperties(clientAddress, request);
+
+        var clientModel = clientService.saveClient(clientMapper.toClientModel(request));
+        log.info("Creating client in the database: " + clientModel);
+
+        response.setData(clientMapper.toClientDtoResponse(clientModel));
+
+        return ResponseEntity.created(URI.create("/v1/dealership/client/" + clientModel.getCpf()))
+                .body(response);
+
     }
 
     @Operation(summary = "Update a client name or/and address")
@@ -144,28 +153,28 @@ public class ClientController {
 
         var client = clientService.findByCpf(cpf);
 
-        if (client.isPresent()) {
-            var clientModel = client.get();
-
-            var clientAddress = addressGateway.searchAddressByPostCode(request.getPostCode());
-            BeanUtils.copyProperties(clientAddress, request);
-
-            var clientModelUpdate = clientMapper.toClientModel(request);
-
-            clientModelUpdate.setId(clientModel.getId());
-            clientModelUpdate.setCpf(clientModel.getCpf());
-            clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
-
-            clientModel = clientService.saveClient(clientModelUpdate);
-
-            response.setData(clientMapper.toClientDtoResponse(clientModel));
-
-            log.info("Updating client: " + response.getData());
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+        if (client.isEmpty()) {
+            throw new ClientNotFoundException("A client with this CPF was not found");
         }
 
-        throw new ClientNotFoundException("A client with this CPF was not found");
+        var clientModel = client.get();
+
+        var clientAddress = addressGateway.byPostCode(request.getPostCode());
+        BeanUtils.copyProperties(clientAddress, request);
+
+        var clientModelUpdate = clientMapper.toClientModel(request);
+
+        clientModelUpdate.setId(clientModel.getId());
+        clientModelUpdate.setCpf(clientModel.getCpf());
+        clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
+
+        clientModel = clientService.saveClient(clientModelUpdate);
+
+        response.setData(clientMapper.toClientDtoResponse(clientModel));
+
+        log.info("Updating client: " + response.getData());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "Delete a client passing the CPF")
