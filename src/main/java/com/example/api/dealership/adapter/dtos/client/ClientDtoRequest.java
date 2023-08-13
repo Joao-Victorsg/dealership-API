@@ -1,12 +1,11 @@
 package com.example.api.dealership.adapter.dtos.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.validation.constraints.NotBlank;
 
 
 @Data
@@ -34,5 +33,5 @@ public class ClientDtoRequest {
     @NotBlank
     private String postCode;
 
-
+    private boolean isAddressSearched;
 }

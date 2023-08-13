@@ -4,6 +4,7 @@ import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
 import com.example.api.dealership.core.domain.AddressModel;
 import com.example.api.dealership.core.domain.ClientModel;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 import static integrated.wiremock.MockServer.mockGetAddressByPostCode;
+import static integrated.wiremock.MockServer.mockGetAddressByPostCodeWithServerError;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
@@ -25,8 +27,12 @@ public class ClientControllerIT extends BaseIT{
     //Token valido até 05/07/2024
     private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODY5MjUwMywiZXhwIjoxNzIwMjI4NTAzfQ.i0PPlujf0KGcpxzejFI6b6BeSM8i3yr27qYo-TdXAOw";
     private static final String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTAzMDE0MiwiZXhwIjoxNjg5MDMwMTQyfQ.z-_TEnUlIFZhXRb_vf-ZL7aG9kPa1rZ7dOOE2E5csxQ";
+
     @Autowired
     private ClientServiceImpl clientService;
+
+    @Autowired
+    private CircuitBreakerRegistry circuitBreakerRegistry;
 
     @DisplayName("Given a valid request to create a client then create it")
     @Test
@@ -48,6 +54,48 @@ public class ClientControllerIT extends BaseIT{
                    .body("data.address.logradouro",notNullValue())
                    .body("data.address.uf", notNullValue())
                    .body("data.address.localidade", notNullValue());
+    }
+
+    @DisplayName("Should create the client even if the via cep api returns an exception")
+    @Test
+    public void shouldCreateClientEvenIfViaCepApiReturnsAnException(){
+        final var client = createClientDtoRequest("12345678912");
+        mockGetAddressByPostCodeWithServerError("39999-999");
+
+        RestAssured.given()
+                .header("Authorization", "Bearer " + TOKEN)
+                .contentType(ContentType.JSON)
+                .body(client)
+                .when()
+                .post(URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("data.name", equalTo(client.getName()))
+                .body("data.cpf", equalTo(client.getCpf()))
+                .body("data.address.cep", equalTo("39999-999"))
+                .body("data.address.addressSearched",equalTo(false));
+    }
+
+    @DisplayName("Should create the client even with the circuit break from the via cep api in open state")
+    @Test
+    public void shouldCreateClientEvenWithTheCircuitBreakerInOpenState(){
+        final var client = createClientDtoRequest("12345678913");
+        circuitBreakerRegistry.circuitBreaker("SearchAddressGatewaybyPostCode").transitionToOpenState();
+
+        RestAssured.given()
+                .header("Authorization", "Bearer " + TOKEN)
+                .contentType(ContentType.JSON)
+                .body(client)
+                .when()
+                .post(URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("data.name", equalTo(client.getName()))
+                .body("data.cpf", equalTo(client.getCpf()))
+                .body("data.address.cep", equalTo("39999-999"))
+                .body("data.address.addressSearched",equalTo(false));
+
+        circuitBreakerRegistry.circuitBreaker("SearchAddressGatewaybyPostCode").transitionToClosedState();
     }
 
     @DisplayName("Get a client by CPF with a valid request")
@@ -234,6 +282,7 @@ public class ClientControllerIT extends BaseIT{
                         .streetName("Rua Padre Arnaldo")
                         .streetNumber("321")
                         .postCode("36881-041")
+                        .isAddressSearched(true)
                         .build())
                 .build();
     }

@@ -8,6 +8,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static integrated.EnvironmentInitializer.getWiremockHost;
 import static integrated.EnvironmentInitializer.getWiremockPort;
@@ -20,25 +21,39 @@ public final class MockServer {
         WireMock.configureFor(getWiremockHost(),getWiremockPort());
     }
 
-    public static void mockGetAddressByPostCode(String cep){
-        final String VIA_CEP_PATH="/ws/" + cep + "/json";
+    public static void mockGetAddressByPostCode(String postCode){
+        final String VIA_CEP_PATH="/ws/" + postCode + "/json";
         try {
             WireMock.stubFor(get(urlMatching(VIA_CEP_PATH))
                     .willReturn(aResponse().withStatus(HttpStatus.OK.value())
                             .withHeader("Content-Type","application/json")
-                            .withBody(MAPPER.writeValueAsString(addressMock(cep))))
+                            .withBody(MAPPER.writeValueAsString(addressMock(postCode))))
             );
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static AddressDtoResponse addressMock(String cep){
+    public static void mockGetAddressByPostCodeWithServerError(String postCode){
+        final String VIA_CEP_PATH="/ws/" + postCode + "/json";
+            WireMock.stubFor(get(urlMatching(VIA_CEP_PATH))
+                    .willReturn(serverError()));
+    }
+
+    private static AddressDtoResponse addressMock(String postCode){
         return AddressDtoResponse.builder()
-                .postCode(cep)
+                .postCode(postCode)
                 .city("Test")
                 .stateAbbreviation("TT")
                 .streetName("Rua teste")
+                .isAddressSearched(true)
+                .build();
+    }
+
+    private static AddressDtoResponse addressMockWhenServerUnavailable(String postCode){
+        return AddressDtoResponse.builder()
+                .postCode(postCode)
+                .isAddressSearched(false)
                 .build();
     }
 

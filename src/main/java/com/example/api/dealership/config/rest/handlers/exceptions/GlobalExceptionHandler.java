@@ -4,6 +4,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,6 +46,13 @@ public class GlobalExceptionHandler<T> extends ResponseEntityExceptionHandler {
         var response = buildResponseException(exception);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(value = {ClientNotHaveRegisteredAddressException.class})
+    protected ResponseEntity<Response<T>> handleClientNotHaveRegisteredAddressException(ClientNotFoundException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(value = {SaleNotFoundException.class})

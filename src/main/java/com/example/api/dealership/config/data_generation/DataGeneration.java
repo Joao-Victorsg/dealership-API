@@ -88,7 +88,11 @@ public class DataGeneration {
     }
 
     private List<ClientModel> saveClientModel(List<ClientDtoRequest> clients){
-        var clientsModel = clients.stream().map(clientMapper::toClientModel).collect(Collectors.toList());
+        var clientsModel = clients.stream()
+                .map(clientMapper::toClientModel)
+                .collect(Collectors.toList());
+
+        clientsModel.forEach(client -> client.getAddress().setIsAddressSearched(true));
 
         var clientsModelCpf = new ArrayList<ClientModel>();
 

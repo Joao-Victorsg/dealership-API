@@ -24,18 +24,16 @@ public class AddressModel {
     @GenericGenerator(name="uuid",strategy="uuid2")
     private String id;
 
-
     private String city;
 
     @NotBlank
     private String postCode;
 
-    @NotBlank
     private String stateAbbreviation;
 
-    @NotBlank
     private String streetName;
 
-    @NotBlank
     private String streetNumber;
+
+    private Boolean isAddressSearched;
 }

@@ -234,6 +234,7 @@ public class SalesControllerIT extends BaseIT{
                         .streetName("Rua Padre Arnaldo")
                         .streetNumber("321")
                         .postCode("36881-041")
+                        .isAddressSearched(true)
                         .build())
                 .build();
     }

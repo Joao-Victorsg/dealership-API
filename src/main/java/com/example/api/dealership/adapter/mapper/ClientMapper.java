@@ -18,6 +18,7 @@ public interface ClientMapper {
     @Mapping(source = "stateAbbreviation",target = "address.stateAbbreviation")
     @Mapping(source = "postCode", target = "address.postCode")
     @Mapping(source = "city", target = "address.city")
+    @Mapping(source = "addressSearched", target = "address.isAddressSearched")
     @Mapping(expression = "java(getRegistrationDate())",target = "registrationDate")
     ClientModel toClientModel(ClientDtoRequest request);
 

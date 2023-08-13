@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 class SearchAddressGatewayTest {
 
     @Mock
-    private SearchAddressGateway addressGateway;
+    private SearchAddressGateway searchAddressGateway;
 
     @Test
     @DisplayName("Given a postcode, search the address")
@@ -24,12 +24,12 @@ class SearchAddressGatewayTest {
         final var postCode = "111";
         final var address = new AddressDtoResponse();
 
-        when(addressGateway.searchAddressByPostCode(postCode))
+        when(searchAddressGateway.byPostCode(postCode))
                 .thenReturn(address);
 
-        final var resultAddress = addressGateway.searchAddressByPostCode(postCode);
+        final var resultAddress = searchAddressGateway.byPostCode(postCode);
 
-        verify(addressGateway,times(1)).searchAddressByPostCode(postCode);
+        verify(searchAddressGateway,times(1)).byPostCode(postCode);
 
         assertEquals(address,resultAddress);
     }
