@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.adapter.service.security.impl;
 
 import com.example.api.dealership.adapter.output.repository.port.UserRepositoryPort;
@@ -46,3 +47,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 }
+*/

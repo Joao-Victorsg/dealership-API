@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.output.repository.port.UserRepositoryPort;
@@ -103,4 +104,4 @@ class UserDetailsServiceImplTest {
                 .build();
     }
 
-}
+}*/

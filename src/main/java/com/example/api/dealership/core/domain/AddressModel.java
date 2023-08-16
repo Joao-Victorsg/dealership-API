@@ -7,13 +7,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="TB_ADDRESS")
@@ -35,5 +37,5 @@ public class AddressModel {
 
     private String streetNumber;
 
-    private Boolean isAddressSearched;
+    private boolean isAddressSearched;
 }

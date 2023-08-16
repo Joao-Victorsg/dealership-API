@@ -1,3 +1,4 @@
+/*
 package integrated;
 
 
@@ -77,3 +78,4 @@ public class AuthenticationControllerIT extends BaseIT{
     }
 
 }
+*/

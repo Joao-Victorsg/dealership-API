@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.config.data_generation;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
@@ -152,7 +153,6 @@ public class DataGeneration {
             String jsonText = AbstractReader.readJson("./static/MOCK_VEIC_DATA.json");
             var type = new TypeToken<List<CarDtoRequest>>(){}.getType();
             List<CarDtoRequest> cars = new Gson().fromJson(jsonText,type);
-            // Perguntar em relação ao stream, pq n tá funcionando
             cars.forEach(car -> car.setCarValue(generateRandomDoubleValueFromRange(0.00,400000.00)));
             return cars;
         }catch (IOException ex){
@@ -180,3 +180,4 @@ public class DataGeneration {
     }
 
 }
+*/

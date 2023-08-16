@@ -1,37 +1,32 @@
 package com.example.api.dealership.adapter.dtos.client;
 
+import com.example.api.dealership.adapter.dtos.client.address.AddressDtoRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClientDtoRequest {
+public final class ClientDtoRequest {
 
     @NotBlank
-    private String name;
+    private final String name;
 
     @NotBlank
-    private String cpf;
+    private final String cpf;
 
-    private String city;
+    @NotNull
+    private final AddressDtoRequest address;
 
-    private String stateAbbreviation;
+    private ClientDtoRequest(final String name, final String cpf, final @NotNull AddressDtoRequest address) {
+        this.name = name;
+        this.cpf = cpf;
+        this.address = address;
+    }
 
-    private String streetName;
-
-    @NotBlank
-    private String streetNumber;
-
-    @NotBlank
-    private String postCode;
-
-    private boolean isAddressSearched;
+    public static ClientDtoRequest createClientDtoRequest(final String name, final String cpf,
+                                                          final AddressDtoRequest addressDtoRequest){
+        return new ClientDtoRequest(name,cpf,addressDtoRequest);
+    }
 }

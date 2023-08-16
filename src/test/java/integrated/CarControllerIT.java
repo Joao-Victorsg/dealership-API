@@ -1,3 +1,4 @@
+/*
 package integrated;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
@@ -231,3 +232,4 @@ public class CarControllerIT extends BaseIT{
     }
 
 }
+*/

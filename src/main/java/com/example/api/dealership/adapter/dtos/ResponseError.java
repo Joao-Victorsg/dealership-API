@@ -1,21 +1,28 @@
 package com.example.api.dealership.adapter.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Builder
-public class ResponseError {
+public final class ResponseError {
 
     @NotNull(message="Timestamp cannot be null")
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
 
     @NotNull(message="Details cannot be null")
-    private String details;
+    private final String details;
 
+    private ResponseError(@NotNull(message = "Timestamp cannot be null") final LocalDateTime timestamp,
+                         @NotNull(message = "Details cannot be null") final String details) {
+        this.timestamp = timestamp;
+        this.details = details;
+    }
+
+    public static ResponseError createResponseError(final LocalDateTime timestamp,final String details ){
+        return new ResponseError(timestamp,details);
+    }
 }

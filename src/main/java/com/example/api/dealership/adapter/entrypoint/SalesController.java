@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.adapter.entrypoint;
 
 import com.example.api.dealership.adapter.dtos.Response;
@@ -170,3 +171,4 @@ public class SalesController {
         throw new SaleNotFoundException("There isn't a sale with this id");
     }
 }
+*/

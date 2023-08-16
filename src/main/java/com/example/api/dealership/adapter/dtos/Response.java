@@ -1,25 +1,23 @@
 package com.example.api.dealership.adapter.dtos;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
-public class Response<T> {
+public final class Response<T> {
 
-    private T data;
+    private final T data;
 
-    private Object errors;
-
-    public void addErrorMsgToResponse(String msgError){
-        this.errors = ResponseError.builder()
-                .details(msgError)
-                .timestamp(LocalDateTime.now())
-                .build();
+    private Response(final T data)
+    {
+        this.data = data;
     }
 
+    public static <T> Response<T> createResponse(final T data){
+        return new Response<>(data);
+    }
+
+    public static Response<ResponseError> createResponseWithError(final ResponseError error){
+        return new Response<>(error);
+    }
 }
+

@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.config.data_generation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,3 +26,4 @@ public class DateConfig {
     }
 
 }
+*/

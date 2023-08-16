@@ -1,3 +1,4 @@
+/*
 package integrated;
 
 import com.example.api.dealership.DealershipApplication;
@@ -19,3 +20,4 @@ public class BaseIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
+*/

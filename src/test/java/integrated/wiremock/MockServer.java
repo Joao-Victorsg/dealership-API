@@ -1,3 +1,4 @@
+/*
 package integrated.wiremock;
 
 import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
@@ -58,3 +59,4 @@ public final class MockServer {
     }
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.adapter.mapper;
 
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
@@ -27,3 +28,4 @@ public interface SalesMapper {
     SalesDtoResponse toSalesDtoResponse(SalesModel sales);
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.adapter.mapper;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
@@ -23,3 +24,4 @@ public interface CarMapper {
     CarDtoResponse toCarDtoResponse(CarModel carModel);
 
 }
+*/

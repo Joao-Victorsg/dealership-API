@@ -1,3 +1,4 @@
+/*
 package com.example.api.dealership.config.rest.security;
 
 import com.example.api.dealership.adapter.service.security.JwtService;
@@ -68,3 +69,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return authHeader.split(" ")[1];
     }
 }
+*/
