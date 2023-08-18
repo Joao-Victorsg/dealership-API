@@ -16,8 +16,4 @@ public class CarDtoUpdateRequest {
         this.color = color;
         this.value = value;
     }
-
-    public static CarDtoUpdateRequest carDtoUpdateRequest(final String color, final Double value){
-        return new CarDtoUpdateRequest(color,value);
-    }
 }

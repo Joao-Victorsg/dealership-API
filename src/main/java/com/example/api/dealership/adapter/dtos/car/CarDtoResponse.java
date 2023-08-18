@@ -48,11 +48,4 @@ public class CarDtoResponse {
         this.value = value;
         this.registrationDate = registrationDate;
     }
-
-    public CarDtoResponse carDtoResponse(final UUID id, final String model, final String modelYear,
-                                         final String manufacturer, final String color, final String vin,
-                                         final BigDecimal value,
-                                         @NotNull final LocalDateTime registrationDate){
-        return new CarDtoResponse(id, model, modelYear, manufacturer, color, vin, value, registrationDate);
-    }
 }

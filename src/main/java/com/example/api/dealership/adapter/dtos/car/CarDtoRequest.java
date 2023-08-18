@@ -35,9 +35,4 @@ public class CarDtoRequest {
         this.vin = vin;
         this.value = value;
     }
-
-    public static CarDtoRequest createCarDtoRequest(final String model, final String modelYear, final String manufacturer,
-                                      final String color, final String vin, final Double value){
-        return new CarDtoRequest(model, modelYear, manufacturer, color, vin, value);
-    }
 }

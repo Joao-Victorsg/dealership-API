@@ -17,9 +17,4 @@ public class UserDtoRequest {
         this.username = username;
         this.password = password;
     }
-
-    public static UserDtoRequest createUserDtoRequest(final String username, final String password){
-        return new UserDtoRequest(username,password);
-    }
-
 }
