@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.mapper;
 
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
@@ -25,7 +24,7 @@ public interface SalesMapper {
     @Mapping(source = "car", target = "car.")
     @Mapping(source = "client", target = "client.")
     @Mapping(source = "client.address",target = "client.address.")
+    @Mapping(source = "client.address.addressSearched", target = "client.address.isAddressSearched")
     SalesDtoResponse toSalesDtoResponse(SalesModel sales);
 
 }
-*/

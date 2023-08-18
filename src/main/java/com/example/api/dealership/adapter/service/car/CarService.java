@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface CarService {
-    Optional<CarModel> findByVin(String vehicleIdentificationNumber) throws CarNotFoundException;
+    Optional<CarModel> findByVin(String vehicleIdentificationNumber);
 
     CarModel save(CarModel car) throws DuplicatedInfoException;
 

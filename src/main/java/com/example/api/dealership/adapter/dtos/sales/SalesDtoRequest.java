@@ -1,22 +1,21 @@
 package com.example.api.dealership.adapter.dtos.sales;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class SalesDtoRequest {
 
     @NotBlank
-    private String cpf;
+    private final String cpf;
 
     @NotBlank
-    private String vin;
+    private final String vin;
 
+    private SalesDtoRequest(final String cpf, final String vin) {
+        this.cpf = cpf;
+        this.vin = vin;
+    }
 }

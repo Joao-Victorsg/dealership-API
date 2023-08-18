@@ -1,12 +1,9 @@
-/*
 package com.example.api.dealership.adapter.entrypoint;
 
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
-import com.example.api.dealership.adapter.service.car.CarService;
-import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
@@ -19,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,6 +35,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
+import static com.example.api.dealership.adapter.dtos.Response.createResponse;
+
 @Slf4j
 @RestController
 @RequestMapping("/v1/dealership")
@@ -48,10 +46,6 @@ public class SalesController {
     private final SalesService salesService;
 
     private final SalesMapper salesMapper;
-
-    private final ClientService clientService;
-
-    private final CarService carService;
 
     @Operation(summary="Save a sale")
     @ApiResponses(value = {
@@ -65,35 +59,14 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
-    public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
+    public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid final SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
 
-        var response = new Response<SalesDtoResponse>();
+        var sale = salesService.saveSale(request.getCpf(), request.getVin());
 
-        var client = clientService.findByCpf(request.getCpf());
+        final var salesDtoResponse = createResponse(salesMapper.toSalesDtoResponse(sale));
 
-        if(client.isEmpty()) throw new ClientNotFoundException("There isn't a client with this CPF");
-
-        if(client.get().getAddress().getIsAddressSearched().equals(false))
-            throw new ClientNotHaveRegisteredAddressException("The client doesn't have a registered address");
-
-        var car = carService.findByVin(request.getVin());
-
-        if(car.isEmpty()) throw new CarNotFoundException("There isn't a car with this VIN");
-
-        var sale = salesMapper.toSalesModel(car.get(),client.get());
-
-        try {
-            var salesModel = salesService.saveSale(sale);
-
-            response.setData(salesMapper.toSalesDtoResponse(salesModel));
-
-            return ResponseEntity.created(URI.create("/v1/dealership/sales/" + sale.getId()))
-                    .body(response);
-        }
-        catch (Exception ex){
-            throw new CarAlreadySoldException("The car with this VIN was already sold");
-        }
-
+        return ResponseEntity.created(URI.create("/v1/dealership/sales/" + sale.getId()))
+                .body(salesDtoResponse);
     }
 
     @Operation(summary="Return a page of sales")
@@ -106,15 +79,17 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path= "/sales",produces = "application/json")
-    public ResponseEntity<Response<Page<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
-            direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) LocalDate initialDate,
-                                                                         @RequestParam(required = false) LocalDate finalDate){
+    public ResponseEntity<Response<PageImpl<SalesDtoResponse>>> getAllSales(@PageableDefault(sort ="id",
+            direction = Sort.Direction.ASC) final Pageable pageable, @RequestParam(required = false) final LocalDate initialDate,
+                                                                         @RequestParam(required = false) final LocalDate finalDate){
 
-        var response = new Response<Page<SalesDtoResponse>>();
+        final var sales = salesService.getSales(initialDate, finalDate, pageable);
 
-        var sales = salesService.getSales(initialDate, finalDate, pageable);
+        final var salesDtoResponse = sales.stream()
+                .map(salesMapper::toSalesDtoResponse)
+                .collect(Collectors.toList());
 
-        response.setData(new PageImpl<>(sales.stream().map(salesMapper::toSalesDtoResponse).collect(Collectors.toList())));
+        final var response = createResponse(new PageImpl<>(salesDtoResponse));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -130,17 +105,14 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/sales/{id}", produces = "application/json")
-    public ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") String id) throws SaleNotFoundException {
-        var response = new Response<SalesDtoResponse>();
-
+    public ResponseEntity<Response<SalesDtoResponse>> getSale(@PathVariable(value = "id") final String id) throws SaleNotFoundException {
         var sale = salesService.findById(id);
 
-        if(sale.isPresent()){
-            response.setData(salesMapper.toSalesDtoResponse(sale.get()));
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
+        if(sale.isEmpty()) throw new SaleNotFoundException("There isn't a sale with this id");
 
-        throw new SaleNotFoundException("There isn't a sale with this id");
+        final var response = createResponse(salesMapper.toSalesDtoResponse(sale.get()));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "Delete a sale passing the CPF")
@@ -154,21 +126,13 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/sales/{id}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteSales(@PathVariable(value = "id") String id) throws SaleNotFoundException {
+    public ResponseEntity<Response<String>> deleteSales(@PathVariable(value = "id") final String id) throws SaleNotFoundException {
+        salesService.deleteSale(id);
 
-        var response = new Response<String>();
+        log.info("The sale with ID: " + id + "was deleted successfully");
 
-        var sale = salesService.findById(id);
+        final var response = createResponse("The sale with ID: " + id + " was deleted successfully");
 
-        if(sale.isPresent()){
-            salesService.deleteSale(id);
-            log.info("The sale with ID: " + id + "was deleted successfully");
-
-            response.setData("The sale with ID: " + id + " was deleted successfully");
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
-        throw new SaleNotFoundException("There isn't a sale with this id");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
-*/
