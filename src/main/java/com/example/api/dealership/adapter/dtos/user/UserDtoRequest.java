@@ -1,21 +1,25 @@
 package com.example.api.dealership.adapter.dtos.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserDtoRequest {
     @NotBlank
-    private String username;
+    private final String username;
 
     @NotBlank
-    private String password;
+    private final String password;
+
+    private UserDtoRequest(final String username, final String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public static UserDtoRequest createUserDtoRequest(final String username, final String password){
+        return new UserDtoRequest(username,password);
+    }
 
 }

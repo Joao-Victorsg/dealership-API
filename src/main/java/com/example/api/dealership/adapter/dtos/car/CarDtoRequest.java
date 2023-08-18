@@ -1,32 +1,43 @@
 package com.example.api.dealership.adapter.dtos.car;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
+
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class CarDtoRequest {
 
     @NotBlank
-    private String carModel;
+    private final String model;
 
     @NotBlank
-    private String carModelYear;
+    private final String modelYear;
 
     @NotBlank
-    private String carMake;
+    private final String manufacturer;
 
     @NotBlank
-    private String carColor;
+    private final String color;
 
     @NotBlank
-    private String carVin;
+    private final String vin;
 
-    private Double carValue;
+    private final Double value;
 
+    private CarDtoRequest(final String model, final String modelYear, final String manufacturer,
+                          final String color, final String vin, final Double value) {
+        this.model = model;
+        this.modelYear = modelYear;
+        this.manufacturer = manufacturer;
+        this.color = color;
+        this.vin = vin;
+        this.value = value;
+    }
+
+    public static CarDtoRequest createCarDtoRequest(final String model, final String modelYear, final String manufacturer,
+                                      final String color, final String vin, final Double value){
+        return new CarDtoRequest(model, modelYear, manufacturer, color, vin, value);
+    }
 }

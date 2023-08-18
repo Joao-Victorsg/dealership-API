@@ -1,16 +1,16 @@
 package com.example.api.dealership.core.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.*;
-
-import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,24 +27,24 @@ public class CarModel{
     private String id;
 
     @Column(nullable = false)
-    private String carModel;
+    private String model;
 
     @Column(nullable = false)
-    private String carModelYear;
+    private String modelYear;
 
     @Column(nullable = false)
-    private String carMake;
+    private String manufacturer;
 
     @Column(nullable = false)
-    private String carColor;
+    private String color;
 
     @Column(nullable = false,unique = true)
-    private String carVin;
+    private String vin;
 
     @Column(nullable = false)
-    private Double carValue;
+    private Double value;
 
     @Column(nullable = false)
-    private LocalDateTime carRegistrationDate;
+    private LocalDateTime registrationDate;
 
 }

@@ -1,36 +1,58 @@
 package com.example.api.dealership.adapter.dtos.car;
 
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Builder
 public class CarDtoResponse {
 
     @NotBlank
-    private UUID id;
+    private final UUID id;
 
     @NotBlank
-    private String carModel;
+    private final String model;
 
     @NotBlank
-    private String carModelYear;
+    private final String modelYear;
 
     @NotBlank
-    private String carMake;
+    private final String manufacturer;
 
     @NotBlank
-    private String carColor;
+    private final String color;
 
     @NotBlank
-    private String carVin;
+    private final String vin;
 
-    private BigDecimal carValue;
+    private final BigDecimal value;
 
     @NotNull
-    private LocalDateTime carRegistrationDate;
+    private final LocalDateTime registrationDate;
+
+    private CarDtoResponse(final UUID id, final String model, final String modelYear, final String manufacturer,
+                           final String color, final String vin, final BigDecimal value,
+                           @NotNull final LocalDateTime registrationDate) {
+        this.id = id;
+        this.model = model;
+        this.modelYear = modelYear;
+        this.manufacturer = manufacturer;
+        this.color = color;
+        this.vin = vin;
+        this.value = value;
+        this.registrationDate = registrationDate;
+    }
+
+    public CarDtoResponse carDtoResponse(final UUID id, final String model, final String modelYear,
+                                         final String manufacturer, final String color, final String vin,
+                                         final BigDecimal value,
+                                         @NotNull final LocalDateTime registrationDate){
+        return new CarDtoResponse(id, model, modelYear, manufacturer, color, vin, value, registrationDate);
+    }
 }

@@ -10,8 +10,8 @@ import java.util.UUID;
 @Repository
 public interface CarRepositoryPort extends JpaRepository<CarModel, UUID>, JpaSpecificationExecutor<CarModel> {
 
-    Optional<CarModel> findBycarVin(String vehicleIdentificationNumber);
+    Optional<CarModel> findByVin(String vehicleIdentificationNumber);
 
-    void deleteBycarVin(String vehicleIdentificationNumber);
+    void deleteByVin(String vehicleIdentificationNumber);
 
 }
