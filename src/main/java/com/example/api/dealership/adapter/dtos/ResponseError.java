@@ -21,8 +21,4 @@ public final class ResponseError {
         this.timestamp = timestamp;
         this.details = details;
     }
-
-    public static ResponseError createResponseError(final LocalDateTime timestamp,final String details ){
-        return new ResponseError(timestamp,details);
-    }
 }

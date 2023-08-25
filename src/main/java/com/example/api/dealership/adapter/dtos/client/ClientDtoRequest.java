@@ -4,9 +4,11 @@ import com.example.api.dealership.adapter.dtos.client.address.AddressDtoRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ClientDtoRequest {
 

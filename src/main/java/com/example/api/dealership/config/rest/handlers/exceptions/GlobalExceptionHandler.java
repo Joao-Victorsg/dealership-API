@@ -8,9 +8,12 @@ import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
+import com.example.api.dealership.core.exceptions.UsernameAlreadyUsedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -79,13 +82,26 @@ public class GlobalExceptionHandler<T> extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    /*@ExceptionHandler(value = {UsernameNotFoundException.class})
+    @ExceptionHandler(value = {UsernameNotFoundException.class})
     protected ResponseEntity<Response<ResponseError>> handleUsernameNotFoundException(UsernameNotFoundException exception){
         var response = buildResponseException(exception);
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
-*/
+
+    @ExceptionHandler(value = {UsernameAlreadyUsedException.class})
+    protected ResponseEntity<Response<ResponseError>> handleUsernameNotFoundException(UsernameAlreadyUsedException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    protected ResponseEntity<Response<ResponseError>> handleBadCredentialsException(BadCredentialsException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
 
     private Response<ResponseError> buildResponseException(Exception ex){
         return Response.createResponseWithError(ResponseError.builder()
