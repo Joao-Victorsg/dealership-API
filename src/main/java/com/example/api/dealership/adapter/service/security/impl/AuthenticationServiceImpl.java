@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.service.security.impl;
 
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
@@ -29,4 +28,3 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtService.generateToken(userDetails);
     }
 }
-*/

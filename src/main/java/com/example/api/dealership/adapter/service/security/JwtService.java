@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.service.security;
 
 import io.jsonwebtoken.Claims;
@@ -20,4 +19,3 @@ public interface JwtService {
     boolean isTokenValid(String token, UserDetails userDetails);
 
 }
-*/

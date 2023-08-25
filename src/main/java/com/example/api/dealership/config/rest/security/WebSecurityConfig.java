@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.config.rest.security;
 
 import lombok.RequiredArgsConstructor;
@@ -65,4 +64,4 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web -> web.ignoring().requestMatchers("/swagger-ui/**","/v3/api-docs/**","/h2-console/**","/actuator/**"));
     }
-}*/
+}
