@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.service.security.impl;
 
 import com.example.api.dealership.adapter.output.repository.port.UserRepositoryPort;
@@ -22,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var userModel = userRepositoryPort.findByUsername(username).
+        final var userModel = userRepositoryPort.findByUsername(username).
                 orElseThrow(()-> new UsernameNotFoundException("Username not found"));
 
         return User.builder()
@@ -47,4 +46,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 }
-*/
+

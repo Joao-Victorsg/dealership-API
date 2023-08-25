@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.mapper;
 
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
@@ -11,4 +10,4 @@ public interface UserMapper {
     UserModel toUserModel(UserDtoRequest userDtoRequest);
 
 }
-*/
+
