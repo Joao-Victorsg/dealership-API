@@ -4,6 +4,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.mapper.UserMapper;
 import com.example.api.dealership.adapter.service.user.UserService;
+import com.example.api.dealership.core.exceptions.UsernameAlreadyUsedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,7 +21,7 @@ import java.net.URI;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/v1/dealership")
+@RequestMapping
 @RequiredArgsConstructor
 @Profile("!prod")
 public class UserController {
@@ -41,7 +42,7 @@ public class UserController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/users",produces = "application/json")
-    public ResponseEntity<Response<String>> saveUser(@RequestBody UserDtoRequest userDtoRequest){
+    public ResponseEntity<Response<String>> saveUser(@RequestBody UserDtoRequest userDtoRequest) throws UsernameAlreadyUsedException {
         final var user = userService.saveUser(userMapper.toUserModel(userDtoRequest));
 
         final var response  = Response.createResponse("User: " + user.getUsername() + " created with success");

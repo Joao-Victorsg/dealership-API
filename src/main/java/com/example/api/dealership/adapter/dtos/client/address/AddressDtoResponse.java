@@ -27,5 +27,6 @@ public class AddressDtoResponse {
     @JsonProperty("logradouro")
     private String streetName;
 
+    @Builder.Default
     private boolean isAddressSearched = true;
 }

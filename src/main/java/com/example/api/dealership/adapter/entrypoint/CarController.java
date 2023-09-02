@@ -31,17 +31,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/dealership")
+@RequestMapping
 public class CarController {
 
     private final CarService carService;
 
     private final CarMapper carMapper;
+
 
     @Operation(summary = "Save a car in the database")
     @ApiResponses(value = {
@@ -49,9 +49,9 @@ public class CarController {
         @ApiResponse(responseCode = "400", description = "The server cannot process the request due to a client error"),
         @ApiResponse(responseCode = "408", description = "The request timed out"),
         @ApiResponse(responseCode = "409", description = "There was a conflict when creating the car"),
-        @ApiResponse(responseCode = "500", description = "There was internal server erros"),
+        @ApiResponse(responseCode = "500", description = "There was internal server errors"),
         @ApiResponse(responseCode = "502", description = "Bad Gateway, the server got a invalid response"),
-        @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
+        @ApiResponse(responseCode = "503", description = "The service is unavailable"),
         @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/cars", produces = "application/json")
@@ -71,8 +71,8 @@ public class CarController {
             @ApiResponse(responseCode = "200",description = "Return a list of cars"),
             @ApiResponse(responseCode = "400", description = "The server cannot process the request due to a client error"),
             @ApiResponse(responseCode = "408", description = "The request timed out"),
-            @ApiResponse(responseCode = "500", description = "There was internal server erros"),
-            @ApiResponse(responseCode = "503", description = "The service is unaivalable"),
+            @ApiResponse(responseCode = "500", description = "There was internal server errors"),
+            @ApiResponse(responseCode = "503", description = "The service is unavailable"),
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/cars", produces = "application/json")
@@ -86,7 +86,7 @@ public class CarController {
 
         final var carsDtoResponseList = cars.stream()
                 .map(carMapper::toCarDtoResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         final var response = Response.createResponse(new PageImpl<>(
                 carsDtoResponseList

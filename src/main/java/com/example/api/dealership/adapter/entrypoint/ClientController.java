@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.stream.Collectors;
 
 import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientDtoResponse;
 import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientModel;
@@ -40,7 +39,7 @@ import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientMod
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/dealership")
+@RequestMapping
 public class ClientController {
 
     private final ClientService clientService;
@@ -64,7 +63,7 @@ public class ClientController {
         final var clientsDtoList = clients.
                 stream().
                 map(ClientMapper::toClientDtoResponse).
-                collect(Collectors.toList());
+                toList();
 
         final var response = Response.createResponse(
                 new PageImpl<>(clientsDtoList));

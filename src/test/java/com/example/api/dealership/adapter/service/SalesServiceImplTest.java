@@ -1,9 +1,19 @@
-/*
 package com.example.api.dealership.adapter.service;
 
+import com.example.api.dealership.adapter.mapper.SalesMapper;
 import com.example.api.dealership.adapter.output.repository.port.SalesRepositoryPort;
+import com.example.api.dealership.adapter.service.car.CarService;
+import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.service.sales.impl.SalesServiceImpl;
+import com.example.api.dealership.core.domain.AddressModel;
+import com.example.api.dealership.core.domain.CarModel;
+import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.domain.SalesModel;
+import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
+import com.example.api.dealership.core.exceptions.CarNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
+import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,12 +30,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,19 +49,103 @@ class SalesServiceImplTest {
     @Mock
     private SalesRepositoryPort salesRepositoryPort;
 
-    @Test
-    @DisplayName("Given a Sale save the sale in the database")
-    void givenACarAndAClientSaveTheSaleInTheDatabase() {
-        final var expectedsales = SalesModel.builder().build();
+    @Mock
+    private ClientService clientService;
 
+    @Mock
+    private CarService carService;
+
+    @Mock
+    private SalesMapper salesMapper;
+
+    @Test
+    @DisplayName("Given a valid Sale save the sale in the database")
+    void givenACarAndAClientSaveTheSaleInTheDatabase() {
+        final var car = CarModel.builder().build();
+        final var client = ClientModel.builder()
+                .address(AddressModel.builder()
+                        .isAddressSearched(true)
+                        .build())
+                .build();
+        final var expectedsales = SalesModel.builder()
+                .car(car)
+                .client(client)
+                .build();
+
+        when(clientService.findByCpf("123")).thenReturn(Optional.of(client));
+        when(carService.findByVin("123")).thenReturn(Optional.of(car));
+        when(salesMapper.toSalesModel(car,client)).thenReturn(expectedsales);
         when(salesRepositoryPort.save(expectedsales)).thenReturn(expectedsales);
 
-        final var sales = salesService.saveSale(expectedsales);
+        assertDoesNotThrow(() -> {
+            final var sales = salesService.saveSale("123","123");
+            assertEquals(sales,expectedsales);
+        }
+        );
+    }
 
-        verify(salesRepositoryPort).save(expectedsales);
-        verifyNoMoreInteractions(salesRepositoryPort);
+    @Test
+    @DisplayName("When trying to save a sale with a nonexistent client then throw ClientNotFoundException")
+    void whenTryingToSaveSaleWithNonExistentClientThenThrowClientNotFoundException() {
+        final var client = ClientModel.builder()
+                .address(AddressModel.builder()
+                        .isAddressSearched(true)
+                        .build())
+                .build();
 
-        assertEquals(sales,expectedsales);
+        when(clientService.findByCpf("123")).thenReturn(Optional.of(client));
+        when(carService.findByVin("123")).thenReturn(Optional.empty());
+
+        assertThrows(CarNotFoundException.class,() -> salesService.saveSale("123","123"));
+    }
+
+    @Test
+    @DisplayName("When trying to save a sale with a existent client without address then throw ClientNotHaveRegisteredAddressException")
+    void whenTryingToSaveSaleWithNonExistentClientThenThrowClientNotHaveRegisteredAddressException() {
+        final var client = ClientModel.builder()
+                .address(AddressModel.builder()
+                        .isAddressSearched(false)
+                        .build())
+                .build();
+        final var car = CarModel.builder().build();
+
+        when(clientService.findByCpf("123")).thenReturn(Optional.of(client));
+        when(carService.findByVin("123")).thenReturn(Optional.of(car));
+
+        assertThrows(ClientNotHaveRegisteredAddressException.class,() -> salesService.saveSale("123","123"));
+    }
+
+    @Test
+    @DisplayName("When trying to save a sale with a nonexistent car then throw CarNotFoundException")
+    void whenTryingToSaveSaleWithNonExistentCarThenThrowCarNotFoundException() {
+        final var car = CarModel.builder().build();
+
+        when(clientService.findByCpf("123")).thenReturn(Optional.empty());
+        when(carService.findByVin("123")).thenReturn(Optional.of(car));
+
+        assertThrows(ClientNotFoundException.class,() -> salesService.saveSale("123","123"));
+    }
+
+    @Test
+    @DisplayName("When trying to save a sale with a car that were already sold, throw CarAlreadySoldException")
+    void whenTryingToSaveSaleWitCarThatAlreadySoldThenThrowCarAlreadySoldException() {
+        final var client = ClientModel.builder()
+                .address(AddressModel.builder()
+                        .isAddressSearched(true)
+                        .build())
+                .build();
+        final var car = CarModel.builder().build();
+        final var expectedsales = SalesModel.builder()
+                .car(car)
+                .client(client)
+                .build();
+
+        when(clientService.findByCpf("123")).thenReturn(Optional.of(client));
+        when(carService.findByVin("123")).thenReturn(Optional.of(car));
+        when(salesMapper.toSalesModel(car,client)).thenReturn(expectedsales);
+        doThrow(new RuntimeException()).when(salesRepositoryPort).save(expectedsales);
+
+        assertThrows(CarAlreadySoldException.class,() -> salesService.saveSale("123","123"));
     }
 
     @Test
@@ -62,9 +158,6 @@ class SalesServiceImplTest {
         when(salesRepositoryPort.findAll(pageable)).thenReturn(expectedsalesPage);
 
         final var sales = salesService.getSales(null,null,pageable);
-
-        verify(salesRepositoryPort).findAll(pageable);
-        verifyNoMoreInteractions(salesRepositoryPort);
 
         assertEquals(sales,expectedsalesPage);
     }
@@ -83,9 +176,6 @@ class SalesServiceImplTest {
                 LocalDate.of(2023,5,27),
                 pageable);
 
-        verify(salesRepositoryPort).findAll(any(Specification.class),eq(pageable));
-        verifyNoMoreInteractions(salesRepositoryPort);
-
         assertEquals(sales,expectedsalesPage);
     }
 
@@ -98,9 +188,6 @@ class SalesServiceImplTest {
 
         final var sales = salesService.findById("123");
 
-        verify(salesRepositoryPort).findById("123");
-        verifyNoMoreInteractions(salesRepositoryPort);
-
         assertEquals(sales.get(),expectedsales);
     }
 
@@ -108,13 +195,20 @@ class SalesServiceImplTest {
     @DisplayName("Given a valid id delete the sale that have this id")
     void givenValidIdDeleteTheSaleThatHaveThisId() {
 
+        when(salesRepositoryPort.findById("123")).thenReturn(Optional.of(SalesModel.builder().build()));
         doNothing().when(salesRepositoryPort).deleteById("123");
 
-        salesService.deleteSale("123");
+        assertDoesNotThrow(() ->salesService.deleteSale("123"));
 
         verify(salesRepositoryPort).deleteById("123");
-        verifyNoMoreInteractions(salesRepositoryPort);
     }
 
+    @Test
+    @DisplayName("Given a invalid id when deleting, then throw SalesNotFoundException")
+    void givenInvalidIdWhenDeletingSalesThenThrowSalesNotFoundException() {
+        when(salesRepositoryPort.findById("123")).thenReturn(Optional.empty());
 
-}*/
+        assertThrows(SaleNotFoundException.class,() ->salesService.deleteSale("123"));
+    }
+
+}

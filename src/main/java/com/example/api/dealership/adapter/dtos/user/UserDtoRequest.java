@@ -1,19 +1,21 @@
 package com.example.api.dealership.adapter.dtos.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonDeserialize(builder = UserDtoRequest.UserDtoRequestBuilder.class)
 public class UserDtoRequest {
-    @NotBlank
-    private String username;
 
     @NotBlank
-    private String password;
+    @JsonProperty
+    private final String username;
+
+    @NotBlank
+    @JsonProperty
+    private final String password;
 }

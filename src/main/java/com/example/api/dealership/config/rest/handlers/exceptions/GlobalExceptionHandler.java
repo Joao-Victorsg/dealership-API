@@ -13,6 +13,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -98,6 +99,13 @@ public class GlobalExceptionHandler<T> extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     protected ResponseEntity<Response<ResponseError>> handleBadCredentialsException(BadCredentialsException exception){
+        var response = buildResponseException(exception);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    protected ResponseEntity<Response<ResponseError>> handleAuthenticationException(AuthenticationException exception){
         var response = buildResponseException(exception);
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);

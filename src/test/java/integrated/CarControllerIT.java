@@ -1,9 +1,10 @@
-/*
 package integrated;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
+import com.example.api.dealership.adapter.dtos.car.CarDtoUpdateRequest;
 import com.example.api.dealership.adapter.service.car.impl.CarServiceImpl;
 import com.example.api.dealership.core.domain.CarModel;
+import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class CarControllerIT extends BaseIT{
+ class CarControllerIT extends BaseIT{
 
     private static final String URL_WITH_VIN_PATH_PARAMETER = "/v1/dealership/cars/{vin}";
     private static final String URL = "/v1/dealership/cars";
@@ -29,7 +30,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a valid request to create a car then create it")
     @Test
-    public void givenValidRequestToCreateACarThenCreateIt(){
+     void givenValidRequestToCreateACarThenCreateIt(){
         final var car = createCarDtoRequest("12345678911");
 
         RestAssured.given()
@@ -41,16 +42,16 @@ public class CarControllerIT extends BaseIT{
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("data.id", notNullValue())
-                .body("data.carModel", equalTo(car.getCarModel()))
-                .body("data.carModelYear", equalTo(car.getCarModelYear()))
-                .body("data.carMake",equalTo(car.getCarMake()))
-                .body("data.carVin", equalTo(car.getCarVin()))
-                .body("data.carValue", equalTo(car.getCarValue().floatValue()));
+                .body("data.model", equalTo(car.getModel()))
+                .body("data.modelYear", equalTo(car.getModelYear()))
+                .body("data.manufacturer",equalTo(car.getManufacturer()))
+                .body("data.vin", equalTo(car.getVin()))
+                .body("data.value", equalTo(car.getValue().floatValue()));
     }
 
     @DisplayName("Get a car by VIN with a valid request")
     @Test
-    public void givenValidRequestToGetACarThenGetIt(){
+     void givenValidRequestToGetACarThenGetIt() throws DuplicatedInfoException {
         final var car = createCar("11987654321");
         carService.save(car);
 
@@ -63,16 +64,16 @@ public class CarControllerIT extends BaseIT{
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.id", notNullValue())
-                .body("data.carModel", equalTo(car.getCarModel()))
-                .body("data.carModelYear", equalTo(car.getCarModelYear()))
-                .body("data.carMake",equalTo(car.getCarMake()))
-                .body("data.carVin", equalTo(car.getCarVin()))
-                .body("data.carValue", equalTo(car.getCarValue().floatValue()));
+                .body("data.model", equalTo(car.getModel()))
+                .body("data.modelYear", equalTo(car.getModelYear()))
+                .body("data.manufacturer",equalTo(car.getManufacturer()))
+                .body("data.vin", equalTo(car.getVin()))
+                .body("data.value", equalTo(car.getValue().floatValue()));
     }
 
     @DisplayName("Given a VIN that is not registered, return 404")
     @Test
-    public void givenVINThatIsNotRegisteredReturnNotFound(){
+     void givenVINThatIsNotRegisteredReturnNotFound(){
         RestAssured.given()
                 .header("Authorization", "Bearer " + TOKEN)
                 .pathParam("vin", "1")
@@ -85,7 +86,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a valid request get all cars")
     @Test
-    public void givenValidRequestGetAllCars(){
+     void givenValidRequestGetAllCars(){
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
                 .contentType(ContentType.JSON)
@@ -98,15 +99,14 @@ public class CarControllerIT extends BaseIT{
                 .body("data.size",equalTo(10));
     }
 
+
     @DisplayName("Given a valid request to update a car, do it")
     @Test
-    public void givenValidRequestToUpdateCarDoIt(){
-        final var carModel = createCar("22222222222");
-        final var carDto = createCarDtoRequest("22222222222");
-        carDto.setCarColor("Red");
-        carDto.setCarValue(11111.11);
+     void givenValidRequestToUpdateCarDoIt() throws DuplicatedInfoException {
+        final var model = createCar("22222222222");
+        final var carDto = createCarDtoUpdateRequest("red",11111.11);
 
-        carService.save(carModel);
+        carService.save(model);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
@@ -117,17 +117,15 @@ public class CarControllerIT extends BaseIT{
                 .put(URL_WITH_VIN_PATH_PARAMETER)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("data.carColor",equalTo(carDto.getCarColor()))
-                .body("data.carValue",equalTo(carDto.getCarValue().floatValue()));
+                .body("data.color",equalTo(carDto.getColor()))
+                .body("data.value",equalTo(carDto.getValue().floatValue()));
     }
+
 
     @DisplayName("Given a request with a invalid VIN to update a car, return 404")
     @Test
-    public void givenRequestWithInvalidVINToUpdateCarReturnNotFound(){
-        final var carModel = createCar("33333333333");
-        final var carDto = createCarDtoRequest("33333333333");
-
-        carService.save(carModel);
+     void givenRequestWithInvalidVINToUpdateCarReturnNotFound(){
+        final var carDto = createCarDtoUpdateRequest("red",111111.00);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
@@ -142,9 +140,9 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a valid request to delete a car, do it")
     @Test
-    public void givenValidRequestToDeleteCarDoIt(){
-        final var carModel = createCar("44444444444");
-        carService.save(carModel);
+     void givenValidRequestToDeleteCarDoIt() throws DuplicatedInfoException {
+        final var model = createCar("44444444444");
+        carService.save(model);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
@@ -159,7 +157,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a request with a invalid vin to delete a car, return 404")
     @Test
-    public void givenRequestWithInvalidVINToDeleteCarReturnNotFound(){
+     void givenRequestWithInvalidVINToDeleteCarReturnNotFound(){
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
                 .contentType(ContentType.JSON)
@@ -172,7 +170,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a request without a token, return 403")
     @Test
-    public void givenRequestWithoutTokenReturnForbidden(){
+     void givenRequestWithoutTokenReturnForbidden(){
         RestAssured.given()
                 .pathParam("vin", "12345678911")
                 .contentType(ContentType.JSON)
@@ -184,7 +182,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a request with a invalid token, return 403")
     @Test
-    public void givenInvalidTokenReturnForbidden(){
+     void givenInvalidTokenReturnForbidden(){
         RestAssured.given()
                 .header("Authorization", "Bearer " + "12345")
                 .pathParam("vin", "12345678911")
@@ -197,7 +195,7 @@ public class CarControllerIT extends BaseIT{
 
     @DisplayName("Given a request with a expired token, return 403")
     @Test
-    public void givenExpiredTokenReturnForbidden(){
+     void givenExpiredTokenReturnForbidden(){
         RestAssured.given()
                 .header("Authorization", "Bearer " + EXPIRED_TOKEN)
                 .pathParam("vin", "12345678911")
@@ -208,28 +206,34 @@ public class CarControllerIT extends BaseIT{
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
+    private static CarDtoUpdateRequest createCarDtoUpdateRequest(String color, Double value){
+        return CarDtoUpdateRequest.builder()
+                .color(color)
+                .value(value)
+                .build();
+    }
+
     private static CarDtoRequest createCarDtoRequest(String vin){
         return CarDtoRequest.builder()
-                .carColor("Black")
-                .carMake("Audi")
-                .carModel("A3")
-                .carModelYear("2021")
-                .carVin(vin)
-                .carValue(100000.0)
+                .color("Black")
+                .manufacturer("Audi")
+                .model("A3")
+                .modelYear("2021")
+                .vin(vin)
+                .value(100000.0)
                 .build();
     }
 
     private static CarModel createCar(String vin){
         return CarModel.builder()
-                .carRegistrationDate(LocalDateTime.now())
-                .carColor("Black")
-                .carMake("Audi")
-                .carModel("A3")
-                .carModelYear("2021")
-                .carVin(vin)
-                .carValue(100000.0)
+                .registrationDate(LocalDateTime.now())
+                .color("Black")
+                .manufacturer("Audi")
+                .model("A3")
+                .modelYear("2021")
+                .vin(vin)
+                .value(100000.0)
                 .build();
     }
 
 }
-*/

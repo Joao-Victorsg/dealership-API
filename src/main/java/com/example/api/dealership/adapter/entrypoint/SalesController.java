@@ -33,13 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 import static com.example.api.dealership.adapter.dtos.Response.createResponse;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/dealership")
+@RequestMapping
 @RequiredArgsConstructor
 public class SalesController {
 
@@ -87,7 +86,7 @@ public class SalesController {
 
         final var salesDtoResponse = sales.stream()
                 .map(salesMapper::toSalesDtoResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         final var response = createResponse(new PageImpl<>(salesDtoResponse));
 

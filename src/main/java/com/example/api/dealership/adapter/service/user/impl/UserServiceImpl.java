@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public UserModel saveUser(UserModel userModel) {
+    public UserModel saveUser(UserModel userModel) throws UsernameAlreadyUsedException {
         if(userRepositoryPort.findByUsername(userModel.getUsername()).isPresent())
             throw new UsernameAlreadyUsedException("This username already exists");
 

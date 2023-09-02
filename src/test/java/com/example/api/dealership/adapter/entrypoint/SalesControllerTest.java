@@ -1,16 +1,10 @@
-/*
 package com.example.api.dealership.adapter.entrypoint;
 
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
-import com.example.api.dealership.adapter.service.car.CarService;
-import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.service.sales.SalesService;
-import com.example.api.dealership.core.domain.AddressModel;
-import com.example.api.dealership.core.domain.CarModel;
-import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.domain.SalesModel;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
@@ -27,15 +21,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.api.dealership.adapter.dtos.Response.createResponse;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,107 +45,93 @@ class SalesControllerTest {
     @Mock
     private  SalesMapper salesMapper;
 
-    @Mock
-    private ClientService clientService;
-
-    @Mock
-    private CarService carService;
-
     @Test
     @DisplayName("Given a sales valid request, save the sale")
-    void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
-        final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("123");
-        salesDtoRequest.setVin("123");
-        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
-        final var car = CarModel.builder().build();
+    void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
+        final var salesDtoRequest = SalesDtoRequest.builder().vin("123").cpf("123").build();
         final var sales = SalesModel.builder().build();
-        final var salesDtoResponse= new SalesDtoResponse();
+        final var salesDtoResponse= SalesDtoResponse.builder().build();
+        final var expectedResponse = ResponseEntity.created(URI.create("/v1/dealership/sales/" + sales.getId()))
+                .body(createResponse(salesDtoResponse));
 
-        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
-        when(carService.findByVin(salesDtoRequest.getVin())).thenReturn(Optional.of(car));
-        when(salesMapper.toSalesModel(car,client)).thenReturn(sales);
-        when(salesService.saveSale(sales)).thenReturn(sales);
+        when(salesService.saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin())).thenReturn(sales);
         when(salesMapper.toSalesDtoResponse(sales)).thenReturn(salesDtoResponse);
 
-        final var resultSale = salesController.saveSale(salesDtoRequest);
-
-        verify(clientService).findByCpf("123");
-        verify(carService).findByVin("123");
-        verify(salesMapper).toSalesModel(car,client);
-        verify(salesService).saveSale(sales);
-        verify(salesMapper).toSalesDtoResponse(sales);
-
-        verifyNoMoreInteractions(clientService,carService,salesMapper);
-
-        assertEquals(HttpStatus.CREATED,resultSale.getStatusCode());
-        assertEquals(salesDtoResponse,resultSale.getBody().getData());
+        assertDoesNotThrow(() -> {
+            final var resultSale = salesController.saveSale(salesDtoRequest);
+            assertEquals(expectedResponse.getStatusCode(),resultSale.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),resultSale.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a sales valid request, but the client don't have a address, don't save the sale")
-    void givenSalesValidRequestButClientDontHaveAddressThenDontSaveIt(){
-        final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("123");
-        salesDtoRequest.setVin("123");
-        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(false).build()).build();
+    void givenSalesValidRequestButClientDontHaveAddressThenDontSaveIt() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
+        final var salesDtoRequest = SalesDtoRequest.builder().cpf("123").vin("123").build();
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(createResponse("The client needs to have a registered address"));
 
-        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
+        doThrow(ClientNotHaveRegisteredAddressException.class).when(salesService)
+                .saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin());
 
-        assertThrows(ClientNotHaveRegisteredAddressException.class,() -> salesController.saveSale(salesDtoRequest));
-        verify(clientService).findByCpf("123");
-        verifyNoMoreInteractions(clientService);
+        assertThrows(ClientNotHaveRegisteredAddressException.class,() -> {
+            final var response = salesController.saveSale(salesDtoRequest);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a invalid CPF when saving a sale, throw ClientNotFoundException")
-    void givenInvalidCpfWhenSavingSaleThrowClientNotFoundException(){
-        final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("321");
-        salesDtoRequest.setVin("321");
+    void givenInvalidCpfWhenSavingSaleThrowClientNotFoundException() throws CarAlreadySoldException,
+            ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
 
-        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.empty());
+        final var salesDtoRequest = SalesDtoRequest.builder().cpf("123").vin("123").build();
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(createResponse("There isn't a client with this CPF"));
 
-        assertThrows(ClientNotFoundException.class,() ->salesController.saveSale(salesDtoRequest));
+        doThrow(ClientNotFoundException.class).when(salesService)
+                .saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin());
+
+        assertThrows(ClientNotFoundException.class,() ->{
+            final var response = salesController.saveSale(salesDtoRequest);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a invalid VIN when saving a sale, throw CarNotFoundException")
-    void givenInvalidVinWhenSavingSaleThrowCarNotFoundException(){
-        final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("432");
-        salesDtoRequest.setVin("432");
-        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
+    void givenInvalidVinWhenSavingSaleThrowCarNotFoundException() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
+        final var salesDtoRequest = SalesDtoRequest.builder().cpf("123").vin("123").build();
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(createResponse("There isn't a car with this VIN"));
 
-        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
-        when(carService.findByVin(salesDtoRequest.getVin())).thenReturn(Optional.empty());
+        doThrow(CarNotFoundException.class).when(salesService).saveSale(salesDtoRequest.getCpf(),
+        salesDtoRequest.getVin());
 
-        assertThrows(CarNotFoundException.class,() ->salesController.saveSale(salesDtoRequest));
+        assertThrows(CarNotFoundException.class,() ->{
+            final var response = salesController.saveSale(salesDtoRequest);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a car that was solded, throw CarAlreadySoldException")
-    void givenCarThatWasAlreadySoldThrowCarAlreadySoldException(){
-        final var salesDtoRequest = new SalesDtoRequest();
-        salesDtoRequest.setCpf("561");
-        salesDtoRequest.setVin("561");
-        final var client = ClientModel.builder().address(AddressModel.builder().isAddressSearched(true).build()).build();
-        final var car = CarModel.builder().build();
-        final var sales = SalesModel.builder().build();
+    void givenCarThatWasAlreadySoldThrowCarAlreadySoldException() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
+        final var salesDtoRequest = SalesDtoRequest.builder().cpf("123").vin("123").build();
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(createResponse("The car with this VIN was already sold"));
 
-        when(clientService.findByCpf(salesDtoRequest.getCpf())).thenReturn(Optional.of(client));
-        when(carService.findByVin(salesDtoRequest.getVin())).thenReturn(Optional.of(car));
-        when(salesMapper.toSalesModel(car,client)).thenReturn(sales);
-        when(salesService.saveSale(sales)).thenThrow(RuntimeException.class);
+        doThrow(CarAlreadySoldException.class).when(salesService).saveSale(salesDtoRequest.getCpf(),
+                salesDtoRequest.getVin());
 
-        assertThrows(CarAlreadySoldException.class,() -> salesController.saveSale(salesDtoRequest));
-
-        verify(clientService).findByCpf("561");
-        verify(carService).findByVin("561");
-        verify(salesMapper).toSalesModel(car,client);
-        verify(salesService).saveSale(sales);
-
-        verifyNoMoreInteractions(clientService,carService,salesMapper);
+        assertThrows(CarAlreadySoldException.class,() ->{
+            final var response = salesController.saveSale(salesDtoRequest);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
     
     @Test
@@ -157,83 +140,83 @@ class SalesControllerTest {
         final var expectedSales = SalesModel.builder().build();
         final var expectedSalesPage = new PageImpl<>(List.of(expectedSales));
         final var pageable = PageRequest.of(0,10, Sort.by("id"));
-        final var salesDtoResponse = new SalesDtoResponse();
-        final var expectedResponse = new PageImpl<>(List.of(salesDtoResponse));
+        final var salesDtoResponse = SalesDtoResponse.builder().build();
+        final var expectedResponse = ResponseEntity.status(HttpStatus.OK)
+                .body(Response.createResponse(new PageImpl<>(List.of(salesDtoResponse))));
 
         when(salesService.getSales(null,null,pageable)).thenReturn(expectedSalesPage);
         when(salesMapper.toSalesDtoResponse(expectedSales)).thenReturn(salesDtoResponse);
 
-        final var sales = salesController.getAllSales(pageable,null,null);
+        final var response = salesController.getAllSales(pageable,null,null);
 
-        verify(salesService).getSales(null,null,pageable);
-        verify(salesMapper).toSalesDtoResponse(expectedSales);
-        verifyNoMoreInteractions(salesService);
-
-        assertEquals(HttpStatus.OK,sales.getStatusCode());
-        assertEquals(expectedResponse,sales.getBody().getData());
+        assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+        assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
     }
-
 
     @Test
     @DisplayName("Given a ID get the sales that have this ID")
-    void givenIdGetSalesWithThisId() throws SaleNotFoundException {
+    void givenIdGetSalesWithThisId(){
         final var id = "123";
         final var salesModel = SalesModel.builder().build();
-        final var salesDtoResponse = new SalesDtoResponse();
+        final var salesDtoResponse = SalesDtoResponse.builder().build();
+        final var expectedResponse = ResponseEntity.status(HttpStatus.OK)
+                .body(Response.createResponse(salesDtoResponse));
 
         when(salesService.findById(id)).thenReturn(Optional.of(salesModel));
         when(salesMapper.toSalesDtoResponse(salesModel)).thenReturn(salesDtoResponse);
 
-        final var sales = salesController.getSale(id);
-
-        verify(salesService).findById(id);
-        verify(salesMapper).toSalesDtoResponse(salesModel);
-
-        verifyNoMoreInteractions(salesService,salesMapper);
-
-        assertEquals(HttpStatus.OK,sales.getStatusCode());
-        assertEquals(salesDtoResponse,sales.getBody().getData());
+        assertDoesNotThrow(() -> {
+            final var response = salesController.getSale(id);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a invalid ID, throw SaleNotFoundException")
     void givenInvalidIdThrowSalesNotFoundException(){
         final var id = "123";
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(Response.createResponse("There isn't a sale with this id"));
 
         when(salesService.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(SaleNotFoundException.class,() ->salesController.getSale(id));
+        assertThrows(SaleNotFoundException.class,() -> {
+            final var response = salesController.getSale(id);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
     @Test
     @DisplayName("Given a valid ID, delete the sales")
     void givenValidVinDeleteTheSales() throws SaleNotFoundException {
         final var id = "123";
-        final var salesModel = SalesModel.builder().build();
-        final var expectedResponse = new Response<String>();
-        expectedResponse.setData("The sale with ID: " + id + " was deleted successfully");
+        final var expectedResponse = ResponseEntity.status(HttpStatus.OK)
+                .body(Response.createResponse("The sale with ID: " + id + " was deleted successfully"));
 
-        when(salesService.findById(id)).thenReturn(Optional.of(salesModel));
         doNothing().when(salesService).deleteSale(id);
 
         final var response = salesController.deleteSales(id);
 
-        verify(salesService).findById(id);
-        verify(salesService).deleteSale(id);
-        verifyNoMoreInteractions(salesService);
-
-        assertEquals(HttpStatus.OK,response.getStatusCode());
-        assertEquals(expectedResponse.getData(),response.getBody().getData());
+        assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+        assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
     }
 
     @Test
-    @DisplayName("Given a invalid ID, throw a SaleNotFoundException")
-    void givenInvalidVinWhenDeletingThrowSalesNotFoundException(){
+    @DisplayName("Given a invalid ID when deleting sales, throw a SaleNotFoundException")
+    void givenInvalidVinWhenDeletingThrowSalesNotFoundException() throws SaleNotFoundException {
         final var id = "123";
+        final var expectedResponse = ResponseEntity.badRequest()
+                .body(Response.createResponse("There isn't a sale with this id"));
 
-        when(salesService.findById(id)).thenReturn(Optional.empty());
+        doThrow(SaleNotFoundException.class).when(salesService).deleteSale(id);
 
-        assertThrows(SaleNotFoundException.class,() -> salesController.deleteSales(id));
+        assertThrows(SaleNotFoundException.class,() -> {
+            final var response = salesController.deleteSales(id);
+            assertEquals(expectedResponse.getStatusCode(),response.getStatusCode());
+            assertEquals(expectedResponse.getBody().getData(),response.getBody().getData());
+        });
     }
 
-}*/
+}

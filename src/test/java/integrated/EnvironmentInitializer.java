@@ -1,4 +1,3 @@
-/*
 package integrated;
 
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -69,4 +68,3 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
                 POSTGRES_CONTAINER.getHost(),POSTGRES_CONTAINER.getFirstMappedPort());
     }
 }
-*/

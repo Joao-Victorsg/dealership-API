@@ -13,6 +13,7 @@ import com.example.api.dealership.adapter.service.user.UserService;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.domain.UserModel;
+import com.example.api.dealership.core.exceptions.UsernameAlreadyUsedException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -46,7 +46,7 @@ public class DataGeneration {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Bean
-    public void saveMockingData(){
+    public void saveMockingData() throws UsernameAlreadyUsedException {
         final var clients = saveClientModel(generateClientData());
         final var cars = saveCarModel(generateCarData());
         saveSales(clients,cars);
@@ -77,7 +77,7 @@ public class DataGeneration {
     private List<CarModel> saveCarModel(List<CarDtoRequest> cars){
         final var carsModel = cars.stream()
                 .map(carMapper::toCarModel)
-                .collect(Collectors.toList());
+                .toList();
         try {
             return carRepositoryPort.saveAll(carsModel);
         }catch (Exception ex){
@@ -89,7 +89,7 @@ public class DataGeneration {
     private List<ClientModel> saveClientModel(List<ClientDtoRequest> clients){
         final var clientsModel = clients.stream()
                 .map(ClientMapper::toClientModel)
-                .collect(Collectors.toList());
+                .toList();
 
         final var clientAddressDtoResponse = generateClientAddressData();
 
@@ -152,7 +152,7 @@ public class DataGeneration {
 
            return carsWithoutValue.stream()
                     .map(this::buildCarDtoRequestWithValue)
-                    .collect(Collectors.toList());
+                    .toList();
         }catch (IOException ex){
             log.error("Erro na leitura do arquivo",ex);
             return List.of();
@@ -176,14 +176,14 @@ public class DataGeneration {
         return randomDouble;
     }
 
-    private void saveUser(UserModel user) {
+    private void saveUser(UserModel user) throws UsernameAlreadyUsedException {
         userService.saveUser(user);
     }
 
     private UserModel generateUserData() {
         return UserModel.builder()
                 .username("admin")
-                .password(passwordEncoder.encode("123456"))
+                .password("123456")
                 .isAdmin(true)
                 .build();
     }

@@ -1,4 +1,3 @@
-/*
 package com.example.api.dealership.adapter.service;
 
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
@@ -18,8 +17,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,17 +50,6 @@ class AuthenticationServiceImplTest {
 
         final var generatedToken = authenticationService.authenticate(userDto);
 
-        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(),
-                userDto.getPassword()));
-
-        verify(userDetailsService).loadUserByUsername(userDto.getUsername());
-
-        verify(userDetailsService).getAuthorities(false);
-
-        verify(jwtService).generateToken(userDetails);
-
-        verifyNoMoreInteractions(authenticationManager,userDetailsService,jwtService);
-
         assertEquals(generatedToken,token);
     }
 
@@ -88,4 +74,4 @@ class AuthenticationServiceImplTest {
                 .build();
     }
 
-}*/
+}
