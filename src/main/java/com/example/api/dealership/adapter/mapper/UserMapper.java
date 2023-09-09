@@ -10,3 +10,4 @@ public interface UserMapper {
     UserModel toUserModel(UserDtoRequest userDtoRequest);
 
 }
+

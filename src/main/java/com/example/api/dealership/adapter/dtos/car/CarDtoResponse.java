@@ -1,36 +1,24 @@
 package com.example.api.dealership.adapter.dtos.car;
 
-import lombok.Data;
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
-public class CarDtoResponse {
 
-    @NotBlank
-    private UUID id;
-
-    @NotBlank
-    private String carModel;
-
-    @NotBlank
-    private String carModelYear;
-
-    @NotBlank
-    private String carMake;
-
-    @NotBlank
-    private String carColor;
-
-    @NotBlank
-    private String carVin;
-
-    private BigDecimal carValue;
-
-    @NotNull
-    private LocalDateTime carRegistrationDate;
-}
+@Builder
+@JsonDeserialize(builder = CarDtoResponse.CarDtoResponseBuilder.class)
+public record CarDtoResponse(
+        @NotBlank UUID id,
+        @NotBlank String model,
+        @NotBlank String modelYear,
+        @NotBlank String manufacturer,
+        @NotBlank String color,
+        @NotBlank String vin,
+        BigDecimal value,
+        @NotNull  LocalDateTime registrationDate
+) {}

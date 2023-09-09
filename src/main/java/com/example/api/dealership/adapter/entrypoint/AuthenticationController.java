@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/v1/dealership")
+@RequestMapping
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -36,19 +35,13 @@ public class AuthenticationController {
     })
     @PostMapping(path = "/auths",produces = "application/json")
     public ResponseEntity<Response<String>> authenticate(@RequestBody UserDtoRequest userDtoRequest){
-
-        var response = new Response<String>();
-        try {
             final var token = authenticationService.authenticate(userDtoRequest);
-            response.setData(token);
+            final var response = Response.createResponse(token);
 
             return ResponseEntity.ok().body(response);
-        }catch (Exception ex){
-            response.setErrors("This user is unauthorized");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
     }
 
 
 
 }
+

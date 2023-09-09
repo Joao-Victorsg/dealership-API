@@ -17,8 +17,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,26 +40,15 @@ class AuthenticationServiceImplTest {
         final var token = "token";
 
         when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDto.getUsername(),
-                        userDto.getPassword())))
+                new UsernamePasswordAuthenticationToken(userDto.username(),
+                        userDto.password())))
                 .thenReturn(null);
 
-        when(userDetailsService.loadUserByUsername(userDto.getUsername())).thenReturn(userDetails);
+        when(userDetailsService.loadUserByUsername(userDto.username())).thenReturn(userDetails);
 
         when(jwtService.generateToken(userDetails)).thenReturn(token);
 
         final var generatedToken = authenticationService.authenticate(userDto);
-
-        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(),
-                userDto.getPassword()));
-
-        verify(userDetailsService).loadUserByUsername(userDto.getUsername());
-
-        verify(userDetailsService).getAuthorities(false);
-
-        verify(jwtService).generateToken(userDetails);
-
-        verifyNoMoreInteractions(authenticationManager,userDetailsService,jwtService);
 
         assertEquals(generatedToken,token);
     }

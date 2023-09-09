@@ -1,8 +1,6 @@
 package com.example.api.dealership.config.rest.security;
 
 import com.example.api.dealership.adapter.service.security.JwtService;
-
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import java.io.IOException;
 
@@ -48,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 final var authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                //Updating the context to set who ir authenticated
+                //Updating the context to set who is authenticated
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
 

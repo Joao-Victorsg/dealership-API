@@ -4,8 +4,8 @@ package com.example.api.dealership.adapter.entrypoint;
 import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
+import com.example.api.dealership.adapter.dtos.client.ClientDtoUpdateRequest;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
-import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
 import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
@@ -15,8 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,20 +32,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.stream.Collectors;
+
+import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientDtoResponse;
+import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientModel;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/dealership")
+@RequestMapping
 public class ClientController {
 
     private final ClientService clientService;
-
-    private final ClientMapper clientMapper;
-
-    private final SearchAddressGateway addressGateway;
-
 
     @Operation(summary = "Return a page of clients")
     @ApiResponses(value = {
@@ -59,20 +54,19 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients", produces = "application/json")
-    public ResponseEntity<Response<Page<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "id",
-            direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) String city,
-                                                                            @RequestParam(required = false) String state) {
+    public ResponseEntity<Response<PageImpl<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) final String city,
+                                                                               @RequestParam(required = false) final String state) {
 
-        var response = new Response<Page<ClientDtoResponse>>();
+        final var clients = clientService.getClients(city,state,pageable);
 
-        var clients = clientService.getClients(city,state,pageable);
+        final var clientsDtoList = clients.
+                stream().
+                map(ClientMapper::toClientDtoResponse).
+                toList();
 
-        response.setData(new PageImpl<>(
-                clients.
-                        stream().
-                        map(clientMapper::toClientDtoResponse).
-                        collect(Collectors.toList()))
-        );
+        final var response = Response.createResponse(
+                new PageImpl<>(clientsDtoList));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -88,18 +82,16 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+    public ResponseEntity<Response<ClientDtoResponse>> getClient(@PathVariable(value = "cpf") final String cpf) throws ClientNotFoundException {
+        final var client = clientService.findByCpf(cpf);
 
-        var response = new Response<ClientDtoResponse>();
+        if (client.isEmpty())
+            throw new ClientNotFoundException("There isn't a client with this CPF");
 
-        var cliente = clientService.findByCpf(cpf);
+        final var response = Response
+                .createResponse(toClientDtoResponse(client.get()));
 
-        if (cliente.isPresent()) {
-            response.setData(clientMapper.toClientDtoResponse(cliente.get()));
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
-
-        throw new ClientNotFoundException("There isn't a client with this CPF");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
@@ -115,27 +107,17 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
-    public ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid ClientDtoRequest request) throws DuplicatedInfoException {
-        var response = new Response<ClientDtoResponse>();
+    public ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid final ClientDtoRequest request) throws DuplicatedInfoException {
+        final var client = toClientModel(request);
 
-        var cliente = clientService.findByCpf(request.getCpf());
+        final var savedClient = clientService.saveClient(client);
 
-        if (cliente.isPresent()) {
-            throw new DuplicatedInfoException("A client with this CPF already exists");
-        }
+        log.info("Creating client in the database: " + savedClient);
 
-        var clientAddress = addressGateway.byPostCode(request.getPostCode());
+        final var response = Response.createResponse(toClientDtoResponse(savedClient));
 
-        BeanUtils.copyProperties(clientAddress, request);
-
-        var clientModel = clientService.saveClient(clientMapper.toClientModel(request));
-        log.info("Creating client in the database: " + clientModel);
-
-        response.setData(clientMapper.toClientDtoResponse(clientModel));
-
-        return ResponseEntity.created(URI.create("/v1/dealership/client/" + clientModel.getCpf()))
+        return ResponseEntity.created(URI.create("/v1/dealership/client/" + savedClient.getCpf()))
                 .body(response);
-
     }
 
     @Operation(summary = "Update a client name or/and address")
@@ -148,29 +130,10 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PutMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") String cpf, @RequestBody ClientDtoRequest request) throws ClientNotFoundException {
-        var response = new Response<ClientDtoResponse>();
+    public ResponseEntity<Response<ClientDtoResponse>> updateClient(@PathVariable(value = "cpf") final String cpf, @RequestBody final ClientDtoUpdateRequest request) throws ClientNotFoundException {
+        final var updatedClient = clientService.updateClient(cpf,request);
 
-        var client = clientService.findByCpf(cpf);
-
-        if (client.isEmpty()) {
-            throw new ClientNotFoundException("A client with this CPF was not found");
-        }
-
-        var clientModel = client.get();
-
-        var clientAddress = addressGateway.byPostCode(request.getPostCode());
-        BeanUtils.copyProperties(clientAddress, request);
-
-        var clientModelUpdate = clientMapper.toClientModel(request);
-
-        clientModelUpdate.setId(clientModel.getId());
-        clientModelUpdate.setCpf(clientModel.getCpf());
-        clientModelUpdate.getAddress().setId(clientModel.getAddress().getId());
-
-        clientModel = clientService.saveClient(clientModelUpdate);
-
-        response.setData(clientMapper.toClientDtoResponse(clientModel));
+        final var response = Response.createResponse(toClientDtoResponse(updatedClient));
 
         log.info("Updating client: " + response.getData());
 
@@ -188,21 +151,14 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @DeleteMapping(path = "/clients/{cpf}", produces = "application/json")
-    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") String cpf) throws ClientNotFoundException {
+    public ResponseEntity<Response<String>> deleteClient(@PathVariable(value = "cpf") final String cpf) throws ClientNotFoundException {
 
-        var response = new Response<String>();
+        clientService.deleteClient(cpf);
 
-        var clientModelOptional = clientService.findByCpf(cpf);
+        log.info("Client with CPF: " + cpf + "was successfully deleted");
 
-        if (clientModelOptional.isPresent()) {
-            clientService.deleteClient(cpf);
+        final var response = Response.createResponse("Client with CPF: " + cpf + " was successfully deleted");
 
-            log.info("Client with CPF: " + cpf + "was successfully deleted");
-
-            response.setData("Client with CPF: " + cpf + " was successfully deleted");
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
-        throw new ClientNotFoundException("There isn't a client with this CPF");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

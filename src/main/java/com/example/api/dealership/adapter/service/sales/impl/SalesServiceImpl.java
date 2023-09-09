@@ -1,8 +1,16 @@
 package com.example.api.dealership.adapter.service.sales.impl;
 
+import com.example.api.dealership.adapter.mapper.SalesMapper;
 import com.example.api.dealership.adapter.output.repository.port.SalesRepositoryPort;
+import com.example.api.dealership.adapter.service.car.CarService;
+import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.domain.SalesModel;
+import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
+import com.example.api.dealership.core.exceptions.CarNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotFoundException;
+import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
+import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,14 +29,38 @@ public class SalesServiceImpl implements SalesService {
 
     private final SalesRepositoryPort salesRepositoryPort;
 
+    private final ClientService clientService;
+
+    private final CarService carService;
+
+    private final SalesMapper salesMapper;
+
     @Transactional
     @Override
-    public SalesModel saveSale(SalesModel sale) {
-        return salesRepositoryPort.save(sale);
+    public SalesModel saveSale(final String cpf, final String vin) throws ClientNotFoundException, CarNotFoundException, ClientNotHaveRegisteredAddressException, CarAlreadySoldException {
+
+        final var client = clientService.findByCpf(cpf);
+
+        final var car = carService.findByVin(vin);
+
+        if(client.isEmpty()) throw new ClientNotFoundException("There isn't a client with this CPF");
+
+        if(car.isEmpty()) throw new CarNotFoundException("There isn't a car with this VIN");
+
+        if(!client.get().getAddress().getIsAddressSearched())
+            throw new ClientNotHaveRegisteredAddressException("The client needs to have a registered address");
+
+        final var sale = salesMapper.toSalesModel(car.get(),client.get());
+
+        try{
+            return salesRepositoryPort.save(sale);
+        }catch (Exception ex){
+            throw new CarAlreadySoldException("The car with this VIN was already sold");
+        }
     }
 
     @Override
-    public Page<SalesModel> getSales(LocalDate initialDate, LocalDate finalDate,Pageable pageable) {
+    public Page<SalesModel> getSales(final LocalDate initialDate, final LocalDate finalDate, final Pageable pageable) {
 
         if(ObjectUtils.allNotNull(initialDate,finalDate))
             return salesRepositoryPort.findAll(betweenDates(initialDate,finalDate),pageable);
@@ -41,9 +73,11 @@ public class SalesServiceImpl implements SalesService {
         return salesRepositoryPort.findById(id);
     }
 
-
     @Override
-    public void deleteSale(String id) {
+    public void deleteSale(String id) throws SaleNotFoundException {
+        if(salesRepositoryPort.findById(id).isEmpty())
+            throw new SaleNotFoundException("There isn't a sale with this id");
+
         salesRepositoryPort.deleteById(id);
     }
 }

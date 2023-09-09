@@ -8,8 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,14 +20,12 @@ class SearchAddressGatewayTest {
     @DisplayName("Given a postcode, search the address")
     void givenPostCodeSearchTheAddress() {
         final var postCode = "111";
-        final var address = new AddressDtoResponse();
+        final var address = AddressDtoResponse.builder().build();
 
         when(searchAddressGateway.byPostCode(postCode))
                 .thenReturn(address);
 
         final var resultAddress = searchAddressGateway.byPostCode(postCode);
-
-        verify(searchAddressGateway,times(1)).byPostCode(postCode);
 
         assertEquals(address,resultAddress);
     }

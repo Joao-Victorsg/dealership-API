@@ -48,9 +48,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST,"/v1/dealership/users").permitAll()
-                .requestMatchers(HttpMethod.POST, "/v1/dealership/auths").permitAll()
-                .requestMatchers(HttpMethod.DELETE,"/v1/dealership/*").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auths").permitAll()
+                .requestMatchers(HttpMethod.DELETE,"/*").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .headers(headers -> headers.frameOptions().disable())

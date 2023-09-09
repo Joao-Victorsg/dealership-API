@@ -11,15 +11,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Data
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class ClientModel {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name="uuid",strategy="uuid2")
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
     private String name;

@@ -19,3 +19,4 @@ public class BaseIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
+

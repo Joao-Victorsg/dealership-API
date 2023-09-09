@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var userModel = userRepositoryPort.findByUsername(username).
+        final var userModel = userRepositoryPort.findByUsername(username).
                 orElseThrow(()-> new UsernameNotFoundException("Username not found"));
 
         return User.builder()
@@ -46,3 +46,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 }
+

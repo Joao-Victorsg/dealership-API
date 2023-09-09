@@ -4,35 +4,29 @@ package integrated;
 import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.service.user.impl.UserServiceImpl;
 import com.example.api.dealership.core.domain.UserModel;
+import com.example.api.dealership.core.exceptions.UsernameAlreadyUsedException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 
-public class AuthenticationControllerIT extends BaseIT{
+class AuthenticationControllerIT extends BaseIT{
 
-    private final static String AUTH_URL = "/v1/dealership/auths";
+    private final static String AUTH_URL = "v1/dealership/auths";
 
     @Autowired
     private UserServiceImpl userService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-
-
     @DisplayName("Given a valid user return a token")
     @Test
-    void givenValidUserReturnToken(){
+    void givenValidUserReturnToken() throws UsernameAlreadyUsedException {
         final var userDto = createUserDto();
-        final var userModel = createUserModel();
+        final var userModel = createUserModel(userDto);
         userService.saveUser(userModel);
 
         RestAssured.given()
@@ -57,8 +51,8 @@ public class AuthenticationControllerIT extends BaseIT{
                 .post(AUTH_URL)
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("data",nullValue())
-                .body("errors", equalTo("This user is unauthorized"));
+                .body("data.timestamp",notNullValue())
+                .body("data.details",equalTo("Bad credentials"));
     }
 
     private UserDtoRequest createUserDto(){
@@ -68,11 +62,10 @@ public class AuthenticationControllerIT extends BaseIT{
                 .build();
     }
 
-    private UserModel createUserModel(){
+    private UserModel createUserModel(UserDtoRequest user){
         return UserModel.builder()
-                .username("teste")
-                .password(passwordEncoder.encode("teste"))
-                .isAdmin(true)
+                .username(user.username())
+                .password(user.password())
                 .build();
     }
 

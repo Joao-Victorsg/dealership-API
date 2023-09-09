@@ -21,9 +21,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String authenticate(UserDtoRequest userDtoRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDtoRequest.getUsername(),userDtoRequest.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDtoRequest.username(),userDtoRequest.password()));
 
-        final var userDetails = userDetailsService.loadUserByUsername(userDtoRequest.getUsername());
+        final var userDetails = userDetailsService.loadUserByUsername(userDtoRequest.username());
 
         return jwtService.generateToken(userDetails);
     }

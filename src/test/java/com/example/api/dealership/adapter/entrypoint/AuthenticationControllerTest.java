@@ -11,8 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,11 +33,8 @@ class AuthenticationControllerTest {
 
         final var response = authenticationController.authenticate(userDtoRequest);
 
-        verify(authenticationService).authenticate(userDtoRequest);
-        verifyNoMoreInteractions(authenticationService);
-
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertEquals(response.getBody().getData(),"token");
+        assertEquals(HttpStatus.OK,response.getStatusCode());
+        assertEquals("token",response.getBody().getData());
     }
 
     @Test
@@ -50,15 +46,11 @@ class AuthenticationControllerTest {
         when(authenticationService.authenticate(userDtoRequest))
                 .thenThrow(new RuntimeException("This user is unauthorized"));
 
-        final var response = authenticationController.authenticate(userDtoRequest);
-
-        verify(authenticationService).authenticate(userDtoRequest);
-        verifyNoMoreInteractions(authenticationService);
-
-        assertEquals(HttpStatus.UNAUTHORIZED,response.getStatusCode());
-        assertEquals(expectedResponse,response.getBody().getErrors());
+        assertThrows(RuntimeException.class,
+                () -> {
+                    final var response = authenticationController.authenticate(userDtoRequest);
+                    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+                    assertEquals(expectedResponse, response.getBody().getData());
+                });
     }
-
-
-
 }

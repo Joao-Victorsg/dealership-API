@@ -12,7 +12,7 @@ import java.time.ZoneId;
 @Mapper(componentModel = "spring")
 public interface CarMapper {
 
-    @Mapping(expression = "java(getRegistrationDate())",target = "carRegistrationDate")
+    @Mapping(expression = "java(getRegistrationDate())",target = "registrationDate")
     CarModel toCarModel(CarDtoRequest carDtoRequest);
 
 
@@ -23,3 +23,4 @@ public interface CarMapper {
     CarDtoResponse toCarDtoResponse(CarModel carModel);
 
 }
+
