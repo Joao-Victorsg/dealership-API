@@ -37,5 +37,5 @@ public class AddressModel {
 
     private String streetNumber;
 
-    private boolean isAddressSearched;
+    private Boolean isAddressSearched;
 }

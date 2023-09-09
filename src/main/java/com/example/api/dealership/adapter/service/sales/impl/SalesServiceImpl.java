@@ -47,7 +47,7 @@ public class SalesServiceImpl implements SalesService {
 
         if(car.isEmpty()) throw new CarNotFoundException("There isn't a car with this VIN");
 
-        if(!client.get().getAddress().isAddressSearched())
+        if(!client.get().getAddress().getIsAddressSearched())
             throw new ClientNotHaveRegisteredAddressException("The client needs to have a registered address");
 
         final var sale = salesMapper.toSalesModel(car.get(),client.get());

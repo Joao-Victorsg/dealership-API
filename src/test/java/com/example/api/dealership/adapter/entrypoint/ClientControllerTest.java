@@ -70,7 +70,7 @@ class ClientControllerTest {
         final var response = clientController.saveClient(clientDtoRequest);
 
         assertEquals(HttpStatus.CREATED,response.getStatusCode());
-        assertEquals(expectedResponse.getBody().getData().getCpf(),response.getBody().getData().getCpf());
+        assertEquals(expectedResponse.getBody().getData().cpf(),response.getBody().getData().cpf());
     }
 
     @Test
@@ -112,7 +112,7 @@ class ClientControllerTest {
         assertDoesNotThrow(() -> {
                     final var response = clientController.getClient(cpf);
                     assertEquals(HttpStatus.OK, response.getStatusCode());
-                    assertEquals(clientDtoResponse.getCpf(), response.getBody().getData().getCpf());
+                    assertEquals(clientDtoResponse.cpf(), response.getBody().getData().cpf());
                 }
         );
     }
@@ -145,8 +145,8 @@ class ClientControllerTest {
         assertDoesNotThrow(() -> {
                     final var updatedClient = clientController.updateClient(cpf, request);
                     assertEquals(HttpStatus.OK, updatedClient.getStatusCode());
-                    assertEquals(expectedResponse.getBody().getData().getAddress().getPostCode(),
-                            updatedClient.getBody().getData().getAddress().getPostCode());
+                    assertEquals(expectedResponse.getBody().getData().address().postCode(),
+                            updatedClient.getBody().getData().address().postCode());
                 }
         );
     }

@@ -60,7 +60,7 @@ public class SalesController {
     @PostMapping(path = "/sales")
     public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid final SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
 
-        var sale = salesService.saveSale(request.getCpf(), request.getVin());
+        var sale = salesService.saveSale(request.cpf(), request.vin());
 
         final var salesDtoResponse = createResponse(salesMapper.toSalesDtoResponse(sale));
 

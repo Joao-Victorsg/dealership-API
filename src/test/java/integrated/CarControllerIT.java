@@ -42,11 +42,11 @@ import static org.hamcrest.CoreMatchers.notNullValue;
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("data.id", notNullValue())
-                .body("data.model", equalTo(car.getModel()))
-                .body("data.modelYear", equalTo(car.getModelYear()))
-                .body("data.manufacturer",equalTo(car.getManufacturer()))
-                .body("data.vin", equalTo(car.getVin()))
-                .body("data.value", equalTo(car.getValue().floatValue()));
+                .body("data.model", equalTo(car.model()))
+                .body("data.modelYear", equalTo(car.modelYear()))
+                .body("data.manufacturer",equalTo(car.manufacturer()))
+                .body("data.vin", equalTo(car.vin()))
+                .body("data.value", equalTo(car.value().floatValue()));
     }
 
     @DisplayName("Get a car by VIN with a valid request")
@@ -117,8 +117,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
                 .put(URL_WITH_VIN_PATH_PARAMETER)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("data.color",equalTo(carDto.getColor()))
-                .body("data.value",equalTo(carDto.getValue().floatValue()));
+                .body("data.color",equalTo(carDto.color()))
+                .body("data.value",equalTo(carDto.value().floatValue()));
     }
 
 

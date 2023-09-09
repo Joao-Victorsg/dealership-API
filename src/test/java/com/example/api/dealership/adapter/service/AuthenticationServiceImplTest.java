@@ -40,11 +40,11 @@ class AuthenticationServiceImplTest {
         final var token = "token";
 
         when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDto.getUsername(),
-                        userDto.getPassword())))
+                new UsernamePasswordAuthenticationToken(userDto.username(),
+                        userDto.password())))
                 .thenReturn(null);
 
-        when(userDetailsService.loadUserByUsername(userDto.getUsername())).thenReturn(userDetails);
+        when(userDetailsService.loadUserByUsername(userDto.username())).thenReturn(userDetails);
 
         when(jwtService.generateToken(userDetails)).thenReturn(token);
 

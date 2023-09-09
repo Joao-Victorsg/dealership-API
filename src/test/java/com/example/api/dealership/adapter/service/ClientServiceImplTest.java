@@ -180,7 +180,7 @@ class ClientServiceImplTest {
                 .build();
 
         when(clientRepositoryPort.findByCpf("123456789")).thenReturn(Optional.of(oldClient));
-        when(searchAddressGateway.byPostCode(clientUpdateDtoRequest.getPostCode()))
+        when(searchAddressGateway.byPostCode(clientUpdateDtoRequest.postCode()))
                 .thenReturn(AddressDtoResponse.builder().postCode("36666-666").build());
         when(clientRepositoryPort.save(any(ClientModel.class))).thenReturn(updatedCliente);
 

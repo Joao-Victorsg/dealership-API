@@ -88,7 +88,7 @@ public class ClientServiceImpl implements ClientService {
 
         final var clientModel = optionalClient.get();
 
-        final var clientAddress = searchAddressGateway.byPostCode(request.getPostCode());
+        final var clientAddress = searchAddressGateway.byPostCode(request.postCode());
         BeanUtils.copyProperties(clientAddress,clientModel.getAddress());
 
         //TODO: Create a constructor for ClientModel that receives another client.

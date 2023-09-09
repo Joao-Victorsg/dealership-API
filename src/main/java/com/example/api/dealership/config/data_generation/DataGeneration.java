@@ -14,8 +14,8 @@ import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.domain.UserModel;
 import com.example.api.dealership.core.exceptions.UsernameAlreadyUsedException;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
@@ -23,7 +23,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class DataGeneration {
     private final CarMapper carMapper;
     private final SalesService salesService;
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Bean
     public void saveMockingData() throws UsernameAlreadyUsedException {
@@ -121,7 +119,10 @@ public class DataGeneration {
                 final var clientDtoRequest = ClientDtoRequest.builder()
                                 .name(faker.name().name())
                                 .cpf(clientsCPF.get(i))
-                                .address(AddressDtoRequest.createAddress("361","111111111"))
+                                .address(AddressDtoRequest.builder()
+                                        .postCode("111111111")
+                                        .streetNumber("361")
+                                        .build())
                                 .build();
 
                 clientsRequests.add(clientDtoRequest);
@@ -134,9 +135,9 @@ public class DataGeneration {
     private static List<AddressDtoResponse> generateClientAddressData(){
         try {
             final var jsonText = AbstractReader.readJson("./static/MOCK_ADDRESS_DATA.json");
-            final var type = new TypeToken<List<AddressDtoResponse>>(){}.getType();
+            final var type = new TypeReference<List<AddressDtoResponse>>() {};
 
-            return new Gson().fromJson(jsonText,type);
+            return new ObjectMapper().readValue(jsonText, type);
         } catch (IOException ex) {
             log.error("Erro na leitura do arquivo",ex);
             return List.of();
@@ -144,36 +145,36 @@ public class DataGeneration {
     }
 
 
-    private List<CarDtoRequest> generateCarData(){
+    private List<CarDtoRequest> generateCarData() {
         try {
-           final var jsonText = AbstractReader.readJson("./static/MOCK_VEIC_DATA.json");
-           final var type = new TypeToken<List<CarDtoRequest>>(){}.getType();
-           final List<CarDtoRequest> carsWithoutValue = new Gson().fromJson(jsonText,type);
+            final var jsonText = AbstractReader.readJson("./static/MOCK_VEIC_DATA.json");
+            final var type = new TypeReference<List<CarDtoRequest>>() {};
 
-           return carsWithoutValue.stream()
+            final List<CarDtoRequest> carsWithoutValue = new ObjectMapper().readValue(jsonText, type);
+
+            return carsWithoutValue.stream()
                     .map(this::buildCarDtoRequestWithValue)
                     .toList();
-        }catch (IOException ex){
-            log.error("Erro na leitura do arquivo",ex);
+        } catch (IOException ex) {
+            log.error("Erro na leitura do arquivo", ex);
             return List.of();
         }
     }
 
     private CarDtoRequest buildCarDtoRequestWithValue(CarDtoRequest car){
         return CarDtoRequest.builder()
-                .model(car.getModel())
-                .modelYear(car.getModelYear())
-                .manufacturer(car.getManufacturer())
-                .color(car.getColor())
-                .vin(car.getVin())
+                .model(car.model())
+                .modelYear(car.modelYear())
+                .manufacturer(car.manufacturer())
+                .color(car.color())
+                .vin(car.vin())
                 .value(generateRandomDoubleValueFromRange(0.00,400000.00))
                 .build();
     }
 
     private Double generateRandomDoubleValueFromRange(Double min, Double max) {
         Random random = new Random();
-        Double randomDouble = min + (max - min) * random.nextDouble();
-        return randomDouble;
+        return min + (max - min) * random.nextDouble();
     }
 
     private void saveUser(UserModel user) throws UsernameAlreadyUsedException {

@@ -51,8 +51,8 @@ class ClientControllerIT extends BaseIT {
                 .post(URL)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("data.name", equalTo(client.getName()))
-                .body("data.cpf", equalTo(client.getCpf()))
+                .body("data.name", equalTo(client.name()))
+                .body("data.cpf", equalTo(client.cpf()))
                 .body("data.address.cep", equalTo("39999-999"))
                 .body("data.address.logradouro", notNullValue())
                 .body("data.address.uf", notNullValue())
@@ -73,10 +73,10 @@ class ClientControllerIT extends BaseIT {
                 .post(URL)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("data.name", equalTo(client.getName()))
-                .body("data.cpf", equalTo(client.getCpf()))
+                .body("data.name", equalTo(client.name()))
+                .body("data.cpf", equalTo(client.cpf()))
                 .body("data.address.cep", equalTo("39999-999"))
-                .body("data.address.addressSearched", equalTo(false));
+                .body("data.address.isAddressSearched", equalTo(false));
     }
 
     @DisplayName("Should create the client even with the circuit break from the via cep api in open state")
@@ -93,10 +93,10 @@ class ClientControllerIT extends BaseIT {
                 .post(URL)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("data.name", equalTo(client.getName()))
-                .body("data.cpf", equalTo(client.getCpf()))
+                .body("data.name", equalTo(client.name()))
+                .body("data.cpf", equalTo(client.cpf()))
                 .body("data.address.cep", equalTo("39999-999"))
-                .body("data.address.addressSearched", equalTo(false));
+                .body("data.address.isAddressSearched", equalTo(false));
 
         circuitBreakerRegistry.circuitBreaker("SearchAddressGatewaybyPostCode").transitionToClosedState();
     }

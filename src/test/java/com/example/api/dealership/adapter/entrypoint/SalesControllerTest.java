@@ -54,7 +54,7 @@ class SalesControllerTest {
         final var expectedResponse = ResponseEntity.created(URI.create("/v1/dealership/sales/" + sales.getId()))
                 .body(createResponse(salesDtoResponse));
 
-        when(salesService.saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin())).thenReturn(sales);
+        when(salesService.saveSale(salesDtoRequest.cpf(),salesDtoRequest.vin())).thenReturn(sales);
         when(salesMapper.toSalesDtoResponse(sales)).thenReturn(salesDtoResponse);
 
         assertDoesNotThrow(() -> {
@@ -72,7 +72,7 @@ class SalesControllerTest {
                 .body(createResponse("The client needs to have a registered address"));
 
         doThrow(ClientNotHaveRegisteredAddressException.class).when(salesService)
-                .saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin());
+                .saveSale(salesDtoRequest.cpf(),salesDtoRequest.vin());
 
         assertThrows(ClientNotHaveRegisteredAddressException.class,() -> {
             final var response = salesController.saveSale(salesDtoRequest);
@@ -91,7 +91,7 @@ class SalesControllerTest {
                 .body(createResponse("There isn't a client with this CPF"));
 
         doThrow(ClientNotFoundException.class).when(salesService)
-                .saveSale(salesDtoRequest.getCpf(),salesDtoRequest.getVin());
+                .saveSale(salesDtoRequest.cpf(),salesDtoRequest.vin());
 
         assertThrows(ClientNotFoundException.class,() ->{
             final var response = salesController.saveSale(salesDtoRequest);
@@ -107,8 +107,8 @@ class SalesControllerTest {
         final var expectedResponse = ResponseEntity.badRequest()
                 .body(createResponse("There isn't a car with this VIN"));
 
-        doThrow(CarNotFoundException.class).when(salesService).saveSale(salesDtoRequest.getCpf(),
-        salesDtoRequest.getVin());
+        doThrow(CarNotFoundException.class).when(salesService).saveSale(salesDtoRequest.cpf(),
+        salesDtoRequest.vin());
 
         assertThrows(CarNotFoundException.class,() ->{
             final var response = salesController.saveSale(salesDtoRequest);
@@ -124,8 +124,8 @@ class SalesControllerTest {
         final var expectedResponse = ResponseEntity.badRequest()
                 .body(createResponse("The car with this VIN was already sold"));
 
-        doThrow(CarAlreadySoldException.class).when(salesService).saveSale(salesDtoRequest.getCpf(),
-                salesDtoRequest.getVin());
+        doThrow(CarAlreadySoldException.class).when(salesService).saveSale(salesDtoRequest.cpf(),
+                salesDtoRequest.vin());
 
         assertThrows(CarAlreadySoldException.class,() ->{
             final var response = salesController.saveSale(salesDtoRequest);

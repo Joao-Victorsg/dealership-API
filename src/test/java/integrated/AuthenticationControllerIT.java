@@ -64,8 +64,8 @@ class AuthenticationControllerIT extends BaseIT{
 
     private UserModel createUserModel(UserDtoRequest user){
         return UserModel.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
+                .username(user.username())
+                .password(user.password())
                 .build();
     }
 

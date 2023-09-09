@@ -20,7 +20,7 @@ class SearchAddressGatewayTest {
     @DisplayName("Given a postcode, search the address")
     void givenPostCodeSearchTheAddress() {
         final var postCode = "111";
-        final var address = new AddressDtoResponse();
+        final var address = AddressDtoResponse.builder().build();
 
         when(searchAddressGateway.byPostCode(postCode))
                 .thenReturn(address);

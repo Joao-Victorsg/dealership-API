@@ -13,11 +13,15 @@ import java.time.ZoneId;
 
 public final class ClientMapper {
 
+    private ClientMapper(){
+
+    }
+
     public static ClientModel toClientModel(ClientDtoRequest request){
         return ClientModel.builder()
-                .cpf(request.getCpf())
-                .name(request.getName())
-                .address(toAddressModel(request.getAddress()))
+                .cpf(request.cpf())
+                .name(request.name())
+                .address(toAddressModel(request.address()))
                 .registrationDate(LocalDateTime.now(ZoneId.of("UTC")))
                 .build();
     }
@@ -33,8 +37,8 @@ public final class ClientMapper {
 
     private static AddressModel toAddressModel(AddressDtoRequest address){
         return AddressModel.builder()
-                .postCode(address.getPostCode())
-                .streetNumber(address.getStreetNumber())
+                .postCode(address.postCode())
+                .streetNumber(address.streetNumber())
                 .build();
     }
 
@@ -45,7 +49,7 @@ public final class ClientMapper {
                 .city(addressModel.getCity())
                 .stateAbbreviation(addressModel.getStateAbbreviation())
                 .streetName(addressModel.getStreetName())
-                .isAddressSearched(addressModel.isAddressSearched())
+                .isAddressSearched(addressModel.getIsAddressSearched())
                 .build();
     }
 }
