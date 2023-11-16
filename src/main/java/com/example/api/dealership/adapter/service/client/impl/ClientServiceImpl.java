@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,11 +36,13 @@ public class ClientServiceImpl implements ClientService {
     //TODO: Creating a Log Service or util to encapsulate the external technology
 
     @Override
+    @Cacheable(value = "clients-by-cpf")
     public Optional<ClientModel> findByCpf(final String cpf) {
         return clientRepositoryPort.findByCpf(cpf);
     }
 
     @Override
+    @Cacheable(value = "get-all-clients-sorted-by-id", key = "#root.target.generateKey(#city, #state, #pageable)")
     public Page<ClientModel> getClients(final String city, final String state, final Pageable pageable) {
 
         final var specifications = new ArrayList<Specification<ClientModel>>();
@@ -53,6 +56,13 @@ public class ClientServiceImpl implements ClientService {
         final var specification = specifications.stream().reduce(Specification.where(null),Specification::and);
 
         return clientRepositoryPort.findAll(specification,pageable);
+    }
+
+    public String generateKey(String city, String state, Pageable pageable) {
+        String cityKey = city != null ? city : "nullCity";
+        String stateKey = state != null ? state : "nullState";
+
+        return cityKey + "_" + stateKey + "_" + pageable.getPageNumber() + "_" + pageable.getPageSize();
     }
 
     @Override
@@ -95,8 +105,5 @@ public class ClientServiceImpl implements ClientService {
 
         return clientRepositoryPort.save(clientModel);
     }
-
-
-
 
 }

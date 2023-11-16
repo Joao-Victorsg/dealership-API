@@ -9,6 +9,7 @@ import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +30,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepositoryPort carRepositoryPort;
 
     @Override
+    @Cacheable(value = "car-by-vin")
     public Optional<CarModel> findByVin(String vehicleIdentificationNumber){
         return carRepositoryPort.findByVin(vehicleIdentificationNumber);
     }
@@ -43,6 +45,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Cacheable(value = "get-all-cars")
     public Page<CarModel> getCars(final Pageable pageable, final Double initialValue, final Double finalValue, final String year, final String color) {
         final var specs = new ArrayList<Specification<CarModel>>();
 

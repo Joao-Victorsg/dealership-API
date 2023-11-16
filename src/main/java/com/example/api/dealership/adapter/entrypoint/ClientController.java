@@ -54,7 +54,7 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @GetMapping(path = "/clients", produces = "application/json")
-    public ResponseEntity<Response<PageImpl<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "id",
+    public ResponseEntity<Response<PageImpl<ClientDtoResponse>>> getAllClients(@PageableDefault(sort = "name",
             direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) final String city,
                                                                                @RequestParam(required = false) final String state) {
 
@@ -66,7 +66,7 @@ public class ClientController {
                 toList();
 
         final var response = Response.createResponse(
-                new PageImpl<>(clientsDtoList));
+                new PageImpl<>(clientsDtoList,clients.getPageable(), clientsDtoList.size()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

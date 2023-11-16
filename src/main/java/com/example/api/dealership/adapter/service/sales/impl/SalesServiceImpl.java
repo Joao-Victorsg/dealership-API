@@ -14,6 +14,7 @@ import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,7 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
+    @Cacheable("sales-by-id")
     public Optional<SalesModel> findById(String id) {
         return salesRepositoryPort.findById(id);
     }
