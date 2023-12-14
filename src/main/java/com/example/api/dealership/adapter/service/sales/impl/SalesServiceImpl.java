@@ -14,6 +14,7 @@ import com.example.api.dealership.core.exceptions.SaleNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -76,6 +77,7 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
+    @CacheEvict("sales-by-id")
     public void deleteSale(String id) throws SaleNotFoundException {
         if(salesRepositoryPort.findById(id).isEmpty())
             throw new SaleNotFoundException("There isn't a sale with this id");
