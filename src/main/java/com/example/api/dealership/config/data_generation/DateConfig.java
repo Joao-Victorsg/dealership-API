@@ -21,7 +21,9 @@ public class DateConfig {
     public ObjectMapper objectMapper(){
         JavaTimeModule module = new JavaTimeModule();
         module.addSerializer(LOCAL_DATETIME_SERIALIZER);
-        return new ObjectMapper().registerModule(module);
+        return new ObjectMapper().registerModule(module)
+                .registerModule(new JavaTimeModule())
+                .findAndRegisterModules();
     }
 
 }

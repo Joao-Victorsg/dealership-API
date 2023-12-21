@@ -1,5 +1,6 @@
 package com.example.api.dealership.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,8 +44,11 @@ public class ClientModel {
     private AddressModel address;
 
     @Column(nullable = false)
+    //@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    //@JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<SalesModel> salesModel;
 }

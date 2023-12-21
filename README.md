@@ -63,6 +63,10 @@ The database is dropped every time that the application is turned off.
 The data generated in this process is different every time and to do that the datafaker and gson dependencies 
 were used in this process.
 
+## Cache
+
+Cache was added to all endpoints that requests a GET by something (e.g. GET a specific car by VIN).
+
 # Features
 
 This API provides HTTP endpoint's for the following:
@@ -72,7 +76,7 @@ This API provides HTTP endpoint's for the following:
 * Update a car: PUT/cars/{VIN}
 * Delete a car (by VIN): DELETE/cars/{VIN}
 * Get all cars: GET/cars
-* Get a specific car (by VIN): Get/cars/{VIN}
+* Get a specific car (by VIN): GET/cars/{VIN}
 
 ### Clients
 
@@ -108,6 +112,7 @@ This API provides HTTP endpoint's for the following:
 * Lombok
 * Open Feign
 * Circuit Breaker
+* Redis
 * Datafaker
 * Gson
 * Test Containers
@@ -123,6 +128,9 @@ This API provides HTTP endpoint's for the following:
 mvn clean install
 
 # Run
+
+Start the Redis and Postgres using the docker compose inside the devutils folder using:
+docker-compose up -d
 
 You can run the application localy using:
 mvn spring-boot:run

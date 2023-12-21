@@ -66,7 +66,7 @@ public class ClientController {
                 toList();
 
         final var response = Response.createResponse(
-                new PageImpl<>(clientsDtoList));
+                new PageImpl<>(clientsDtoList,clients.getPageable(), clientsDtoList.size()));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

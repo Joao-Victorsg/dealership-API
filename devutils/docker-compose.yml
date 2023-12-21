@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: dealershipdb
+    networks:
+      - api-network
+
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --loglevel warning --requirepass redislocal
+    volumes:
+      - cache:/data
+    networks:
+      - api-network
+
+volumes:
+  cache:
+    driver: local
+
+networks:
+  api-network:
+    driver: bridge

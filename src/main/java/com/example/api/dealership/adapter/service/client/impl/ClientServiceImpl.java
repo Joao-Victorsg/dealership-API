@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,6 +38,7 @@ public class ClientServiceImpl implements ClientService {
     //TODO: Creating a Log Service or util to encapsulate the external technology
 
     @Override
+    @Cacheable("clients-by-cpf")
     public Optional<ClientModel> findByCpf(final String cpf) {
         return clientRepositoryPort.findByCpf(cpf);
     }
@@ -71,6 +75,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "clients-by-cpf")
     public void deleteClient(final String cpf) throws ClientNotFoundException {
         if(clientRepositoryPort.findByCpf(cpf).isEmpty())
             throw new ClientNotFoundException("There isn't a client with this CPF");
@@ -80,6 +85,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
+    @CachePut(key="#cpf",cacheNames="clients-by-cpf")
     public ClientModel updateClient(final String cpf, final ClientDtoUpdateRequest request) throws ClientNotFoundException {
         final var optionalClient = clientRepositoryPort.findByCpf(cpf);
 
@@ -95,8 +101,5 @@ public class ClientServiceImpl implements ClientService {
 
         return clientRepositoryPort.save(clientModel);
     }
-
-
-
 
 }

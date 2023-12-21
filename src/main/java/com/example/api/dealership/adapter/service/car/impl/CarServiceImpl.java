@@ -9,6 +9,9 @@ import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +32,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepositoryPort carRepositoryPort;
 
     @Override
+    @Cacheable(value = "car-by-vin")
     public Optional<CarModel> findByVin(String vehicleIdentificationNumber){
         return carRepositoryPort.findByVin(vehicleIdentificationNumber);
     }
@@ -64,6 +68,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "car-by-vin")
     public void deleteCar(String vehicleIdentificationNumber) throws CarNotFoundException {
         if(carRepositoryPort.findByVin(vehicleIdentificationNumber).isEmpty())
             throw new CarNotFoundException("There isn't a car with this VIN");
@@ -73,6 +78,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
+    @CachePut(key = "#vin",cacheNames = "car-by-vin")
     public CarModel updateCar(final String vin, final CarDtoUpdateRequest carUpdate) throws CarNotFoundException {
         final var optinalCar = carRepositoryPort.findByVin(vin);
 
