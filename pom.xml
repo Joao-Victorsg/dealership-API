@@ -165,6 +165,13 @@
 			<version>20220924</version>
 		</dependency>
 
+		<!-- Tracing -->
+		<dependency>
+			<groupId>co.elastic.apm</groupId>
+			<artifactId>apm-agent-attach</artifactId>
+			<version>1.45.0</version>
+		</dependency>
+
 		<!-- Testes -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -354,9 +361,9 @@
 						<targetClass>**.adapter.output.gateway.**</targetClass>
 						<targetClass>**.service.**</targetClass>
 					</targetClasses>
+					<skip>${skip.test}</skip>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

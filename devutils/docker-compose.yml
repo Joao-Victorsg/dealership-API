@@ -1,22 +1,107 @@
 version: '3'
 
 services:
+
+  app:
+    container_name: dealership-api
+    build:
+      context: ./dealership-API
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    volumes:
+      - .:/code
+    ports:
+      - "8085:8085"
+    depends_on:
+      - db
+    networks:
+      - api-network
+
   db:
     image: postgres:latest
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
       POSTGRES_DB: dealershipdb
     networks:
       - api-network
 
   cache:
     image: redis:latest
+    container_name: redis
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
     command: redis-server --loglevel warning --requirepass redislocal
     volumes:
       - cache:/data
+    networks:
+      - api-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=true
+      - http.cors.allow-origin="*"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - api-network
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:7.13.0
+    container_name: metricbeat
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./beats/metric/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+    restart: on-failure
+    networks:
+      - api-network
+
+  heartbeat:
+    image: docker.elastic.co/beats/heartbeat:7.13.0
+    container_name: heartbeat
+    volumes:
+      - ./beats/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+    environment:
+      - setup.kibana.host=kibana:5601
+    networks:
+      - api-network
+
+  apm:
+    image: docker.elastic.co/apm/apm-server-oss:7.13.0
+    container_name: apm
+    volumes:
+      - ./apm/apm-server.yml:/usr/share/apm-server/apm-server.yml
+    ports:
+      - "8200:8200"
+    restart: on-failure
+    networks:
+      - api-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
     networks:
       - api-network
 
