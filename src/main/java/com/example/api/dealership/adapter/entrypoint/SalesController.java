@@ -10,6 +10,7 @@ import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,6 +47,8 @@ public class SalesController {
 
     private final SalesMapper salesMapper;
 
+    private final MeterRegistry meterRegistry;
+
     @Operation(summary="Save a sale")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "The sale was created with success"),
@@ -61,6 +64,8 @@ public class SalesController {
     public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid final SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
 
         var sale = salesService.saveSale(request.cpf(), request.vin());
+
+        meterRegistry.counter("total_sales").increment();
 
         final var salesDtoResponse = createResponse(salesMapper.toSalesDtoResponse(sale));
 
