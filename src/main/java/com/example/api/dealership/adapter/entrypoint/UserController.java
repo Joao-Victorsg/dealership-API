@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import java.net.URI;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@Profile("!prod")
+//@Profile("!prod")
 public class UserController {
 
     private final UserService userService;
@@ -43,7 +42,12 @@ public class UserController {
     })
     @PostMapping(path = "/users",produces = "application/json")
     public ResponseEntity<Response<String>> saveUser(@RequestBody UserDtoRequest userDtoRequest) throws UsernameAlreadyUsedException {
+
+        log.info("Creating user");
+
         final var user = userService.saveUser(userMapper.toUserModel(userDtoRequest));
+
+        log.info("Created user:",user);
 
         final var response  = Response.createResponse("User: " + user.getUsername() + " created with success");
 

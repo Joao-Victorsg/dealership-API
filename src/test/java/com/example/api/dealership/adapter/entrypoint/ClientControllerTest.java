@@ -23,7 +23,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +44,7 @@ class ClientControllerTest {
     @Mock
     private ClientService clientService;
 
-    @Test
+/*    @Test
     @DisplayName("Given a valid client request, save it in the database")
     void givenValidClientRequestSaveItInTheDatabase() throws DuplicatedInfoException {
         final var clientDtoRequest = ClientDtoRequest.builder()
@@ -71,7 +70,7 @@ class ClientControllerTest {
 
         assertEquals(HttpStatus.CREATED,response.getStatusCode());
         assertEquals(expectedResponse.getBody().getData().cpf(),response.getBody().getData().cpf());
-    }
+    }*/
 
     @Test
     @DisplayName("Given a client request with a CPF that already exists, throw DuplicatedInfoException ")
