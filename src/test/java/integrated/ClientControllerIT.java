@@ -198,13 +198,13 @@ class ClientControllerIT extends BaseIT {
     @DisplayName("Given a valid request to delete a client, do it")
     @Test
     void givenValidRequestToDeleteClientDoIt() throws DuplicatedInfoException {
-        final var clientModel = createClient("12345678911");
+        final var clientModel = createClient("48932486544");
         clientService.saveClient(clientModel);
 
         RestAssured.given()
                 .header("Authorization", "Bearer " + TOKEN)
                 .contentType(ContentType.JSON)
-                .pathParam("cpf", "12345678911")
+                .pathParam("cpf", "48932486544")
                 .when()
                 .delete(URL_WITH_CPF_PATH_PARAMETER)
                 .then()
