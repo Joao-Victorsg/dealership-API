@@ -121,7 +121,7 @@ class ClientServiceImplTest {
                 .build();
 
         when(clientRepositoryPort.findByCpf("123")).thenReturn(Optional.empty());
-        when(searchAddressGateway.byPostCode("123")).thenReturn(AddressDtoResponse.builder().build());
+        when(searchAddressGateway.byPostCode("123")).thenReturn(AddressDtoResponse.builder().isAddressSearched(true).build());
         when(clientRepositoryPort.save(expectedClient)).thenReturn(expectedClient);
 
         assertDoesNotThrow(() -> {
@@ -160,8 +160,8 @@ class ClientServiceImplTest {
         assertThrows(ClientNotFoundException.class,() ->clientService.deleteClient("123456789"));
     }
     @Test
-    @DisplayName("Given an existente CPF, update the client information")
-    void givenExistenteCPFUpdateTheClientInformation(){
+    @DisplayName("Given an existent CPF, update the client information")
+    void givenExistentCPFUpdateTheClientInformation(){
         final var clientUpdateDtoRequest = ClientDtoUpdateRequest.builder()
                 .streetNumber("123")
                 .postCode("36666-666")

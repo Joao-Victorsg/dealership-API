@@ -9,6 +9,8 @@ import com.example.api.dealership.adapter.service.car.CarService;
 import com.example.api.dealership.core.domain.CarModel;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +31,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +42,9 @@ class CarControllerTest {
 
     @InjectMocks
     private CarController carController;
+
+    @Mock
+    private MeterRegistry meterRegistry;
 
     @Mock
     private CarService carService;
@@ -54,6 +61,7 @@ class CarControllerTest {
         final var expectedResponse = ResponseEntity.created(URI.create("/v1/dealership/cars/" + carModel.getVin()))
                 .body(Response.createResponse(carDtoResponse));
 
+        when(meterRegistry.counter(anyString())).thenReturn(mock(Counter.class));
         when(carMapper.toCarModel(carDtoRequest)).thenReturn(carModel);
         when(carService.save(carModel)).thenReturn(carModel);
         when(carMapper.toCarDtoResponse(carModel)).thenReturn(carDtoResponse);

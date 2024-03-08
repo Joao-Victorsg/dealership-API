@@ -11,6 +11,8 @@ import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +33,10 @@ import static com.example.api.dealership.adapter.dtos.Response.createResponse;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +48,8 @@ class SalesControllerTest {
     private  SalesService salesService;
     @Mock
     private  SalesMapper salesMapper;
-
+    @Mock
+    private MeterRegistry meterRegistry;
     @Test
     @DisplayName("Given a sales valid request, save the sale")
     void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
@@ -54,6 +59,7 @@ class SalesControllerTest {
         final var expectedResponse = ResponseEntity.created(URI.create("/v1/dealership/sales/" + sales.getId()))
                 .body(createResponse(salesDtoResponse));
 
+        when(meterRegistry.counter(anyString(),anyString(),anyString())).thenReturn(mock(Counter.class));
         when(salesService.saveSale(salesDtoRequest.cpf(),salesDtoRequest.vin())).thenReturn(sales);
         when(salesMapper.toSalesDtoResponse(sales)).thenReturn(salesDtoResponse);
 

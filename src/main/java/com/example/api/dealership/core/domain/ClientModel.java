@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="TB_CLIENTMODEL")
@@ -51,4 +51,8 @@ public class ClientModel {
     @OneToMany(mappedBy = "client")
     @JsonIgnore
     private List<SalesModel> salesModel;
+
+    public static ClientModel of(ClientModel clientModel, AddressModel addressModel){
+        return clientModel.toBuilder().address(addressModel).build();
+    }
 }
