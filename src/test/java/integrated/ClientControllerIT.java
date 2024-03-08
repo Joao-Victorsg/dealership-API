@@ -40,7 +40,7 @@ class ClientControllerIT extends BaseIT {
     @DisplayName("Given a valid request to create a client then create it")
     @Test
     void givenValidRequestToCreateAClienteThenCreateIt() {
-        final var client = createClientDtoRequest("12345678911");
+        final var client = createClientDtoRequest("84531547812");
         mockGetAddressByPostCode("39999-999");
 
         RestAssured.given()
