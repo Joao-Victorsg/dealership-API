@@ -141,18 +141,17 @@ import static org.hamcrest.CoreMatchers.notNullValue;
     @DisplayName("Given a valid request to delete a car, do it")
     @Test
      void givenValidRequestToDeleteCarDoIt() throws DuplicatedInfoException {
-        final var model = createCar("44444444444");
+        final var model = createCar("44444444434");
         carService.save(model);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
                 .contentType(ContentType.JSON)
-                .pathParam("vin","44444444444")
+                .pathParam("vin","44444444434")
                 .when()
                 .delete(URL_WITH_VIN_PATH_PARAMETER)
                 .then()
                 .statusCode(HttpStatus.OK.value());
-
     }
 
     @DisplayName("Given a request with a invalid vin to delete a car, return 404")

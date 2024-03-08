@@ -7,6 +7,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
             .withEnv("POSTGRES_PASSWORD","123456")
             .withEnv("POSTGRES_DB","dealershipdb")
             .withExposedPorts(5432)
+            .withCopyFileToContainer(MountableFile.forHostPath("insert_user.sql"), "/docker-entrypoint-initdb.d/insert_user.sql")
             .waitingFor(Wait.forListeningPort());
 
     private static final GenericContainer<?> REDIS_CONTAINER =  new GenericContainer<>(REDIS_IMAGE)
