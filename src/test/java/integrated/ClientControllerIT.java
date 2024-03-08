@@ -198,7 +198,7 @@ class ClientControllerIT extends BaseIT {
     @DisplayName("Given a valid request to delete a client, do it")
     @Test
     void givenValidRequestToDeleteClientDoIt() throws DuplicatedInfoException {
-        final var clientModel = createClient("44444444444");
+        final var clientModel = createClient("12345678911");
         clientService.saveClient(clientModel);
 
         RestAssured.given()
