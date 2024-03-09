@@ -9,6 +9,7 @@ import com.example.api.dealership.adapter.mapper.ClientMapper;
 import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -43,6 +44,8 @@ import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientMod
 public class ClientController {
 
     private final ClientService clientService;
+
+    private final MeterRegistry meterRegistry;
 
     @Operation(summary = "Return a page of clients")
     @ApiResponses(value = {
@@ -113,6 +116,8 @@ public class ClientController {
         final var savedClient = clientService.saveClient(client);
 
         log.info("Creating client in the database: " + savedClient);
+
+        meterRegistry.counter("number_of_clients").increment();
 
         final var response = Response.createResponse(toClientDtoResponse(savedClient));
 

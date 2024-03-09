@@ -7,6 +7,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.util.Map;
 
@@ -20,6 +21,9 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
 
     private static final DockerImageName POSTGRES_IMAGE = DockerImageName
             .parse("postgres:latest");
+
+    private static final DockerImageName REDIS_IMAGE = DockerImageName
+            .parse("redis:latest");
 
     private static final Network NETWORK = Network.newNetwork();
 
@@ -35,16 +39,26 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
             .withEnv("POSTGRES_PASSWORD","123456")
             .withEnv("POSTGRES_DB","dealershipdb")
             .withExposedPorts(5432)
+            .withCopyFileToContainer(MountableFile.forHostPath("insert_user.sql"), "/docker-entrypoint-initdb.d/insert_user.sql")
+            .waitingFor(Wait.forListeningPort());
+
+    private static final GenericContainer<?> REDIS_CONTAINER =  new GenericContainer<>(REDIS_IMAGE)
+            .withNetwork(NETWORK)
+            .withNetworkAliases("redis")
+            .withExposedPorts(6379)
+            .withEnv("REDIS_PASSWORD","redislocal")
             .waitingFor(Wait.forListeningPort());
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         WIREMOCK_CONTAINER.start();
         POSTGRES_CONTAINER.start();
+        REDIS_CONTAINER.start();
 
         final var properties = Map.of(
                 "spring.datasource.url",getPostgresUrl(),
-                "via-cep.url",getWiremockUrl()+"/ws/"
+                "via-cep.url",getWiremockUrl()+"/ws/",
+                "spring.data.redis.port",getRedisPort()
         );
 
         TestPropertyValues.of(properties).applyTo(applicationContext);
@@ -66,5 +80,9 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
     private static String getPostgresUrl() {
         return String.format(POSTGRES_URL,
                 POSTGRES_CONTAINER.getHost(),POSTGRES_CONTAINER.getFirstMappedPort());
+    }
+
+    private static String getRedisPort(){
+        return REDIS_CONTAINER.getFirstMappedPort().toString();
     }
 }

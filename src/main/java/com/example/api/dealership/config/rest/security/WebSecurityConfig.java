@@ -50,6 +50,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST,"/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auths").permitAll()
+                .requestMatchers(HttpMethod.GET,"/actuator/metrics/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/traces").permitAll()
                 .requestMatchers(HttpMethod.DELETE,"/*").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()

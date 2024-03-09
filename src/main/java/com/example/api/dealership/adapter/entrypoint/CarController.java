@@ -8,6 +8,7 @@ import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.service.car.CarService;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,6 +43,8 @@ public class CarController {
 
     private final CarMapper carMapper;
 
+    private final MeterRegistry meterRegistry;
+
 
     @Operation(summary = "Save a car in the database")
     @ApiResponses(value = {
@@ -59,6 +62,12 @@ public class CarController {
         final var carModel = carService.save(carMapper.toCarModel(carDto));
 
         final var carDtoResponse = carMapper.toCarDtoResponse(carModel);
+
+        //TODO: See about the tags and create an annotation to do the metric counter.
+        // In this case, the metric shouldn't be a number of cars available, because
+        // the car can be selled. Instead of a counter, it can be a gauge.
+        // Maybe an increment in the gauge here and a decrement in the gauge at delete Car or sale.
+        meterRegistry.counter("number_of_cars").increment();
 
         final var response = Response.createResponse(carDtoResponse);
 

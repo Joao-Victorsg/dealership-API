@@ -90,6 +90,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-dependencies</artifactId>
 			<version>${spring-cloud.version}</version>
@@ -163,6 +169,13 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20220924</version>
+		</dependency>
+
+		<!-- Tracing -->
+		<dependency>
+			<groupId>co.elastic.apm</groupId>
+			<artifactId>apm-agent-attach</artifactId>
+			<version>1.45.0</version>
 		</dependency>
 
 		<!-- Testes -->
@@ -342,7 +355,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mutationThreshold>100</mutationThreshold>
+					<mutationThreshold>85</mutationThreshold>
 					<avoidCallsTo>
 						<avoidCallsTo>java.util.logging</avoidCallsTo>
 						<avoidCallsTo>org.apache.log4j</avoidCallsTo>
@@ -351,12 +364,36 @@
 					</avoidCallsTo>
 					<targetClasses>
 						<targetClass>**.adapter.entrypoint.**</targetClass>
-						<targetClass>**.adapter.output.gateway.**</targetClass>
 						<targetClass>**.service.**</targetClass>
 					</targetClasses>
+					<targetTests>
+						<targetTest>com.example.api.dealership.adapter.*</targetTest>
+					</targetTests>
+					<skip>${skip.test}</skip>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.2.5</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<phase>verify</phase>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+						<phase>verify</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

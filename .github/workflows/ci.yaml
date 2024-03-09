@@ -1,0 +1,31 @@
+name: dealership-api-ci
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-application:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run the Maven verify phase
+        run: mvn -B clean install --file pom.xml
+
+      - name: Build Docker image
+        run: docker build -t dealership_api .

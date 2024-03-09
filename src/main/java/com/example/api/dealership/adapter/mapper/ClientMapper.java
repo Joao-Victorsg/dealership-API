@@ -35,7 +35,7 @@ public final class ClientMapper {
                 .build();
     }
 
-    private static AddressModel toAddressModel(AddressDtoRequest address){
+    public static AddressModel toAddressModel(AddressDtoRequest address){
         return AddressModel.builder()
                 .postCode(address.postCode())
                 .streetNumber(address.streetNumber())

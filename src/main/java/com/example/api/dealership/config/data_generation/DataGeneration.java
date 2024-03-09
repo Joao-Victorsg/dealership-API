@@ -134,7 +134,7 @@ public class DataGeneration {
 
     private static List<AddressDtoResponse> generateClientAddressData(){
         try {
-            final var jsonText = AbstractReader.readJson("./static/MOCK_ADDRESS_DATA.json");
+            final var jsonText = AbstractReader.readJson("./src/main/resources/static/MOCK_ADDRESS_DATA.json");
             final var type = new TypeReference<List<AddressDtoResponse>>() {};
 
             return new ObjectMapper().readValue(jsonText, type);
@@ -147,7 +147,7 @@ public class DataGeneration {
 
     private List<CarDtoRequest> generateCarData() {
         try {
-            final var jsonText = AbstractReader.readJson("./static/MOCK_VEIC_DATA.json");
+            final var jsonText = AbstractReader.readJson("./src/main/resources/static/MOCK_VEIC_DATA.json");
             final var type = new TypeReference<List<CarDtoRequest>>() {};
 
             final List<CarDtoRequest> carsWithoutValue = new ObjectMapper().readValue(jsonText, type);
