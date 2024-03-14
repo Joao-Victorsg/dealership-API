@@ -432,49 +432,6 @@
 					"response": []
 				},
 				{
-					"name": "Insert Sale",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdnNnIiwiaWF0IjoxNjgzOTQxMDI2LCJleHAiOjE2ODM5NDI0NjZ9.ZLKlrzsdg8f4H7afnx98UAElIXeps0XCGPELwxSbEzQ",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/v1/dealership/sales/009b5d51-8b9f-461e-89e8-0792deea333f",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"v1",
-								"dealership",
-								"sales",
-								"009b5d51-8b9f-461e-89e8-0792deea333f"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get one Sale",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
