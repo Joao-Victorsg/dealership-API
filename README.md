@@ -1,6 +1,8 @@
 <div style="text-align: Justify;">
 
 # Dealership API
+[!Status Badge](https://github.com/Joao-Victorsg/dealership-API/actions/workflows/ci.yaml/badge.svg?branch=master)
+
 Doing some study on Rest APIs with Java and Spring Boot
 
 # About the API
