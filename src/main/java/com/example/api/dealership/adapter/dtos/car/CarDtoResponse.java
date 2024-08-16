@@ -1,6 +1,7 @@
 package com.example.api.dealership.adapter.dtos.car;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Builder
 @JsonDeserialize(builder = CarDtoResponse.CarDtoResponseBuilder.class)
+@JsonSerialize
 public record CarDtoResponse(
         @NotBlank UUID id,
         @NotBlank String model,

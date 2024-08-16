@@ -11,8 +11,6 @@ import com.example.api.dealership.core.domain.AddressModel;
 import com.example.api.dealership.core.domain.ClientModel;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,24 +31,18 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClientControllerTest {
-
 
     @InjectMocks
     private ClientController clientController;
 
     @Mock
     private ClientService clientService;
-
-    @Mock
-    private MeterRegistry meterRegistry;
 
     @Test
     @DisplayName("Given a valid client request, save it in the database")
@@ -72,7 +64,6 @@ class ClientControllerTest {
                                 .build())
                         .build()));
 
-        when(meterRegistry.counter(anyString())).thenReturn(mock(Counter.class));
         when(clientService.saveClient(any(ClientModel.class))).thenReturn(clientModel);
 
         final var response = clientController.saveClient(clientDtoRequest);

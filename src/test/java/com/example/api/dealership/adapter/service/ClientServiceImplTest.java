@@ -3,6 +3,7 @@ package com.example.api.dealership.adapter.service;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoUpdateRequest;
 import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
 import com.example.api.dealership.adapter.output.gateway.SearchAddressGateway;
+import com.example.api.dealership.adapter.output.gateway.dto.AddressDtoGateway;
 import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
 import com.example.api.dealership.adapter.service.client.impl.ClientServiceImpl;
 import com.example.api.dealership.core.domain.AddressModel;
@@ -121,7 +122,7 @@ class ClientServiceImplTest {
                 .build();
 
         when(clientRepositoryPort.findByCpf("123")).thenReturn(Optional.empty());
-        when(searchAddressGateway.byPostCode("123")).thenReturn(AddressDtoResponse.builder().isAddressSearched(true).build());
+        when(searchAddressGateway.byPostCode("123")).thenReturn(AddressDtoGateway.builder().isAddressSearched(true).build());
         when(clientRepositoryPort.save(expectedClient)).thenReturn(expectedClient);
 
         assertDoesNotThrow(() -> {
@@ -181,7 +182,7 @@ class ClientServiceImplTest {
 
         when(clientRepositoryPort.findByCpf("123456789")).thenReturn(Optional.of(oldClient));
         when(searchAddressGateway.byPostCode(clientUpdateDtoRequest.postCode()))
-                .thenReturn(AddressDtoResponse.builder().postCode("36666-666").build());
+                .thenReturn(AddressDtoGateway.builder().postCode("36666-666").build());
         when(clientRepositoryPort.save(any(ClientModel.class))).thenReturn(updatedCliente);
 
         assertDoesNotThrow(() -> {

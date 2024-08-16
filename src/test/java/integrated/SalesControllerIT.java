@@ -31,7 +31,7 @@ class SalesControllerIT extends BaseIT {
     private static final String URL_WITH_VIN_PATH_PARAMETER = "/v1/dealership/sales/{id}";
     private static final String URL = "/v1/dealership/sales";
     //Token valido até 05/07/2024
-    private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODY5MjUwMywiZXhwIjoxNzIwMjI4NTAzfQ.i0PPlujf0KGcpxzejFI6b6BeSM8i3yr27qYo-TdXAOw";
+    private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbnRlZ3JhdGVkIiwiaWF0IjoxNzIyNjYwMDY3LCJleHAiOjE3MjI2NjE1MDd9.VMrq4UzT12II5ub-451NF1yJ_KXZQ8X27id9xqhJr0s";
     private static final String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTAzMDE0MiwiZXhwIjoxNjg5MDMwMTQyfQ.z-_TEnUlIFZhXRb_vf-ZL7aG9kPa1rZ7dOOE2E5csxQ";
 
     @Autowired

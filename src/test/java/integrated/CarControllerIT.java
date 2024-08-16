@@ -2,11 +2,17 @@ package integrated;
 
 import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoUpdateRequest;
+import com.example.api.dealership.adapter.dtos.user.UserDtoRequest;
 import com.example.api.dealership.adapter.service.car.impl.CarServiceImpl;
 import com.example.api.dealership.core.domain.CarModel;
+import com.example.api.dealership.core.domain.UserModel;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import integrated.util.FeignClientIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +20,70 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
+import static integrated.util.TokenUtil.getTokenStatic;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
+@RequiredArgsConstructor
  class CarControllerIT extends BaseIT{
 
     private static final String URL_WITH_VIN_PATH_PARAMETER = "/v1/dealership/cars/{vin}";
     private static final String URL = "/v1/dealership/cars";
+    private static final String CREATE_USER_URL = "/v1/dealership/users";
+    private static final String CREATE_TOKEN_URL = "/v1/dealership/auths";
     //Token valido até 05/07/2024
-    private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODY5MjUwMywiZXhwIjoxNzIwMjI4NTAzfQ.i0PPlujf0KGcpxzejFI6b6BeSM8i3yr27qYo-TdXAOw";
+    private static String TOKEN;
     private static final String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTAzMDE0MiwiZXhwIjoxNjg5MDMwMTQyfQ.z-_TEnUlIFZhXRb_vf-ZL7aG9kPa1rZ7dOOE2E5csxQ";
 
-    @Autowired
-    private CarServiceImpl carService;
+    private FeignClientIntegrationTest feignClientIntegrationTest;
+
+    @BeforeAll
+    static void setUpUserAndToken(){
+        createUser();
+        createToken();
+        //feignClientIntegrationTest.createUser(userDto);
+        //TOKEN = feignClientIntegrationTest.getToken(userDto).token();
+    }
+
+    private static void createUser(){
+        final var userDto = createUserDto();
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(userDto)
+                .when()
+                .post(CREATE_USER_URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
+    private static void createToken(){
+        final var userDto = createUserDto();
+
+        TOKEN = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(userDto)
+                .when()
+                .post(CREATE_TOKEN_URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .response()
+                .asString();
+    }
+
+    private static UserDtoRequest createUserDto(){
+        return UserDtoRequest.builder()
+                .username("integrationTest")
+                .password("123456")
+                .build();
+    }
 
     @DisplayName("Given a valid request to create a car then create it")
     @Test
      void givenValidRequestToCreateACarThenCreateIt(){
-        final var car = createCarDtoRequest("12345678911");
+
+       final var car = createCarDtoRequest("12345678911");
 
         RestAssured.given()
                 .header("Authorization", "Bearer " + TOKEN)
@@ -53,7 +105,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
     @Test
      void givenValidRequestToGetACarThenGetIt() throws DuplicatedInfoException {
         final var car = createCar("11987654321");
-        carService.save(car);
+        //carService.save(car);
 
         RestAssured.given()
                 .header("Authorization", "Bearer " + TOKEN)
@@ -106,7 +158,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
         final var model = createCar("22222222222");
         final var carDto = createCarDtoUpdateRequest("red",11111.11);
 
-        carService.save(model);
+        //carService.save(model);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
@@ -142,7 +194,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
     @Test
      void givenValidRequestToDeleteCarDoIt() throws DuplicatedInfoException {
         final var model = createCar("44444444434");
-        carService.save(model);
+        //carService.save(model);
 
         RestAssured.given()
                 .header("Authorization","Bearer " + TOKEN)
@@ -234,5 +286,4 @@ import static org.hamcrest.CoreMatchers.notNullValue;
                 .value(100000.0)
                 .build();
     }
-
 }

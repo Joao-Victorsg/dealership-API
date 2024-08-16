@@ -1,6 +1,7 @@
 package com.example.api.dealership.adapter.output.gateway;
 
 import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
+import com.example.api.dealership.adapter.output.gateway.dto.AddressDtoGateway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,7 @@ class SearchAddressGatewayTest {
     @DisplayName("Given a postcode, search the address")
     void givenPostCodeSearchTheAddress() {
         final var postCode = "111";
-        final var address = AddressDtoResponse.builder().build();
+        final var address = AddressDtoGateway.builder().build();
 
         when(searchAddressGateway.byPostCode(postCode))
                 .thenReturn(address);

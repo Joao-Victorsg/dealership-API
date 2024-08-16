@@ -3,86 +3,38 @@ package integrated;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.MountableFile;
 
 import java.util.Map;
 
+import static integrated.container.LocalstackContainerDefinition.getLocalstackUrl;
+import static integrated.container.LocalstackContainerDefinition.startLocalstackContainer;
+import static integrated.container.PostgresContainerDefinition.getPostgresUrl;
+import static integrated.container.PostgresContainerDefinition.startPostgresContainer;
+import static integrated.container.RedisContainerDefinition.getRedisPort;
+import static integrated.container.RedisContainerDefinition.startRedisContainer;
+import static integrated.container.WiremockContainerDefinition.getWiremockUrl;
+import static integrated.container.WiremockContainerDefinition.startWiremockContainer;
+
 public class EnvironmentInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private static final String POSTGRES_URL = "jdbc:postgresql://%s:%d/dealershipdb";
-    private static final String WIREMOCK_URL = "http://%s:%d";
-
-    private static final DockerImageName WIREMOCK_IMAGE = DockerImageName
-            .parse("wiremock/wiremock:latest");
-
-    private static final DockerImageName POSTGRES_IMAGE = DockerImageName
-            .parse("postgres:latest");
-
-    private static final DockerImageName REDIS_IMAGE = DockerImageName
-            .parse("redis:latest");
-
-    private static final Network NETWORK = Network.newNetwork();
-
-    private static final GenericContainer<?> WIREMOCK_CONTAINER = new GenericContainer<>(WIREMOCK_IMAGE)
-            .withNetwork(NETWORK)
-            .withNetworkAliases("wiremock")
-            .withExposedPorts(8080);
-
-    private static final GenericContainer<?> POSTGRES_CONTAINER = new GenericContainer<>(POSTGRES_IMAGE)
-            .withNetwork(NETWORK)
-            .withNetworkAliases("postgres")
-            .withEnv("POSTGRES_USER","postgres")
-            .withEnv("POSTGRES_PASSWORD","123456")
-            .withEnv("POSTGRES_DB","dealershipdb")
-            .withExposedPorts(5432)
-            .withCopyFileToContainer(MountableFile.forHostPath("insert_user.sql"), "/docker-entrypoint-initdb.d/insert_user.sql")
-            .waitingFor(Wait.forListeningPort());
-
-    private static final GenericContainer<?> REDIS_CONTAINER =  new GenericContainer<>(REDIS_IMAGE)
-            .withNetwork(NETWORK)
-            .withNetworkAliases("redis")
-            .withExposedPorts(6379)
-            .withEnv("REDIS_PASSWORD","redislocal")
-            .waitingFor(Wait.forListeningPort());
+    public static final Network NETWORK = Network.newNetwork();
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        WIREMOCK_CONTAINER.start();
-        POSTGRES_CONTAINER.start();
-        REDIS_CONTAINER.start();
+        startWiremockContainer();
+        startPostgresContainer();
+        startRedisContainer();
+        startLocalstackContainer();
 
         final var properties = Map.of(
                 "spring.datasource.url",getPostgresUrl(),
                 "via-cep.url",getWiremockUrl()+"/ws/",
-                "spring.data.redis.port",getRedisPort()
+                "spring.data.redis.port",getRedisPort(),
+                "spring.cloud.aws.sns.endpoint",getLocalstackUrl()
         );
 
         TestPropertyValues.of(properties).applyTo(applicationContext);
     }
 
-    private static String getWiremockUrl() {
-        return String.format(WIREMOCK_URL,
-                WIREMOCK_CONTAINER.getHost(),WIREMOCK_CONTAINER.getFirstMappedPort());
-    }
-
-    public static String getWiremockHost(){
-        return WIREMOCK_CONTAINER.getHost();
-    }
-
-    public static Integer getWiremockPort(){
-        return WIREMOCK_CONTAINER.getFirstMappedPort();
-    }
-
-    private static String getPostgresUrl() {
-        return String.format(POSTGRES_URL,
-                POSTGRES_CONTAINER.getHost(),POSTGRES_CONTAINER.getFirstMappedPort());
-    }
-
-    private static String getRedisPort(){
-        return REDIS_CONTAINER.getFirstMappedPort().toString();
-    }
 }

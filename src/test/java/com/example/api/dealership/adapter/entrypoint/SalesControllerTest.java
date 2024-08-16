@@ -4,6 +4,7 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
+import com.example.api.dealership.adapter.output.gateway.SnsPublisher;
 import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.domain.SalesModel;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
@@ -49,7 +50,8 @@ class SalesControllerTest {
     @Mock
     private  SalesMapper salesMapper;
     @Mock
-    private MeterRegistry meterRegistry;
+    private SnsPublisher snsPublisher;
+
     @Test
     @DisplayName("Given a sales valid request, save the sale")
     void givenSalesValidRequestSaveTheSale() throws CarAlreadySoldException, ClientNotFoundException, ClientNotHaveRegisteredAddressException, CarNotFoundException {
@@ -59,9 +61,9 @@ class SalesControllerTest {
         final var expectedResponse = ResponseEntity.created(URI.create("/v1/dealership/sales/" + sales.getId()))
                 .body(createResponse(salesDtoResponse));
 
-        when(meterRegistry.counter(anyString(),anyString(),anyString())).thenReturn(mock(Counter.class));
         when(salesService.saveSale(salesDtoRequest.cpf(),salesDtoRequest.vin())).thenReturn(sales);
         when(salesMapper.toSalesDtoResponse(sales)).thenReturn(salesDtoResponse);
+        doNothing().when(snsPublisher).sendSalesNotification(salesDtoResponse);
 
         assertDoesNotThrow(() -> {
             final var resultSale = salesController.saveSale(salesDtoRequest);

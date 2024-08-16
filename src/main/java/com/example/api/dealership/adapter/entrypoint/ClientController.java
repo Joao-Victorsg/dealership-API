@@ -6,6 +6,7 @@ import com.example.api.dealership.adapter.dtos.client.ClientDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoResponse;
 import com.example.api.dealership.adapter.dtos.client.ClientDtoUpdateRequest;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
+import com.example.api.dealership.adapter.micrometer.CountMetricAnnotation;
 import com.example.api.dealership.adapter.service.client.ClientService;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
@@ -44,8 +45,6 @@ import static com.example.api.dealership.adapter.mapper.ClientMapper.toClientMod
 public class ClientController {
 
     private final ClientService clientService;
-
-    private final MeterRegistry meterRegistry;
 
     @Operation(summary = "Return a page of clients")
     @ApiResponses(value = {
@@ -110,14 +109,13 @@ public class ClientController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/clients")
+    @CountMetricAnnotation("numbers_of_clients")
     public ResponseEntity<Response<ClientDtoResponse>> saveClient(@RequestBody @Valid final ClientDtoRequest request) throws DuplicatedInfoException {
         final var client = toClientModel(request);
 
         final var savedClient = clientService.saveClient(client);
 
         log.info("Creating client in the database: " + savedClient);
-
-        meterRegistry.counter("number_of_clients").increment();
 
         final var response = Response.createResponse(toClientDtoResponse(savedClient));
 

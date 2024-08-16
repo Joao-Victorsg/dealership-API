@@ -4,13 +4,14 @@ import com.example.api.dealership.adapter.dtos.Response;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoRequest;
 import com.example.api.dealership.adapter.dtos.sales.SalesDtoResponse;
 import com.example.api.dealership.adapter.mapper.SalesMapper;
+import com.example.api.dealership.adapter.micrometer.CountMetricAnnotation;
+import com.example.api.dealership.adapter.output.gateway.SnsPublisher;
 import com.example.api.dealership.adapter.service.sales.SalesService;
 import com.example.api.dealership.core.exceptions.CarAlreadySoldException;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotFoundException;
 import com.example.api.dealership.core.exceptions.ClientNotHaveRegisteredAddressException;
 import com.example.api.dealership.core.exceptions.SaleNotFoundException;
-import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -47,7 +48,7 @@ public class SalesController {
 
     private final SalesMapper salesMapper;
 
-    private final MeterRegistry meterRegistry;
+    private final SnsPublisher snsPublisher;
 
     @Operation(summary="Save a sale")
     @ApiResponses(value = {
@@ -61,13 +62,14 @@ public class SalesController {
             @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/sales")
+    @CountMetricAnnotation("total_sales")
     public ResponseEntity<Response<SalesDtoResponse>> saveSale(@RequestBody @Valid final SalesDtoRequest request) throws ClientNotFoundException, CarAlreadySoldException, CarNotFoundException, ClientNotHaveRegisteredAddressException {
 
         var sale = salesService.saveSale(request.cpf(), request.vin());
 
-        meterRegistry.counter("total_sales","day",String.valueOf(LocalDate.now().getDayOfWeek())).increment();
-
         final var salesDtoResponse = createResponse(salesMapper.toSalesDtoResponse(sale));
+
+        snsPublisher.sendSalesNotification(salesDtoResponse.getData());
 
         return ResponseEntity.created(URI.create("/v1/dealership/sales/" + sale.getId()))
                 .body(salesDtoResponse);

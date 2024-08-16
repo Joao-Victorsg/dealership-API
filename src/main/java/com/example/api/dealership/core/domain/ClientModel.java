@@ -44,15 +44,9 @@ public class ClientModel {
     private AddressModel address;
 
     @Column(nullable = false)
-    //@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    //@JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "client")
     @JsonIgnore
     private List<SalesModel> salesModel;
-
-    public static ClientModel of(ClientModel clientModel, AddressModel addressModel){
-        return clientModel.toBuilder().address(addressModel).build();
-    }
 }

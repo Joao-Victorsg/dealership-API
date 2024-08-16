@@ -10,8 +10,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static integrated.EnvironmentInitializer.getWiremockHost;
-import static integrated.EnvironmentInitializer.getWiremockPort;
+import static integrated.container.WiremockContainerDefinition.getWiremockHost;
+import static integrated.container.WiremockContainerDefinition.getWiremockPort;
 
 public final class MockServer {
 

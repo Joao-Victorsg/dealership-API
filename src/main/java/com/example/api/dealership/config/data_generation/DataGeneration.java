@@ -6,6 +6,7 @@ import com.example.api.dealership.adapter.dtos.client.address.AddressDtoRequest;
 import com.example.api.dealership.adapter.dtos.client.address.AddressDtoResponse;
 import com.example.api.dealership.adapter.mapper.CarMapper;
 import com.example.api.dealership.adapter.mapper.ClientMapper;
+import com.example.api.dealership.adapter.output.gateway.dto.AddressDtoGateway;
 import com.example.api.dealership.adapter.output.repository.port.CarRepositoryPort;
 import com.example.api.dealership.adapter.output.repository.port.ClientRepositoryPort;
 import com.example.api.dealership.adapter.service.sales.SalesService;
@@ -44,11 +45,12 @@ public class DataGeneration {
     private final UserService userService;
 
     @Bean
-    public void saveMockingData() throws UsernameAlreadyUsedException {
+    public Object saveMockingData() throws UsernameAlreadyUsedException {
         final var clients = saveClientModel(generateClientData());
         final var cars = saveCarModel(generateCarData());
         saveSales(clients,cars);
         saveUser(generateUserData());
+        return null;
     }
 
     private void saveSales(List<ClientModel> clients,List<CarModel> cars){
@@ -132,10 +134,10 @@ public class DataGeneration {
     }
 
 
-    private static List<AddressDtoResponse> generateClientAddressData(){
+    private static List<AddressDtoGateway> generateClientAddressData(){
         try {
             final var jsonText = AbstractReader.readJson("./src/main/resources/static/MOCK_ADDRESS_DATA.json");
-            final var type = new TypeReference<List<AddressDtoResponse>>() {};
+            final var type = new TypeReference<List<AddressDtoGateway>>() {};
 
             return new ObjectMapper().readValue(jsonText, type);
         } catch (IOException ex) {

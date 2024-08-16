@@ -5,9 +5,11 @@ import com.example.api.dealership.adapter.dtos.car.CarDtoRequest;
 import com.example.api.dealership.adapter.dtos.car.CarDtoResponse;
 import com.example.api.dealership.adapter.dtos.car.CarDtoUpdateRequest;
 import com.example.api.dealership.adapter.mapper.CarMapper;
+import com.example.api.dealership.adapter.micrometer.CountMetricAnnotation;
 import com.example.api.dealership.adapter.service.car.CarService;
 import com.example.api.dealership.core.exceptions.CarNotFoundException;
 import com.example.api.dealership.core.exceptions.DuplicatedInfoException;
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,9 +45,6 @@ public class CarController {
 
     private final CarMapper carMapper;
 
-    private final MeterRegistry meterRegistry;
-
-
     @Operation(summary = "Save a car in the database")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "The car was created with success"),
@@ -58,6 +57,8 @@ public class CarController {
         @ApiResponse(responseCode = "504", description = "The Gateway timed out")
     })
     @PostMapping(path = "/cars", produces = "application/json")
+    @CountMetricAnnotation("numbers_of_cars")
+    @Timed(value="tempo_processamento_carro",histogram = true, percentiles = {0.5,0.9,0.95,0.99})
     public ResponseEntity<Response<CarDtoResponse>> saveCar(@RequestBody @Valid final CarDtoRequest carDto) throws DuplicatedInfoException {
         final var carModel = carService.save(carMapper.toCarModel(carDto));
 
@@ -67,7 +68,6 @@ public class CarController {
         // In this case, the metric shouldn't be a number of cars available, because
         // the car can be selled. Instead of a counter, it can be a gauge.
         // Maybe an increment in the gauge here and a decrement in the gauge at delete Car or sale.
-        meterRegistry.counter("number_of_cars").increment();
 
         final var response = Response.createResponse(carDtoResponse);
 

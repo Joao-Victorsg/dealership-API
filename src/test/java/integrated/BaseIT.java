@@ -4,6 +4,7 @@ import com.example.api.dealership.DealershipApplication;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -12,6 +13,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = DealershipApplication.class, webEnvironment = DEFINED_PORT)
 @ActiveProfiles("it")
 @ContextConfiguration(initializers = EnvironmentInitializer.class)
+@EnableFeignClients
 public class BaseIT {
 
     @BeforeAll
@@ -19,4 +21,3 @@ public class BaseIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
-

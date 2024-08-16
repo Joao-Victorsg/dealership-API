@@ -22,6 +22,7 @@ class AuthenticationControllerIT extends BaseIT{
     @Autowired
     private UserServiceImpl userService;
 
+    //TODO: Verify this tests and how to mock the token call. It should answear a valid token because of the tests.
     @DisplayName("Given a valid user return a token")
     @Test
     void givenValidUserReturnToken() throws UsernameAlreadyUsedException {
